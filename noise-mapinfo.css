@@ -1,0 +1,28 @@
+/* 지도 정보 탭 판(noise-mapinfo.js · 2026-10-29) — 바람·실시간 소음면·소음 등급을 왼쪽 아래 판 하나로. noise-mobile.css 뒤에 싣는다(옛 개별 위치 규칙을 덮는다) */
+.nmi { position: absolute; left: 12px; bottom: 12px; z-index: 900; width: 420px; max-width: calc(100% - 24px); background: rgba(15,23,42,.95); backdrop-filter: blur(10px);
+  border: 1px solid rgba(51,65,85,.8); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.35); color: #e2e8f0; font: 12px/1.45 system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif; }
+.nmi[hidden] { display: none; }
+.nmi-h { display: flex; align-items: center; gap: 2px; padding: 4px; border-bottom: 1px solid rgba(51,65,85,.8); }
+.nmi.closed .nmi-h { border-bottom: 0; }
+.nmi-tab { flex: 1; background: none; border: 0; color: #94a3b8; font: inherit; font-weight: 700; padding: 6px 8px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+.nmi-tab[hidden] { display: none; }
+.nmi-tab:hover { color: #e2e8f0; background: rgba(51,65,85,.4); }
+.nmi-tab.on { color: #fff; background: rgba(37,99,235,.35); box-shadow: inset 0 0 0 1px rgba(96,165,250,.5); }
+.nmi.closed .nmi-tab.on { background: none; box-shadow: none; color: #94a3b8; }
+.nmi-x { background: none; border: 0; color: #94a3b8; width: 30px; height: 28px; border-radius: 8px; cursor: pointer; flex: none; }
+.nmi-x .nic { width: 16px; height: 16px; transition: transform .15s; } .nmi.closed .nmi-x .nic { transform: rotate(180deg); }
+.nmi-x:hover { background: rgba(51,65,85,.4); color: #e2e8f0; }
+.nmi-pane { padding: 8px 12px 10px; } .nmi-pane[hidden], .nmi.closed .nmi-pane { display: none !important; }
+/* 옮겨 온 판은 자기 상자 모양을 벗는다(자리·바탕·테두리는 탭 판이 맡는다) */
+.nmi .nmi-in { position: static !important; left: auto !important; right: auto !important; bottom: auto !important; top: auto !important; margin: 0 !important; width: auto !important; max-width: none !important;
+  background: none !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; padding: 0 !important; z-index: auto !important; }
+.nmi .nz-dock.nmi-in { display: flex !important; flex-wrap: wrap; gap: 8px 14px; }
+.nmi .nmi-in[hidden] { display: none !important; }
+.nmi .nmi-in.nf:not(.nf-open) > * { display: revert; }
+@media (max-width: 600px) {
+  .nmi { left: 8px; bottom: 8px; width: auto; right: 8px; max-width: none; font-size: 11.5px; }
+  .nmi-tab { padding: 6px 4px; font-size: 12px; }
+  .nmi-pane { padding: 6px 10px 8px; max-height: 34vh; overflow: auto; }
+  body.rp .nmi { bottom: 124px; }                                     /* 리플레이 줄 위로 */
+}
+@media print { .nmi { display: none; } }

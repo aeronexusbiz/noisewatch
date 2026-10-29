@@ -7,7 +7,7 @@
 (function () {
   'use strict';
   var PH = { arr: '착륙 접근', dep: '이륙 상승', roll: '활주', taxi: '지상 이동', enr: '순항·통과' };
-  var el = null, cur = null, info = null, fl = null, seq = 0, MAP = null, trail = null, trailT = 0;
+  var el = null, cur = null, info = null, fl = null, seq = 0, MAP = null, trail = null, trailT = 0, plan = null, planLL = null;
   var POSK = 'nw.acc.pos';
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function km(a, b) { return Math.hypot((a[0] - b[0]) * 110.574, (a[1] - b[1]) * 111.32 * Math.cos((a[0] + b[0]) / 2 * Math.PI / 180)); }
@@ -57,17 +57,29 @@
     if (!trail) trail = L.polyline([], { color: '#38bdf8', weight: 3, opacity: 0.85, dashArray: null, interactive: false, className: 'acc-trail' }).addTo(MAP);
     return trail;
   }
+  /* 10-29 운영자 「지나온 경로와 예측 경로」 — /noise/path: 지나온 길 = AeroNexus 항적(출발부터 · 없으면 맥 저장분), 예상 경로 = 이 편이 최근 실제로 날았던 경로(통계).
+   * 실선(하늘색) = 지나온 길 · 점선(주황) = 지금 자리에서 도착지까지 남은 예상 경로. 지도 보기는 바꾸지 않는다(보던 자리 그대로) */
   function trailLoad() {
-    if (!MAP || !cur || String(cur.hex || '').charAt(0) === '~' || document.body.classList.contains('rp')) return;   // 리플레이 중엔 「지금부터 30분 전」이 맞지 않는다
-    var my = seq, a = (new URLSearchParams(location.search).get('apt') || '').toUpperCase() || ((document.getElementById('nzApt') || {}).value || 'RKSS');
-    fetch('/noise/trail?apt=' + encodeURIComponent(a) + '&hex=' + encodeURIComponent(cur.hex) + '&min=30', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!MAP || !cur || String(cur.hex || '').charAt(0) === '~' || document.body.classList.contains('rp')) return;   // 리플레이 중엔 「지금까지의 길」이 맞지 않는다
+    var my = seq; trailT = Date.now();                                // 요청을 보낸 때부터 1분(응답 전 중복 요청 막기)
+    fetch('/noise/path?apt=' + encodeURIComponent(aptOf()) + '&hex=' + encodeURIComponent(cur.hex) + '&cs=' + encodeURIComponent(cur.flight || ''), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       if (my !== seq || !d || !d.ok) return;
       var pl = trailDraw(); if (!pl) return;
-      pl.setLatLngs(d.p.map(function (q) { return [q[1], q[2]]; })); trailT = Date.now();
-      var n = document.getElementById('accTrail'); if (n) n.textContent = d.p.length ? '지도의 하늘색 선 = 지나온 길(공항 주변 · 최근 ' + Math.max(1, Math.round((d.p[d.p.length - 1][0] - d.p[0][0]) / 60)) + '분)' : '';
+      pl.setLatLngs(d.trail || []); trailT = Date.now();
+      planLL = d.plan && d.plan.ll && d.plan.ll.length ? d.plan.ll.concat(d.plan.desLL ? [d.plan.desLL] : []) : null;
+      planDraw();
+      var n = document.getElementById('accTrail');
+      if (n) n.innerHTML = [(d.trail || []).length ? '<i class="acc-lg t"></i>지나온 길' + (d.trailSrc === 'local' ? '(공항 주변만)' : '') : '',
+        planLL ? '<i class="acc-lg p"></i>예상 경로 <small>— 이 편이 최근 실제로 날았던 길(' + esc(d.plan.n || '?') + '편 통계 · 오늘 계획과 다를 수 있음)</small>' : ''].filter(Boolean).join(' · ');
     }).catch(function () {});
   }
-  function trailClear() { if (trail) { trail.remove(); trail = null; } var n = document.getElementById('accTrail'); if (n) n.textContent = ''; }
+  function near(ll, p) { var bi = 0, bd = 1e18; ll.forEach(function (q, i) { var d = (q[0] - p[0]) * (q[0] - p[0]) + (q[1] - p[1]) * (q[1] - p[1]); if (d < bd) { bd = d; bi = i; } }); return bi; }
+  function planDraw() {
+    if (!planLL || !MAP || !cur || cur.lat == null) { if (plan) { plan.remove(); plan = null; } return; }
+    var here = [cur.lat, cur.lon], i = near(planLL, here), rest = [here].concat(planLL.slice(i + 1));
+    if (!plan) plan = L.polyline(rest, { color: '#f59e0b', weight: 2.5, opacity: 0.9, dashArray: '6 6', interactive: false, className: 'acc-plan' }).addTo(MAP); else plan.setLatLngs(rest);
+  }
+  function trailClear() { if (trail) { trail.remove(); trail = null; } if (plan) { plan.remove(); plan = null; } planLL = null; var n = document.getElementById('accTrail'); if (n) n.textContent = ''; }
   function masked() { return String((cur && cur.hex) || '').charAt(0) === '~'; }
   function show(ac) {
     mk(); var same = cur && cur.hex === ac.hex; cur = ac; info = null; el.hidden = false; restore();
@@ -81,8 +93,9 @@
     if (masked()) {                                                   // 10-29 공개 화면 — 소형기·헬기·콜사인 없는 기체는 서버가 식별자를 가린다(기관 API 에 물을 것이 없다)
       ++seq; document.getElementById('accRoute').innerHTML = '<div class="acc-dim">비공개 항공기 — 개인 소유일 수 있어 편명·등록번호·출도착을 표시하지 않습니다</div>'; return;
     }
-    trailLoad(); fl = null;
+    fl = null;
     var my = ++seq, q = ['hex=' + encodeURIComponent(ac.hex || ''), 'flight=' + encodeURIComponent(ac.flight || ''), 'reg=' + encodeURIComponent(ac.reg || ''), 'type=' + encodeURIComponent(ac.type || '')].join('&');
+    trailLoad();                                                      // ⚠ seq 를 올린 뒤에(앞에서 부르면 첫 응답이 «옛 것»으로 버려졌다 — 10-29 시험)
     if (ac.flight) fetch('/noise/flight?apt=' + encodeURIComponent(aptOf()) + '&cs=' + encodeURIComponent(ac.flight), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {   // 10-29 출도착 — 이 공항 운항정보
       if (my !== seq) return; fl = d && d.f; if (fl || !info) board();
     }).catch(function () {});
@@ -92,12 +105,12 @@
       if (!info) { board(); return; }
       var al = info.airline;
       document.getElementById('accAl').textContent = al ? '(' + (al.call || al.ko || al.name || al.icao) + ')' : '';
-      board(); spec(); cabin();
+      board(); spec();                                                  // 10-29 좌석·기내 칸은 뺐다(소음 화면에 필요 없는 정보 — 운영자 「지나온 경로와 예측 경로 위주로」)
     }).catch(function () { if (my === seq) board(); });
   }
   function update(ac) {
-    if (!el || el.hidden || !cur || ac.hex !== cur.hex) return; cur = ac; live(); if (info && info.route) route();
-    if (trail && ac.lat != null && !document.body.classList.contains('rp')) { var ll = trail.getLatLngs(), last = ll[ll.length - 1]; if (!last || last.lat !== ac.lat || last.lng !== ac.lon) trail.addLatLng([ac.lat, ac.lon]); }
+    if (!el || el.hidden || !cur || ac.hex !== cur.hex) return; cur = ac; live(); if (info && info.route && document.querySelector('#accRoute .acc-rtw')) route();
+    if (trail && ac.lat != null && !document.body.classList.contains('rp')) { var ll = trail.getLatLngs(), last = ll[ll.length - 1]; if (!last || last.lat !== ac.lat || last.lng !== ac.lon) trail.addLatLng([ac.lat, ac.lon]); planDraw(); }
     if (Date.now() - trailT > 60000) trailLoad();                     // 1분마다 서버 항적으로 다시 맞춘다(끊긴 구간 메우기)
   }
   function hide() { if (el) el.hidden = true; cur = null; seq++; trailClear(); }
@@ -113,7 +126,7 @@
     var box = document.getElementById('accRoute'), f = fl;
     var top = f ? '<div class="acc-fl"><div><b>' + esc(f.from.name || f.from.code) + '</b><small translate="no">' + esc(f.from.code || '') + '</small></div><span class="acc-arr">→</span><div class="r"><b>' + esc(f.to.name || f.to.code) + '</b><small translate="no">' + esc(f.to.code || '') + '</small></div></div>' +
       '<div class="acc-flm"><span class="acc-tag ' + f.dir + '">' + (f.dir === 'dep' ? '출발' : '도착') + '</span> <b translate="no">' + esc(f.id) + '</b> · 예정 ' + hm(f.sched) + (f.est && f.est !== f.sched ? ' → <b>' + (f.dir === 'dep' ? '출발 ' : '도착 ') + hm(f.est) + '</b>' : '') + (f.remark ? ' · ' + esc(f.remark) : '') + (f.gate ? ' · 탑승구 ' + esc(f.gate) : '') + (f.term ? ' · ' + esc(f.term) : '') + '</div>' : '';
-    if (info && info.route) { box.innerHTML = top; box.insertAdjacentHTML('beforeend', '<div class="acc-rtw"></div>'); route(); return; }
+    if (info && info.route && !top) { box.innerHTML = '<div class="acc-rtw"></div>'; route(); return; }   // 10-29 운영자 「산만」 — 운항정보 출도착이 있으면 통계 노선 막대는 겹치므로 뺀다
     box.innerHTML = top || '<div class="acc-dim">출도착 정보 없음 — 이 공항을 오가지 않는 통과기이거나 운항정보에 없는 편입니다</div>';
   }
   function route() {
@@ -129,7 +142,7 @@
   function spec() {
     var al = info && info.airline, cb = info && info.cabin;
     document.getElementById('accSpec').innerHTML = '<h4>기체 제원</h4><div class="acc-kv3">' +
-      '<span>호출부호<b>' + esc(al ? (al.call || al.ko || '') : '') + '</b></span><span>회사명<b>' + esc(al ? (al.ko || al.name || '') : '') + '</b></span><span>기종<b>' + esc(cur.type || '') + (cb && cb.model ? '<small>' + esc(cb.model) + '</small>' : '') + '</b></span>' +
+      '<span>호출부호<b>' + esc(al ? (al.call || al.ko || '') : '') + '</b></span><span>회사명<b>' + esc(al ? (al.ko || al.name || '') : '') + '</b></span><span>기종<b>' + esc(cur.type || '') + (cb && typeof cb.model === 'string' ? '<small>' + esc(cb.model) + '</small>' : '') + '</b></span>' +
       '<span>등록번호<b>' + esc(cur.reg || '') + '</b></span><span>Mode-S<b>' + esc((cur.hex || '').toUpperCase()) + '</b></span><span>등록국<b>' + country(cur.hex) + '</b></span></div>';
   }
   function link(u, t) { return u && /^https?:\/\//i.test(String(u)) ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(t) + ' ↗</a>' : ''; }   // http(s) 만(javascript: 등 차단)

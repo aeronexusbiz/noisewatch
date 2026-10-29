@@ -6,7 +6,7 @@
   var K = 'nw.theme', t = 'dark';
   try { t = localStorage.getItem(K) === 'light' ? 'light' : 'dark'; } catch (_) {}
   var root = document.documentElement; root.dataset.theme = t;
-  if (!document.querySelector('link[href^="/noise-theme-light.css"]')) { var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = '/noise-theme-light.css?v=4'; document.head.appendChild(css); }   // HTML 머리에 없을 때만
+  if (!document.querySelector('link[href^="/noise-theme-light.css"]')) { var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = '/noise-theme-light.css?v=5'; document.head.appendChild(css); }   // HTML 머리에 없을 때만
   function ic(n) { return window.NIcon ? NIcon(n) : ''; }
   function paint(b) {
     var light = root.dataset.theme === 'light';

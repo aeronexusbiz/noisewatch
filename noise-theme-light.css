@@ -146,3 +146,9 @@ html[data-theme="light"] .acc-x { background: #ffffff; color: #0f172a; border-co
 html[data-theme="light"] .acc-bar { background: #e2e8f0; } html[data-theme="light"] .acc a { color: #0369a1; }
 html[data-theme="light"] .acc-fl b, html[data-theme="light"] .acc-flm b { color: #0f172a; } html[data-theme="light"] .acc-flm { color: #334155; } html[data-theme="light"] .acc-fl small { color: #64748b; }
 html[data-theme="light"] .acc-tag.dep { background: #fef3c7; color: #b45309; } html[data-theme="light"] .acc-tag.arr { background: #e0f2fe; color: #0369a1; }
+/* 10-29 지도 정보 탭 판 */
+html[data-theme="light"] .nmi { background: rgba(255,255,255,.97); border-color: #cbd5e1; color: #0f172a; box-shadow: 0 8px 24px rgba(15,23,42,.15); }
+html[data-theme="light"] .nmi-h { border-color: #e2e8f0; } html[data-theme="light"] .nmi-tab, html[data-theme="light"] .nmi-x { color: #64748b; }
+html[data-theme="light"] .nmi-tab:hover, html[data-theme="light"] .nmi-x:hover { background: #f1f5f9; color: #0f172a; }
+html[data-theme="light"] .nmi-tab.on { color: #0369a1; background: #e0f2fe; box-shadow: inset 0 0 0 1px #7dd3fc; }
+html[data-theme="light"] .nmi.closed .nmi-tab.on { background: none; box-shadow: none; color: #64748b; }

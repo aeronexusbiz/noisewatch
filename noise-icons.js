@@ -33,6 +33,7 @@
     download: '<path d="M12 4v11M7.2 10.4 12 15.2l4.8-4.8M5 20h14"/>',
     print: '<path d="M7 9V3.5h10V9"/><rect x="3" y="9" width="18" height="8" rx="2"/><rect x="7" y="14" width="10" height="6.5" rx="1"/><circle class="f" cx="17.2" cy="12.2" r=".9"/>',
     close: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+    chev: '<path d="M6 9.5l6 6 6-6"/>',
     play: '<path class="f" d="M8 5.4v13.2c0 .7.8 1.1 1.4.7l10-6.6a.8.8 0 0 0 0-1.4l-10-6.6C8.8 4.3 8 4.7 8 5.4z"/>',
     pause: '<rect class="f" x="6.5" y="5" width="3.8" height="14" rx="1.2"/><rect class="f" x="13.7" y="5" width="3.8" height="14" rx="1.2"/>',
     next: '<path class="f" d="M5 6.2v11.6c0 .7.8 1.1 1.4.7l8.4-5.8a.8.8 0 0 0 0-1.4L6.4 5.5C5.8 5.1 5 5.5 5 6.2z"/><path d="M18 5.5v13"/>',
