@@ -30,3 +30,6 @@
 .acc-rtw { margin-top: 8px; }
 .acc-lg { display: inline-block; width: 18px; height: 0; vertical-align: middle; margin-right: 4px; border-top: 3px solid #38bdf8; } .acc-lg.p { border-top: 2.5px dashed #f59e0b; }   /* 10-29 지나온 길·예상 경로 범례 */
 #accTrail small { color: inherit; opacity: .8; }
+/* 10-29 리뷰: 옛 자리(right 356 · top 56)가 개편 뒤 오른쪽 패널(440~450)·머리+브리핑 바(약 102px)를 덮었다 → 지도 안쪽 오른쪽 위로 */
+@media (min-width: 861px) { .acc { right: 466px; top: 112px; max-height: calc(100vh - 140px); } }
+@media (max-width: 860px) { .acc { max-height: 38vh; } }   /* 폰: 지도 아래 절반을 덮지 않게 낮게(누른 항공기는 카드 위로 옮긴다 — ac-card.js) */

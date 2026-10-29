@@ -6,7 +6,7 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var C = { s1: '#3b82f6', s2: '#d97706', s3: '#8b5cf6', night: '#4c3a8a', ref: '#ef4444', mut: '#8b949e', grid: 'rgba(255,255,255,.08)' };
-  var PH = { arr: '착륙 접근', dep: '이륙 상승', roll: '활주', taxi: '지상 이동', enr: '통과' };
+  var PH = { arr: '착륙 접근', dep: '이륙 상승', roll: '활주', taxi: '지상 이동', enr: '통과', roll_land: '착륙 활주' };   // 10-29 리뷰: roll_land 가 코드 그대로 보였다
   var S = { apt: null, names: {}, sens: [], day: null, sid: '', hourly: null, daily: null, stats: null, live: null, tables: {} };
   var LDEN_REF = 61;                                                 // 소음대책지역 기준(확인 필요)
 
@@ -76,7 +76,7 @@
       var dd = ((S.daily && S.daily.sensors[s.id]) || []).filter(function (r) { return r.day === S.day; })[0] || {};
       var hh = (S.hourly && S.hourly.sensors[s.id]) || [];
       var lmaxH = hh.reduce(function (m, o) { return o.lmax != null && (m == null || o.lmax > m.lmax) ? o : m; }, null);
-      var st = dd.lden == null ? ['', '자료 모이는 중'] : dd.lden >= LDEN_REF ? ['bad', '▲ 기준선 ' + LDEN_REF + ' 이상(확인 필요)'] : dd.lden >= LDEN_REF - 5 ? ['warn', '기준선 −5dB 안'] : ['ok', '기준선 아래'];
+      var st = dd.lden == null ? ['', '자료 모이는 중'] : dd.lden >= LDEN_REF ? ['bad', '▲ 기준선 ' + LDEN_REF + ' 이상(참고 기준)'] : dd.lden >= LDEN_REF - 5 ? ['warn', '기준선 −5dB 안'] : ['ok', '기준선 아래'];
       var c = dd.lden == null ? '' : dd.lden >= LDEN_REF ? '#ef4444' : dd.lden >= LDEN_REF - 5 ? '#d29922' : '#3fb950';
       var div = document.createElement('div'); div.className = 'nd-tile'; div.style.setProperty('--c', c || '#30363d');
       div.innerHTML = '<div class="n">' + esc(s.name) + '<small>' + (isToday && live ? '지금 <b style="color:#fff">' + f0(live.db) + '</b> dB' : esc(S.day.slice(5))) + '</small></div>' +
@@ -115,9 +115,9 @@
       var box = card(el, s.name, rows.length ? '' : '자료 없음');
       if (!rows.length) return;
       lineChart(box.cv, { xs: rows.map(function (r) { return r.day; }), xLabel: function (x) { return x.slice(5); }, yMin: 40, yMax: 90, unit: 'dB',
-        series: [{ name: 'Lden 항공기(추정)', color: C.s2, ys: rows.map(function (r) { return r.lden; }) }],
+        series: [{ name: 'Lden 항공기(예측)', color: C.s2, ys: rows.map(function (r) { return r.lden; }) }],
         bars: { name: '사건 수', color: C.s3, ys: rows.map(function (r) { return r.nev; }), ys2: rows.map(function (r) { return r.nevNight; }), color2: C.night }, ref: { y: LDEN_REF, label: LDEN_REF + ' 기준선(확인 필요)', color: C.ref } });
-      legend(box.lg, [['Lden 항공기(추정)', C.s2], ['기준선 ' + LDEN_REF, C.ref]], [['사건(낮·저녁)', C.s3], ['사건(밤)', C.night]]);
+      legend(box.lg, [['Lden 항공기(예측)', C.s2], ['기준선 ' + LDEN_REF, C.ref]], [['사건(낮·저녁)', C.s3], ['사건(밤)', C.night]]);
       S.tables['ndDaily:' + s.id] = { head: ['날짜', 'Lden', '낮', '저녁', '밤', 'Lmax', '사건', '밤 사건', '분'], rows: rows.map(function (r) { return [r.day, f1(r.lden), f1(r.ld), f1(r.le), f1(r.ln), f1(r.lmax), r.nev, r.nevNight, r.minutes]; }) };
     });
   }

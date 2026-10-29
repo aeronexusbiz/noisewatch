@@ -43,11 +43,15 @@
         try { localStorage.setItem(POSK, JSON.stringify([parseInt(el.style.left, 10), parseInt(el.style.top, 10)])); } catch (_) {}
       };
       h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up);
+      h.addEventListener('pointercancel', up, { once: true }); h.addEventListener('lostpointercapture', up, { once: true });   // 10-29 리뷰: 끌기가 취소되면 처리기가 남아 마우스만 지나가도 카드가 끌려갔다
       e.preventDefault();
     });
   }
+  window.addEventListener('resize', function () { if (el && !el.hidden) restore(); });   // 10-29 리뷰: 창을 줄이면 옮긴 자리가 화면 밖·폰 배치를 덮었다
+  setInterval(function () { if (el && !el.hidden && document.body.classList.contains('rp') && cur && !cur.__rp) hide(); }, 1000);   // 리플레이를 켜면 실시간 카드(지나온 길·예상 경로)는 닫는다
   function restore() {
     if (!wide()) { el.style.left = el.style.top = el.style.right = ''; return; }
+    el.style.left = el.style.top = el.style.right = '';
     var p = null; try { p = JSON.parse(localStorage.getItem(POSK) || 'null'); } catch (_) {}
     if (p && p.length === 2) place(p[0], p[1]);
   }
@@ -83,6 +87,10 @@
   function masked() { return String((cur && cur.hex) || '').charAt(0) === '~'; }
   function show(ac) {
     mk(); var same = cur && cur.hex === ac.hex; cur = ac; info = null; el.hidden = false; restore();
+    if (document.body.classList.contains('rp')) cur.__rp = 1;          // 리플레이 중에 연 카드(그 시각 위치) — 닫지 않는다
+    if (!wide() && MAP && ac.lat != null) setTimeout(function () {    // 10-29 리뷰: 폰에선 카드가 지도 아래를 덮는다 → 누른 항공기를 지도 위쪽 3분의 1로 옮긴다
+      try { var pt = MAP.latLngToContainerPoint([ac.lat, ac.lon]), h = MAP.getSize().y; if (pt.y > h * 0.4) MAP.panBy([0, pt.y - h * 0.3], { animate: true }); } catch (_) {}
+    }, 50);
     if (!same) { trailClear(); }
     document.getElementById('accFlight').textContent = ac.flight || ac.reg || ac.hex || '—';
     document.getElementById('accAl').textContent = '';
@@ -96,7 +104,7 @@
     fl = null;
     var my = ++seq, q = ['hex=' + encodeURIComponent(ac.hex || ''), 'flight=' + encodeURIComponent(ac.flight || ''), 'reg=' + encodeURIComponent(ac.reg || ''), 'type=' + encodeURIComponent(ac.type || '')].join('&');
     trailLoad();                                                      // ⚠ seq 를 올린 뒤에(앞에서 부르면 첫 응답이 «옛 것»으로 버려졌다 — 10-29 시험)
-    if (ac.flight) fetch('/noise/flight?apt=' + encodeURIComponent(aptOf()) + '&cs=' + encodeURIComponent(ac.flight), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {   // 10-29 출도착 — 이 공항 운항정보
+    if (ac.flight && !cur.__rp) fetch('/noise/flight?apt=' + encodeURIComponent(aptOf()) + '&cs=' + encodeURIComponent(ac.flight), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {   // 10-29 출도착 — 이 공항 운항정보
       if (my !== seq) return; fl = d && d.f; if (fl || !info) board();
     }).catch(function () {});
     fetch('/partner/acft?' + q, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {

@@ -19,7 +19,7 @@
       var C = L.Control.extend({ options: { position: 'bottomright' }, onAdd: function () { var d = L.DomUtil.create('div', 'nl-leg'); L.DomEvent.disableClickPropagation(d); return d; } });
       N.ctl = new C(); N.ctl.addTo(map); N.leg = N.ctl.getContainer(); N.leg.hidden = true;
       N.leg.innerHTML = '<b>실시간 소음면</b> <small>항공기 소음만 · 모의</small><div class="nl-bar"><span>50</span><i></i><span>90 dB</span></div><div class="nl-pt">지도 위에 마우스를 올리면 그 지점의 지금 값</div>' +
-        '<div class="nl-src">서버 예측 모형 · 항공기 소음만 · 예측값(실측 아님)</div>';
+        '<div class="nl-src">항공기 소음만 · 예측값(실측 아님)</div>';
       var cb = document.getElementById('nzLive');
       if (cb) { cb.onchange = function () { toggle(this.checked); }; if (cb.checked) toggle(true); }
       map.on('mousemove', function (e) { if (N.on) point(e.latlng); });
@@ -72,7 +72,7 @@
     var url = N.big.toDataURL(), b = [[g.s, g.w], [g.s + g.ny * g.dlat, g.w + g.nx * g.dlon]];
     if (!N.ov) N.ov = L.imageOverlay(url, b, { className: 'nl-ov', interactive: false, zIndex: 260 }).addTo(N.map); else N.ov.setUrl(url);
     var src = N.leg && N.leg.querySelector('.nl-src');
-    if (src) src.textContent = '서버 예측 모형 · ' + (N.wind ? '바람 반영' : '바람 자료 없음') + ' · 예측값(실측 아님)';
+    if (src) src.textContent = '항공기 소음만 · ' + (N.wind ? '바람 반영' : '바람 자료 없음') + ' · 예측값(실측 아님)';
     if (N.pt) point(N.pt);
   }
   function point(ll) {

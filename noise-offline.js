@@ -35,9 +35,13 @@
     var self = this, args = arguments, pa = path(u);
     if (!WATCH.test(pa)) return f0.apply(self, args);
     if (!document.hidden || (o && o.method && o.method !== 'GET')) return send(self, args);
-    var k = typeof u === 'string' ? u : u.url;
-    if (!held[k]) held[k] = new Promise(function (res) { wake.push(res); }).then(function () { delete held[k]; return send(self, args); });
-    return held[k].then(function (r) { return r.clone(); });
+    // 10-29 리뷰 M5: 시각이 들어간 주소(to=지금)는 부를 때마다 달라 묶이지 않았다 → 경로 + 공항·지점이 같으면 한 묶음, 돌아오면 «마지막에 부른 주소» 하나만 보낸다
+    var sp = new URL(typeof u === 'string' ? u : u.url, location.href).searchParams, k = pa + '|' + (sp.get('apt') || '') + '|' + (sp.get('sid') || '');
+    var h = held[k];
+    if (h) { h.args = args; h.self = self; return h.p.then(function (r) { return r.clone(); }); }
+    h = held[k] = { args: args, self: self };
+    h.p = new Promise(function (res) { wake.push(res); }).then(function () { delete held[k]; return send(h.self, h.args); });
+    return h.p.then(function (r) { return r.clone(); });
   };
   var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = '/noise-offline.css?v=1'; document.head.appendChild(css);
   window.NoiseOffline = { show: show, ok: ok };                       // 시험용

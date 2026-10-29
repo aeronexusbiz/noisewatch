@@ -1,6 +1,6 @@
 /* AeroNexus NoiseWatch — Vercel 미들웨어: 자료 요청을 맥미니(Funnel)로 넘길 때 비밀 머리글·방문자 IP 를 붙인다 (2026-10-29 · 운영자 「Funnel 직접 접속 차단」)
  * 비밀값은 Vercel 환경변수 NW_EDGE_SECRET 에만 있다(코드·저장소에 없음) — 맥미니는 config 의 edgeSecretFile 과 맞을 때만 «Vercel 을 거친 요청»으로 믿는다.
- * 이 파일이 없거나 실패하면 vercel.json rewrites 가 그대로 넘긴다(머리글 없이). */
+ * ⚠ 이 함수가 예외를 내면 그 요청은 500 이다(rewrites 로 넘어가지 않는다) — 화면은 「수집 서버 쉬는 중」 띠로 알린다. 맥미니가 꺼져도 같다. */
 export const config = { matcher: ['/noise/:path*', '/rwy/flow', '/partner/acft', '/vworld/:path*'] };
 
 const ORIGIN = 'https://macmini.tail95ff38.ts.net';

@@ -53,3 +53,5 @@
 .ns-tab.on { background: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,.35); color: #fff; }
 .ns-slot[data-slot="clock"] > *, .ns-clock { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 5px 12px; color: #cbd5e1 !important; font-size: 14px !important; }
 .ns-tab-m { display: none !important; }                                       /* 10-29 「리플레이」 탭은 폰 아래 탭바에만 */
+/* 10-29 리뷰: 하단 「이용 안내·개인정보」 링크가 브라우저 기본 파랑(다크에서 대비 1.95) — 모든 화면 */
+.nz-foot a, .nw-foot a, .nd-foot a { color: #7dd3fc; }

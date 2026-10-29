@@ -66,7 +66,7 @@
     var d = B.live;
     var ss = d && d.sensors ? d.sensors.filter(function (s) { return s.db != null; }).sort(function (a, b) { return b.db - a.db; }) : [];
     if (d && !ss.length) {                                             // 10-29 리뷰: 측정 지점이 없는 공항(인천)은 「불러오는 중…」에 멈춰 있었다
-      var st0 = B.el.querySelector('.nb-st'); st0.className = 'nb-st ok'; st0.querySelector('span').textContent = (d.sensors || []).length ? '지점 값 없음' : '측정 지점 없음 · 지도 예측만';
+      var st0 = B.el.querySelector('.nb-st'); st0.className = 'nb-st na';   // 10-29 리뷰: 초록(평온) 점이라 상태처럼 읽혔다 → 회색 st0.querySelector('span').textContent = (d.sensors || []).length ? '지점 값 없음' : '측정 지점 없음 · 지도 예측만';
       B.el.querySelector('.nb-top').innerHTML = ''; B.el.querySelector('.nb-src').hidden = true;
     }
     if (ss.length) {
@@ -94,6 +94,6 @@
   }
   function boot() { if (!mount()) { var n = 0, t = setInterval(function () { if (mount() || ++n > 40) clearInterval(t); }, 100); } setTimeout(selfPoll, 1500); setInterval(selfPoll, 10000); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-  var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = '/noise-brief.css?v=3'; document.head.appendChild(css);
+  var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = '/noise-brief.css?v=4'; document.head.appendChild(css);
   window.NoiseBrief = { level: level };
 })();

@@ -26,3 +26,7 @@
   body.rp .nmi { bottom: 124px; }                                     /* 리플레이 줄 위로 */
 }
 @media print { .nmi { display: none; } }
+/* 10-29 리뷰: 누적 히트맵 판(.nh-pan · 왼쪽 아래)과 겹쳤다 → 히트맵 판이 떠 있는 동안 탭 판을 숨긴다 */
+body:has(.nh-pan:not([hidden]):not(:empty)) .nmi { display: none; }
+/* 탭 판에 들어가기 전의 옛 판은 숨긴다(합쳐지며 화면이 튀던 것) */
+body:has(.nmi) .nzwx:not(.nmi-in), body:has(.nmi) .nl-leg:not(.nmi-in) { display: none !important; }

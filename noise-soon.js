@@ -19,10 +19,10 @@
   function mount(el, o) {
     var S = { d: null, t: 0 };
     el.classList.add('ns');
-    el.innerHTML = '<div class="ns-h"><b>곧 보일 항공기</b><small>5분 안 · 시간순</small><span class="ns-rwy"></span></div>' +
+    el.innerHTML = '<div class="ns-h"><b>곧 지나갈 항공기</b><small>5분 안 · 시간순</small><span class="ns-rwy"></span></div>' +
       '<div class="ns-sec"><h4><i class="nic" data-ic="arrive"></i> 도착 <small>항적 기준 · 지도 밖 → 진입까지</small><i class="ns-n a">0</i></h4><div class="ns-arr"></div></div>' +
       '<div class="ns-sec"><h4><i class="nic" data-ic="depart"></i> 출발 <small>운항정보 기준 · 예정(변경) 시각</small><i class="ns-n d">0</i></h4><div class="ns-dep"></div></div>' +
-      '<div class="ns-f">예상 소음 = 지금 활주로 연장선 위 측정기 · 표준 경로 · 기종 표 추정(모의)</div>';
+      '<div class="ns-f">예상 소음 = 지금 쓰는 활주로와 기종으로 짐작한 예측값(실측 아님)</div>';
     function load() {
       fetch('/noise/soon?apt=' + o.apt, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
         if (!d.ok) { el.querySelector('.ns-arr').innerHTML = '<div class="ns-mut">' + esc(d.why || '자료 없음') + '</div>'; return; }

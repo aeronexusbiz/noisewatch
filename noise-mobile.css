@@ -93,7 +93,7 @@
   .nw-feed .it { grid-template-columns: 58px 1fr auto; font-size: 12px; }
 
   /* ── 보고서(통계·민원): 종이 판을 폭에 맞추고 표는 상자 안에서만 가로로 ── */
-  .rp { margin: 8px; padding: 16px 14px; }
+  .rp:not(body) { margin: 8px; padding: 16px 14px; }   /* 10-29 리뷰: 지도 리플레이의 body.rp 에도 걸려 화면 전체가 22px 씩 밀렸다 */
   .rp-h { flex-wrap: wrap; gap: 8px; }
   .rp table.tb { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
   .rp-bar { flex-wrap: wrap; gap: 8px; padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px; }

@@ -5,6 +5,7 @@
 .nb-st i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
 .nb-st.ok { color: #6ee7b7; background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.4); }
 .nb-st.warn { color: #fcd34d; background: rgba(245,158,11,.15); border-color: rgba(245,158,11,.45); }
+.nb-st.na { color: #94a3b8; background: rgba(148,163,184,.1); border-color: rgba(148,163,184,.35); } .nb-st.na i { box-shadow: none; }
 .nb-st.bad { color: #fda4af; background: rgba(244,63,94,.15); border-color: rgba(244,63,94,.5); }
 .nb-top { cursor: pointer; white-space: nowrap; } .nb-top em, .nb-chip em { font-style: normal; color: #94a3b8; font-size: 12px; margin-right: 6px; }
 .nb-top b { font-weight: 800; } .nb-top:hover b { text-decoration: underline; }

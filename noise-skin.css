@@ -157,3 +157,5 @@ body[data-gnb-page="map"] { background: #0b1120; }
 .ms-body .nz-ev .it time { font-family: ui-monospace, Menlo, monospace; color: #94a3b8; }
 #nzCards .nz-card.sel > .big b { font-size: 16px; }                         /* 옛 「크게 보기」 44px 규칙 끄기 — 크게는 위 집중 판이 */
 .ms-body .ns > .ns-h { display: none; }                                    /* 탭 이름과 겹치는 「곧 보일 항공기」 머리 · 활주로는 브리핑 바에 */
+/* 10-29 리뷰: 하단 「이용 안내·개인정보」 링크가 브라우저 기본 파랑(다크에서 대비 1.95) */
+.nz-foot a, .nw-foot a, .nd-foot a { color: #7dd3fc; }

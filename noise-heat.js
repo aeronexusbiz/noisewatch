@@ -36,7 +36,7 @@
       '<div class="nh-hrs"><button type="button" class="nh-play" title="시간마다 넘겨 보기"><i class="nic" data-ic="play"></i></button><div class="nh-strip" aria-label="시간 띠 — 칸을 누르면 그 한 시간"></div></div>' +
       '<div class="nh-leg"><span>45</span><i></i><span>75+ dB</span><label>진하기 <input type="range" class="nh-op" min="0.2" max="1" step="0.05" value="0.75"></label></div>' +
       '<div class="nh-sum"></div><ol class="nh-hot"></ol><div class="nh-pt">지도 위에 마우스를 올리면(폰은 누르면) 그 지점의 시간대별 소음</div>' +
-      '<div class="nh-foot">저장된 항적(4초 간격)에서 측정기와 같은 모형으로 칸(<span class="nh-cell"></span>)마다 추정 · 서버가 꺼졌던 시간은 평균에서 뺌 · 활주로 둘레 ' + RWY_EX_M + 'm 는 순위 제외</div>';
+      '<div class="nh-foot">저장된 항적으로 계산한 예측값(실측 아님) · 서버가 꺼졌던 시간은 평균에서 뺌 · 활주로 바로 옆(' + RWY_EX_M + 'm)은 순위에서 뺌</div>';   // 10-29 리뷰: 모형 설명·빈 괄호 「칸()」을 공개 화면에서 뺐다
     $('.nh-x').onclick = function () { toggle(false); };
     $('.nh-per').onchange = function () { var p = this.value.split(':'); H.end = +p[0]; H.days = +p[1]; load(); };
     $('.nh-pre').onclick = function (e) { var b = e.target.closest('button[data-m]'); if (b) { stop(); setMode(b.dataset.m, null); } };
@@ -84,7 +84,7 @@
       for (var i = 0; i < n; i++) { var b = s.charCodeAt(i); e[i] = b ? Math.pow(10, (f + b * st) / 10) : 0; }
       return e;
     });
-    $('.nh-cell').textContent = g.cell + 'm';
+    var nc = $('.nh-cell'); if (nc) nc.textContent = g.cell + 'm';   // 10-29 설명에서 칸 크기를 뺐다(있을 때만)
   }
   /* 활주로 둘레 칸(순위 제외) — 활주로 끝 쌍을 잇는 선분까지 RWY_EX_M 안 */
   function exclusion() {

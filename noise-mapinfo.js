@@ -11,6 +11,18 @@
   function put() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (_) {} }
   function phone() { return window.matchMedia && matchMedia('(max-width: 600px)').matches; }
   function el(t) { return P && P.querySelector('.nmi-pane[data-k="' + t.k + '"] > ' + t.sel); }
+  var obs = new MutationObserver(function () { sync(); });           // 옮겨 온 판의 hidden 이 바뀌면 탭도
+  function adopt(t) {                                                // 10-29 리뷰 M1·M6: 판이 늦게 생겨도(첫 프레임·grid 응답 뒤) 생기는 대로 탭에 넣는다
+    if (el(t)) return true;
+    var e = document.querySelector(t.sel + ':not(.nmi-in)'); if (!e) return false;
+    e.classList.remove('nf', 'nf-open'); e.__nf = 1; e.querySelectorAll(':scope > .nf-h, :scope > .nf-t').forEach(function (x) { x.remove(); });
+    e.classList.add('nmi-in'); P.querySelector('.nmi-pane[data-k="' + t.k + '"]').appendChild(e);
+    if (t.k === 'live') {
+      var was = !e.hidden;
+      new MutationObserver(function () { var now = !e.hidden; if (now && !was) { pick('live'); if (P.classList.contains('closed')) fold(false); } was = now; sync(); }).observe(e, { attributes: true, attributeFilter: ['hidden'] });
+    } else obs.observe(e, { attributes: true, attributeFilter: ['hidden'] });
+    sync(); if (st.tab === t.k) pick(t.k); return true;                // 마지막에 보던 탭이 늦게 생겼으면 그리로
+  }
   function shown(t) { var e = el(t); return !!e && !e.hidden; }
   function pick(k, save) {
     var t = TABS.filter(function (x) { return x.k === k && shown(x); })[0] || TABS.filter(shown)[0];
@@ -27,31 +39,25 @@
   }
   function fold(c) { P.classList.toggle('closed', c); P.querySelector('.nmi-x').setAttribute('aria-expanded', c ? 'false' : 'true'); P.querySelector('.nmi-x').title = c ? '펼치기' : '접기'; }
   function build() {
-    var dock = document.querySelector('.nz-dock'), wx = document.querySelector('.nzwx'), leg = document.querySelector('.nl-leg');
-    if (!dock || !wx || !leg) return false;
+    var dock = document.querySelector('.nz-dock');
+    if (!dock) return false;
     st = get();
     P = document.createElement('section'); P.className = 'nmi'; P.setAttribute('aria-label', '지도 정보');
     P.innerHTML = '<div class="nmi-h" role="tablist">' + TABS.map(function (t) { return '<button type="button" role="tab" class="nmi-tab" data-k="' + t.k + '">' + t.name + '</button>'; }).join('') +
       '<button type="button" class="nmi-x" aria-label="지도 정보 접기·펼치기"><i class="nic" data-ic="chev"></i></button></div>' +
       TABS.map(function (t) { return '<div class="nmi-pane" role="tabpanel" data-k="' + t.k + '"></div>'; }).join('');
     dock.parentNode.insertBefore(P, dock);
-    [wx, leg, dock].forEach(function (e, i) {
-      e.classList.remove('nf', 'nf-open'); e.__nf = 1; e.querySelectorAll(':scope > .nf-h, :scope > .nf-t').forEach(function (x) { x.remove(); });
-      e.classList.add('nmi-in'); P.querySelector('.nmi-pane[data-k="' + TABS[i].k + '"]').appendChild(e);
-    });
+    adopt(TABS[2]);
     P.querySelectorAll('.nmi-tab').forEach(function (b) {
       b.onclick = function () { if (P.classList.contains('closed')) { fold(false); st.closed = false; } pick(b.dataset.k, true); put(); };
     });
     P.querySelector('.nmi-x').onclick = function () { var c = !P.classList.contains('closed'); fold(c); st.closed = c; put(); };
     fold(st.closed == null ? phone() : !!st.closed);
-    var was = !leg.hidden;
-    new MutationObserver(function () {
-      var now = !leg.hidden;
-      if (now && !was) { pick('live'); if (P.classList.contains('closed')) fold(false); }   // 소음면을 방금 켰다 → 그 범례를 보인다
-      was = now; sync();
-    }).observe(leg, { attributes: true, attributeFilter: ['hidden'] });
-    new MutationObserver(sync).observe(wx, { attributes: true, attributeFilter: ['hidden'] });
     sync(); pick(st.tab);
+    var tries = 0, iv = setInterval(function () {                     // 바람·소음면 판은 자료가 온 뒤 생긴다 — 둘 다 넣을 때까지(최대 10분 · 숨은 탭에선 요청이 미뤄진다)
+      var a = adopt(TABS[0]), b = adopt(TABS[1]);
+      if ((a && b) || ++tries > 1200) { clearInterval(iv); pick(st.tab); }
+    }, 500);
     return true;
   }
   function boot() { if (!build()) { var n = 0, iv = setInterval(function () { if (build() || ++n > 60) clearInterval(iv); }, 200); } }
