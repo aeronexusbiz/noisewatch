@@ -352,6 +352,8 @@
     return '<div class="lbl"><b translate="no">' + esc(a.flight || a.reg || a.hex) + '</b><small>' + esc(a.type || CLS[a.cls] || '') + ' · ' + fmtAlt(a.alt) + (a.alt !== 'ground' && a.vr ? (a.vr > 0 ? ' ↗' : ' ↘') : '') + (a.gs != null ? ' · ' + Math.round(a.gs) + 'kt' : '') + '</small></div>';
   }
   function drawAc(list) {
+    // 10-29 운영자 「김포 지도에는 인천공항 출도착 항공기는 제외」 — 서버가 xapt(다른 공항 출도착)를 표시한 기체는 그리지 않는다(소음 계산은 그대로)
+    list = list.filter(function (a) { return !a.xapt; });
     var seen = {};
     list.forEach(function (a) {
       seen[a.hex] = 1;
