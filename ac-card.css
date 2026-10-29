@@ -19,3 +19,12 @@
 .acc a { color: #58a6ff; text-decoration: none; } .acc a:hover { text-decoration: underline; }
 .acc-note { font-size: 11px; color: #8b949e; border-top: 1px solid #30363d; padding-top: 6px; }
 @media (max-width: 860px) { .acc { right: 8px; left: 8px; width: auto; top: auto; bottom: 8px; max-height: 60vh; } }
+.acc-h { touch-action: none; user-select: none; } .acc.acc-drag { opacity: .92; box-shadow: 0 16px 40px rgba(0,0,0,.45); }   /* 10-29 머리를 잡고 옮긴다 */
+.acc-trail { filter: drop-shadow(0 0 2px rgba(0,0,0,.5)); }
+/* 10-29 출도착(운항정보) */
+.acc-fl { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; }
+.acc-fl b { display: block; font-size: 17px; } .acc-fl small { color: #8b949e; font-family: ui-monospace, Menlo, monospace; } .acc-fl .r { text-align: right; }
+.acc-arr { color: #58a6ff; font-size: 18px; }
+.acc-flm { font-size: 12px; color: #c9d1d9; margin-top: 6px; line-height: 1.5; } .acc-flm b { color: #e6edf3; }
+.acc-tag { display: inline-block; padding: 0 6px; border-radius: 5px; font-size: 11px; font-weight: 700; } .acc-tag.dep { background: rgba(245,158,11,.18); color: #fbbf24; } .acc-tag.arr { background: rgba(56,189,248,.18); color: #7dd3fc; }
+.acc-rtw { margin-top: 8px; }

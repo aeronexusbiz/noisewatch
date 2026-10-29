@@ -136,3 +136,13 @@ html[data-theme="light"] select, html[data-theme="light"] input[type="date"], ht
 html[data-theme="light"] input[type="range"] { color-scheme: light; accent-color: #9333ea; }
 html[data-theme="light"] .nz-rp-ev { color: #475569; } html[data-theme="light"] .nz-rp-ev:hover { color: #0f172a; }
 html[data-theme="light"] .nh-pan, html[data-theme="light"] .nh-pan b, html[data-theme="light"] .nh-row, html[data-theme="light"] .nh-strip { color: #0f172a; } html[data-theme="light"] .nh-h small { color: #b45309; }
+/* 10-29 운영자 화면: 기체 카드(ac-card)가 라이트에서 흰 바탕 + 흰 값 글자 · 어두운 머리에 어두운 제목 */
+html[data-theme="light"] .acc { background: #ffffff; border-color: #cbd5e1; color: #0f172a; box-shadow: 0 12px 32px rgba(15,23,42,.18); }
+html[data-theme="light"] .acc-h { background: #f8fafc; border-color: #e2e8f0; }
+html[data-theme="light"] .acc-t b, html[data-theme="light"] .acc-rt b, html[data-theme="light"] .acc-kv b, html[data-theme="light"] .acc-kv3 b { color: #0f172a; }
+html[data-theme="light"] .acc-t span, html[data-theme="light"] .acc-dim, html[data-theme="light"] .acc-kv, html[data-theme="light"] .acc-kv3, html[data-theme="light"] .acc-sec h4, html[data-theme="light"] .acc-note, html[data-theme="light"] .acc-rt small, html[data-theme="light"] .acc-kv3 b small { color: #64748b; }
+html[data-theme="light"] .acc-cty { color: #334155; } html[data-theme="light"] .acc-note { border-color: #e2e8f0; }
+html[data-theme="light"] .acc-x { background: #ffffff; color: #0f172a; border-color: #cbd5e1; }
+html[data-theme="light"] .acc-bar { background: #e2e8f0; } html[data-theme="light"] .acc a { color: #0369a1; }
+html[data-theme="light"] .acc-fl b, html[data-theme="light"] .acc-flm b { color: #0f172a; } html[data-theme="light"] .acc-flm { color: #334155; } html[data-theme="light"] .acc-fl small { color: #64748b; }
+html[data-theme="light"] .acc-tag.dep { background: #fef3c7; color: #b45309; } html[data-theme="light"] .acc-tag.arr { background: #e0f2fe; color: #0369a1; }
