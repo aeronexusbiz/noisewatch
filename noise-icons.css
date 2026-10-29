@@ -1,0 +1,16 @@
+/* AeroNexus Biz 소음 감시 — 자체 SVG 아이콘(noise-icons.js) 공통 모양 (2026-10-28) */
+.nic { display: inline-flex; width: 1.2em; height: 1.2em; flex: none; vertical-align: -.24em; line-height: 0; }
+.nic svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.nic svg .f { fill: currentColor; stroke: none; }
+.nic svg .d { stroke-dasharray: 2.4 2.6; }
+/* 강조색 — 이모지가 주던 «한눈에 구별»을 절제된 색으로 */
+.nic[data-ic="heat"] { color: #fb923c; }
+.nic[data-ic="rings"] { color: #f87171; }
+.nic[data-ic="pin"] { color: #f472b6; }
+.nic[data-ic="target"] { color: #fbbf24; }
+.nic[data-ic="link"] { color: #60a5fa; }
+.nic[data-ic="bolt"] { color: #facc15; }
+.nic[data-ic="sensor"], .nic[data-ic="arrive"], .nic[data-ic="depart"] { color: #38bdf8; }
+.nic[data-ic="check"] { color: #4ade80; }
+.on > .nic, .go > .nic, .ns-tab.on .nic { color: inherit; }
+@media print { .nic svg { stroke: #000; } .nic svg .f { fill: #000; } }

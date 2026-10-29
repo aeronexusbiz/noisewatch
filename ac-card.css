@@ -1,0 +1,21 @@
+/* 기체 카드 (ac-card.js · 2026-10-28) — 지도 위 오른쪽 떠 있는 패널, 소음 지도·계류장 화면 공용 */
+.acc { position: fixed; right: 356px; top: 56px; width: 340px; max-height: calc(100vh - 110px); overflow: auto; z-index: 1200; background: #161b22; border: 1px solid #30363d; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.55); color: #e6edf3; font: 13px/1.45 system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+.acc[hidden] { display: none; }
+.acc-h { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid #30363d; position: sticky; top: 0; background: #161b22; }
+.acc-t b { font-size: 18px; font-family: ui-monospace, Menlo, monospace; } .acc-t span { color: #8b949e; }
+.acc-cty { margin-left: auto; font-size: 12px; color: #c9d1d9; }
+.acc-x { background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 8px; width: 28px; height: 28px; cursor: pointer; font-size: 16px; line-height: 1; }
+.acc-b { padding: 8px 12px 10px; }
+.acc-sec { margin-bottom: 10px; } .acc-sec h4 { margin: 0 0 6px; font-size: 12px; color: #8b949e; font-weight: 600; }
+.acc-dim { font-size: 11px; color: #8b949e; margin-top: 4px; }
+.acc-rt { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
+.acc-rt b { display: block; font-size: 17px; font-family: ui-monospace, Menlo, monospace; } .acc-rt small { color: #8b949e; } .acc-rt .r { text-align: right; }
+.acc-bar { position: relative; height: 6px; border-radius: 3px; background: #30363d; }
+.acc-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: linear-gradient(90deg, #1f6feb, #58a6ff); }
+.acc-bar span { position: absolute; top: -9px; transform: translateX(-50%); font-size: 14px; }
+.acc-kv { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: #8b949e; } .acc-kv b { display: block; color: #e6edf3; font-size: 14px; font-variant-numeric: tabular-nums; }
+.acc-kv3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 10px; font-size: 11px; color: #8b949e; } .acc-kv3 b { display: block; color: #e6edf3; font-size: 13px; font-weight: 600; word-break: break-all; }
+.acc-kv3 b small { display: block; color: #8b949e; font-weight: 400; font-size: 11px; }
+.acc a { color: #58a6ff; text-decoration: none; } .acc a:hover { text-decoration: underline; }
+.acc-note { font-size: 11px; color: #8b949e; border-top: 1px solid #30363d; padding-top: 6px; }
+@media (max-width: 860px) { .acc { right: 8px; left: 8px; width: auto; top: auto; bottom: 8px; max-height: 60vh; } }

@@ -1,0 +1,26 @@
+/* 한 줄 실시간 브리핑 바 (noise-brief.js · 2026-10-29 운영자 목업) — 공통 머리 바로 아래 */
+.nb-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; padding: 7px 18px; background: rgba(15,23,42,.92); border-bottom: 1px solid var(--ns-line, #2a364f); color: #e2e8f0; font: 13px/1.4 var(--ns-sans, system-ui, sans-serif); position: relative; z-index: 1050; }
+.nb-l, .nb-r { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.nb-st { display: inline-flex; align-items: center; gap: 7px; padding: 3px 10px; border-radius: 7px; font-weight: 800; font-size: 12.5px; border: 1px solid; white-space: nowrap; }
+.nb-st i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+.nb-st.ok { color: #6ee7b7; background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.4); }
+.nb-st.warn { color: #fcd34d; background: rgba(245,158,11,.15); border-color: rgba(245,158,11,.45); }
+.nb-st.bad { color: #fda4af; background: rgba(244,63,94,.15); border-color: rgba(244,63,94,.5); }
+.nb-top { cursor: pointer; white-space: nowrap; } .nb-top em, .nb-chip em { font-style: normal; color: #94a3b8; font-size: 12px; margin-right: 6px; }
+.nb-top b { font-weight: 800; } .nb-top:hover b { text-decoration: underline; }
+.nb-src { font-size: 12px; color: #7dd3fc; background: rgba(56,189,248,.1); border: 1px solid rgba(56,189,248,.25); padding: 2px 8px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px; }
+.nb-src[hidden] { display: none; }
+.nb-chip { display: inline-flex; align-items: center; background: rgba(30,41,59,.8); border: 1px solid rgba(51,65,85,.8); padding: 3px 10px; border-radius: 7px; font-size: 12.5px; white-space: nowrap; }
+.nb-rwy b { color: #7dd3fc; } .nb-wind b { color: #6ee7b7; } .nb-soon b { color: #f1f5f9; font-variant-numeric: tabular-nums; }
+body.has-brief .nrw-box { display: none !important; }                 /* 지도의 「사용 활주로」 판 → 브리핑 바로 옮김(화살표는 지도에 그대로) */
+body.has-brief .nw-sum { display: none !important; }                  /* 상황판 위 6개 요약 상자 → 브리핑 바(목업 3번) */
+body.has-brief .ns-slot[data-slot="stat"] { display: none !important; }   /* 머리의 「항공기 n · 측정기 n」 → 브리핑 바가 대신(긴 3탭 이름과 도움말이 겹쳤다) */
+@media (max-width: 600px) {
+  /* 10-29 리뷰: 한 줄 가로 스크롤(막대 숨김)이라 활주로·바람·곧 통과 칩이 화면 밖에 잘려 있었다 → 두 줄로 */
+  .nb-bar { padding: 6px 10px; gap: 6px; font-size: 12px; flex-wrap: wrap; justify-content: flex-start; }
+  .nb-l, .nb-r { flex-wrap: wrap; gap: 6px; min-width: 0; }
+  .nb-chip { padding: 2px 8px; font-size: 12px; } .nb-chip em { margin-right: 4px; }
+  .nb-top em { display: none; } .nb-src, .nb-soon { display: none !important; }   /* 폰: 두 줄까지만(네 줄 125px 가 지도를 밀었다) — 원인은 집중 판·곧 통과는 「곧 지나갈 항공기」 탭에 */
+  .nb-r { flex-wrap: nowrap; } .nb-chip { white-space: nowrap; }
+}
+@media print { .nb-bar { display: none !important; } }

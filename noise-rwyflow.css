@@ -1,0 +1,30 @@
+/* 지금 쓰는 활주로 — 착륙·이륙 방향(noise-rwyflow.js · 2026-10-29) · 착륙 = 하늘색 · 이륙 = 보라(소음 색 초록→빨강과 겹치지 않게) */
+.nrw-ln.arr { stroke: #38bdf8; } .nrw-ln.dep { stroke: #c084fc; }
+.nrw-ln { filter: drop-shadow(0 0 2px rgba(0,0,0,.8)); }
+.nrw-rw { stroke-opacity: .55; } .nrw-rw.arr { stroke: #38bdf8; } .nrw-rw.dep { stroke: #c084fc; }
+.nrw-chev { width: 0 !important; height: 0 !important; pointer-events: none; }
+.nrw-chev svg { position: absolute; left: -11px; top: -11px; width: 22px; height: 22px; fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 2px rgba(0,0,0,.9)); }
+.nrw-chev.arr svg { stroke: #7dd3fc; } .nrw-chev.dep svg { stroke: #d8b4fe; }
+.nrw-tag { width: 0 !important; height: 0 !important; pointer-events: none; }
+.nrw-tag span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font: 700 12.5px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif; color: #fff; background: rgba(10,15,22,.9); border: 1.5px solid; box-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.nrw-tag.arr span { border-color: #38bdf8; } .nrw-tag.dep span { border-color: #c084fc; }
+.nrw-tag.arr .nic { color: #7dd3fc; } .nrw-tag.dep .nic { color: #d8b4fe; }
+.nrw-tag b { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13.5px; }
+/* 오른쪽 위 안내판 */
+.nrw-box { background: rgba(11,15,23,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,.18); border-radius: 12px; padding: 8px 12px; color: #f1f5f9; font: 13px/1.4 var(--ns-sans, system-ui, sans-serif); box-shadow: 0 6px 20px rgba(0,0,0,.5); min-width: 150px; }
+.nrw-h { font-weight: 800; font-size: 13px; margin-bottom: 4px; } .nrw-h small { color: #94a3b8; font-weight: 600; margin-left: 4px; }
+.nrw-r { display: flex; align-items: center; gap: 6px; padding: 1px 0; } .nrw-r span { color: #cbd5e1; font-weight: 600; }
+.nrw-r b { margin-left: auto; font: 800 18px ui-monospace, "SF Mono", Menlo, monospace; }
+.nrw-r.arr .nic, .nrw-r.arr b { color: #7dd3fc; } .nrw-r.dep .nic, .nrw-r.dep b { color: #d8b4fe; }
+.nrw-f { color: #94a3b8; font-size: 11px; margin-top: 3px; } .nrw-f em { color: #fbbf24; font-style: normal; font-weight: 700; }
+.nrw-rp { display: none; } body.rp .nrw-rp { display: inline; }
+@media (max-width: 600px) {
+  .nrw-box { padding: 6px 9px; min-width: 0; font-size: 12px; margin-right: 8px !important; margin-top: 6px !important; }
+  .nrw-h small, .nrw-f { display: none; }
+  .nrw-r b { font-size: 15px; margin-left: 8px; }
+  .nrw-box:not(.empty) { display: flex; gap: 10px; align-items: center; padding: 5px 9px; }   /* 10-29 한 줄 — 「사용 활주로」 머리 빼고 착륙·이륙 나란히 */
+  .nrw-box:not(.empty) .nrw-h { display: none; }
+  .nrw-r span { display: none; } .nrw-r b { margin-left: 3px; }
+  .nrw-tag span { font-size: 11.5px; padding: 2px 7px; }
+  .nrw-box.empty .nrw-f { display: block; }                        /* 자료 없는 공항 — 이유는 폰에서도 보인다 */
+}

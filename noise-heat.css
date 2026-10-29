@@ -1,0 +1,124 @@
+/* AeroNexus Biz 소음 — 누적 히트맵 판(noise-heat.js) · 측정기 × 시간대 표(noise-hourmx.js) (2026-10-28) — noise.css 와 같은 색 체계 */
+.nh-ov { image-rendering: auto; pointer-events: none; }
+.nh-pan { width: 380px; max-width: calc(100vw - 32px); background: rgba(13,17,23,.94); color: #e6edf3; border: 1px solid #30363d; border-radius: 12px; padding: 10px 12px; font: 12px/1.45 system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,.5); max-height: 70vh; overflow: auto; }
+.nh-pan[hidden] { display: none; }
+.nh-h { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.nh-h b { font-size: 14px; } .nh-h small { color: #ffb86b; }
+.nh-x { margin-left: auto; background: none; border: 0; color: #8b949e; font-size: 14px; cursor: pointer; }
+.nh-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+.nh-row select { background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; padding: 2px 6px; font: inherit; }
+.nh-pre { display: flex; flex-wrap: wrap; gap: 4px; }
+.nh-pre button, .nh-play { background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 999px; padding: 2px 8px; font: inherit; cursor: pointer; }
+.nh-pre button.on { background: #3d1f00; border-color: #9a4b00; color: #ffb86b; }
+.nh-hrs { display: flex; gap: 6px; align-items: stretch; margin: 4px 0 6px; }
+.nh-play { border-radius: 8px; padding: 0 8px; }
+.nh-strip { flex: 1; display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; }
+.nh-strip b { position: relative; height: 30px; background: #161b22; border-radius: 3px; font: 600 9px/30px ui-monospace, Menlo, monospace; text-align: center; color: #0d1117; cursor: pointer; overflow: hidden; }
+.nh-strip b u { position: absolute; left: 0; right: 0; top: -9px; text-decoration: none; color: #8b949e; font-weight: 400; }
+.nh-strip b.na { background: repeating-linear-gradient(45deg, #161b22 0 3px, #21262d 3px 6px); cursor: default; }
+.nh-strip b.on { outline: 2px solid #fff; outline-offset: -1px; }
+.nh-strip { padding-top: 10px; }
+.nh-leg { display: flex; align-items: center; gap: 6px; color: #8b949e; margin-bottom: 6px; }
+.nh-leg i { flex: 0 0 120px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, rgba(56,189,248,.3), #22c55e 17%, #84cc16 33%, #eab308 50%, #f97316 67%, #ef4444 83%, #be185d); }
+.nh-leg label { margin-left: auto; display: inline-flex; gap: 4px; align-items: center; } .nh-leg input { width: 70px; accent-color: #ffb86b; }
+.nh-sum { margin-bottom: 4px; } .nh-sum .na { color: #f85149; }
+.nh-hot { margin: 4px 0 6px; padding-left: 20px; }
+.nh-hot li { cursor: pointer; padding: 1px 0; } .nh-hot li:hover { color: #fff; }
+.nh-hot li b { font-variant-numeric: tabular-nums; }
+.nh-hot li.none, .nh-hot li.lh { list-style: none; margin-left: -20px; color: #8b949e; cursor: default; } .nh-hot li.lh b { color: #ffb86b; }
+.nh-pt { border-top: 1px solid #30363d; padding-top: 6px; color: #8b949e; }
+.nh-pt b { color: #e6edf3; } .nh-pt b.v { color: #ffb86b; }
+.nh-bars { display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; height: 40px; margin-top: 4px; align-items: end; }
+.nh-bars i { height: 100%; display: flex; align-items: flex-end; background: #161b22; border-radius: 2px; }
+.nh-bars i.na { background: repeating-linear-gradient(45deg, #161b22 0 3px, #21262d 3px 6px); }
+.nh-bars s { display: block; width: 100%; border-radius: 2px; text-decoration: none; }
+.nh-ax { display: flex; justify-content: space-between; font-size: 10px; color: #6e7681; }
+.nh-foot { margin-top: 6px; font-size: 10.5px; color: #6e7681; }
+.nh-hm { width: 0 !important; height: 0 !important; }
+.nh-hm span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; background: rgba(10,15,22,.9); border: 2px solid var(--c); color: #fff; border-radius: 999px; padding: 1px 8px; font: 700 12px/1.4 system-ui; box-shadow: 0 0 10px var(--c); }
+.nz-btn#nzHeatBtn.on { background: #3d1f00; border-color: #9a4b00; color: #ffb86b; }
+
+/* 측정기 × 시간대 표 */
+.nhm { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; font-size: 12px; }
+.nhm-h { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+.nhm-h select { background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; padding: 1px 4px; font: inherit; font-size: 11px; }
+.nhm-h small { color: #8b949e; margin-left: auto; }
+.nhm-r { display: grid; grid-template-columns: 58px repeat(24, 1fr); gap: 1px; margin-bottom: 1px; }
+.nhm-r > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #c9d1d9; padding-right: 4px; }
+.nhm-r b { height: 20px; background: #161b22; border-radius: 2px; font: 600 9px/20px ui-monospace, Menlo, monospace; text-align: center; color: #0d1117; cursor: pointer; overflow: hidden; }
+.nhm-r b.na { background: repeating-linear-gradient(45deg, #161b22 0 3px, #21262d 3px 6px); }
+.nhm-r b:hover { outline: 1px solid #fff; }
+.nhm-hd i { font: 9px ui-monospace, Menlo, monospace; color: #6e7681; font-style: normal; }
+.nhm-f { margin-top: 4px; color: #8b949e; } .nhm-f b { color: #ffb86b; }
+.nhm-e { color: #f85149; }
+
+/* 실시간 소음면(noise-live.js) 범례 */
+.nl-ov { pointer-events: none; }
+.nl-leg { background: rgba(13,17,23,.92); color: #e6edf3; border: 1px solid #30363d; border-radius: 10px; padding: 7px 10px; font: 12px/1.45 system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif; max-width: 270px; }
+.nl-leg[hidden] { display: none; }
+.nl-leg small { color: #ffb86b; }
+.nl-bar { display: flex; align-items: center; gap: 6px; color: #8b949e; margin: 4px 0; }
+.nl-bar i { flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #22c55e, #84cc16 25%, #eab308 50%, #f97316 75%, #ef4444); }
+.nl-pt { color: #8b949e; } .nl-pt b { font-size: 14px; }
+.nl-src { color: #6e7681; font-size: 10.5px; margin-top: 3px; }
+
+/* 곧 보일 항공기(noise-soon.js) — 지도 옆 칸·관제판 공용 */
+.ns { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; font-size: 12px; color: #e6edf3; }
+.ns-h { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; } .ns-h b { font-size: 13px; } .ns-h small { color: #8b949e; }
+.ns-rwy { margin-left: auto; font: 600 11px ui-monospace, Menlo, monospace; color: #ffb86b; }
+.ns-sec h4 { display: flex; align-items: baseline; gap: 6px; margin: 6px 0 3px; font-size: 12px; } .ns-sec h4 small { color: #6e7681; font-weight: 400; }
+.ns-n { margin-left: auto; font-style: normal; background: #21262d; border-radius: 999px; padding: 0 7px; font-size: 11px; }
+.ns-it { display: grid; grid-template-columns: 48px 1fr; gap: 6px; padding: 4px 4px; border-radius: 6px; }
+.ns-it:nth-child(odd) { background: #161b22; }
+.ns-it time { font: 700 13px ui-monospace, Menlo, monospace; color: #58a6ff; font-variant-numeric: tabular-nums; }
+.ns-it time s { display: block; font-size: 10px; color: #6e7681; font-weight: 400; }
+.ns-it.in time { color: #3fb950; }
+.ns-it .l1 b { color: #fff; } .ns-it .l1 small { color: #8b949e; } .ns-it .l1 span { color: #c9d1d9; }
+.ns-it .l2 { color: #8b949e; font-size: 11px; } .ns-it .l3 { font-size: 11px; color: #c9d1d9; } .ns-it .l3 small { color: #6e7681; }
+.ns-st { font-style: normal; border: 1px solid #30363d; border-radius: 999px; padding: 0 6px; color: #c9d1d9; }
+.ns-st.go { border-color: #1f6f3a; color: #3fb950; } .ns-st.hot { border-color: #8e2a24; color: #ff7b72; }
+.ns-mut { color: #6e7681; padding: 3px 4px; }
+.ns-f { color: #6e7681; font-size: 10.5px; margin-top: 4px; }
+
+/* 국가 항공기소음 측정망(noise-national.js) — 파란 핀 = 실제 측정소(우리 가정 측정기 초록 원과 구별) */
+.nn-pin { width: 0 !important; height: 0 !important; }
+.nn-pin svg { position: absolute; left: -11px; top: -30px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+.nn-l { position: absolute; left: 10px; top: -30px; white-space: nowrap; background: rgba(30,27,75,.88); border: 1px solid #6d64f0; color: #e0e7ff; border-radius: 6px; padding: 0 6px; font: 600 11px/1.5 system-ui, "Apple SD Gothic Neo", sans-serif; }
+.nn-l b { font-variant-numeric: tabular-nums; }
+.nn-tag { width: 0 !important; height: 0 !important; }
+.nn-tag span { position: absolute; left: 13px; top: 13px; white-space: nowrap; background: rgba(30,27,75,.9); border: 1px solid var(--c); border-left: 4px solid var(--c); color: #e0e7ff; border-radius: 5px; padding: 0 5px; font: 600 10.5px/1.5 system-ui, "Apple SD Gothic Neo", sans-serif; }
+
+/* 구역 소음(noise-box.js) — 그린 박스의 지금·누적 */
+#nzMap.nb-arm, #nzMap.nb-arm .leaflet-interactive { cursor: crosshair !important; }
+.nb-pan { width: 300px; max-width: calc(100vw - 32px); background: rgba(13,17,23,.94); color: #e6edf3; border: 1px solid #6d64f0; border-radius: 12px; padding: 9px 11px; font: 12px/1.45 system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
+.nb-pan[hidden] { display: none; }
+.nb-h { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; } .nb-h b { font-size: 14px; } .nb-h small { color: #ffb86b; }
+.nb-x { margin-left: auto; background: none; border: 0; color: #8b949e; font-size: 14px; cursor: pointer; }
+.nb-now { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px; }
+.nb-now div { background: #161b22; border-radius: 6px; padding: 4px 6px; } .nb-now span { display: block; font-size: 10.5px; color: #8b949e; }
+.nb-now b { font: 800 18px/1.1 ui-monospace, Menlo, monospace; } .nb-now em { font-style: normal; font-size: 10px; color: #8b949e; margin-left: 2px; }
+.nb-top div { padding: 1px 0; } .nb-top b { color: #fff; } .nb-top .ph { color: #ffb86b; }
+.nb-acc { border-top: 1px solid #30363d; margin-top: 6px; padding-top: 6px; }
+.nb-ah { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.nb-ah select { background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; font: inherit; font-size: 11px; padding: 0 4px; }
+.nb-kv { display: flex; gap: 10px; flex-wrap: wrap; color: #8b949e; } .nb-kv b { font-size: 14px; }
+.nb-bars { display: grid; grid-template-columns: repeat(24, 1fr); gap: 1px; height: 38px; margin-top: 4px; align-items: end; }
+.nb-bars i { height: 100%; display: flex; align-items: flex-end; background: #161b22; border-radius: 2px; }
+.nb-bars i.na { background: repeating-linear-gradient(45deg, #161b22 0 3px, #21262d 3px 6px); }
+.nb-bars s { display: block; width: 100%; border-radius: 2px; text-decoration: none; }
+.nb-ax { display: flex; justify-content: space-between; font-size: 10px; color: #6e7681; }
+.nb-mut { color: #6e7681; font-size: 11px; margin-top: 2px; } .nb-f { color: #6e7681; font-size: 10.5px; margin-top: 6px; }
+
+/* 10-29 운영자 목업 — 곧 지나갈 항공기 카드(noise-soon.js .nsc): 뱃지 · 편명 · 기종 / 경로 · 오른쪽 영향 지점 + 예상 dB */
+.ns-it.nsc, .ms-body .ns-it.nsc, .ms-body .ns-it.nsc:nth-child(odd) { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; margin-bottom: 8px; background: rgba(15,23,42,.9); border: 1px solid #1e293b; border-radius: 8px; }
+.nsc .nsl { min-width: 0; } .nsc .l1 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nsc .nsb, .ms-body .nsc .nsb { display: inline-flex; gap: 3px; padding: 1px 6px; border-radius: 4px; font-size: 12px; font-weight: 700; background: rgba(14,165,233,.2); color: #7dd3fc; }
+.nsc.d .nsb { background: rgba(245,158,11,.2); color: #fcd34d; }
+.nsc .nsb time, .ms-body .nsc .nsb time { font: inherit !important; color: inherit !important; } .nsc .nsb s { font-size: 11px; opacity: .7; }
+.nsc.in .nsb { background: rgba(16,185,129,.2); color: #6ee7b7; }
+.nsc .l1 b, .ms-body .nsc .l1 b { font-size: 14px; color: #fff; } .nsc .l1 small { color: #94a3b8; font-size: 11.5px; } .nsc .ty { font-size: 12px; color: #94a3b8; }
+.nsc .l2, .ms-body .nsc .l2 { margin-top: 4px; font-size: 12px; color: #94a3b8; }
+.nsc .nsr { flex: none; text-align: right; } .nsc .nsr small { display: block; font-size: 12px; color: #94a3b8; } .nsc .nsr b { font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.nhm-r b { color: #e2e8f0 !important; text-shadow: none !important; }          /* 10-29 목업 세 칸 색(옅은 바탕) — 숫자는 밝게 */
+.ms-body .ns, .nw-box .ns, .nw-low .ns { background: transparent; border: 0; padding: 0; }   /* 10-29 목업: 곧 지나갈 항공기 목록은 바깥 상자 없이(카드만) */
+.nhm { background: rgba(2,6,23,.6); border-color: #1e293b; } .nhm-h select { background: #1e293b; border-color: #334155; color: #f1f5f9; }

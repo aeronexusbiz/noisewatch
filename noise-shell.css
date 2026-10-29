@@ -1,0 +1,55 @@
+/* AeroNexus Biz 소음 감시 — 공통 머리(GNB)·디자인 토큰 (2026-10-28 · noise-shell.js 와 짝)
+   시안 noise-mockup.html 의 원칙: «글자가 작지 않게 · 누구나 한눈에» — 15px 본문 · 큰 탭 · 짙은 남색 바탕 */
+:root {
+  --ns-bg: #0b0f17; --ns-elev: #111826; --ns-card: #161f30; --ns-card2: #1e2940; --ns-line: #2a364f; --ns-soft: rgba(255,255,255,.09);
+  --ns-fg: #f1f5f9; --ns-sub: #cbd5e1; --ns-mut: #94a3b8; --ns-acc: #38bdf8; --ns-ok: #22c55e; --ns-warn: #eab308; --ns-bad: #ef4444;
+  --ns-sans: system-ui, -apple-system, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; --ns-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+.ns-gnb { height: 60px; flex-shrink: 0; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: #0d1422; border-bottom: 1px solid var(--ns-line); color: var(--ns-fg); font: 15px/1.4 var(--ns-sans); position: relative; z-index: 1100; }
+.ns-back { color: var(--ns-sub); text-decoration: none; font-size: 24px; line-height: 1; padding: 4px 8px; border-radius: 8px; } .ns-back:hover { background: var(--ns-card); color: #fff; }
+.ns-brand { font-size: 18px; font-weight: 800; white-space: nowrap; } .ns-brand b { color: var(--ns-acc); } .ns-brand span { color: var(--ns-sub); font-weight: 600; margin-left: 2px; }
+.ns-slot { display: inline-flex; align-items: center; gap: 8px; }
+.ns-slot[data-slot="apt"] select { background: var(--ns-card); color: var(--ns-fg); border: 1.5px solid var(--ns-line); border-radius: 10px; padding: 7px 12px; font: 700 15px var(--ns-sans); cursor: pointer; }
+.ns-slot[data-slot="sim"] > * { background: rgba(249,115,22,.16) !important; color: #fdba74 !important; border: 1px solid rgba(249,115,22,.5) !important; border-radius: 999px !important; padding: 5px 12px !important; font-size: 13px !important; font-weight: 700; white-space: nowrap; cursor: help; }
+.ns-nav { display: flex; align-items: center; gap: 6px; background: #080c14; padding: 5px; border-radius: 12px; border: 1px solid var(--ns-line); margin: 0 auto; }
+.ns-tab { display: inline-flex; align-items: center; gap: 7px; color: var(--ns-sub); text-decoration: none; border-radius: 9px; padding: 8px 18px; font: 700 15px var(--ns-sans); white-space: nowrap; transition: background .15s, color .15s; }
+.ns-tab:hover { color: #fff; background: rgba(255,255,255,.06); }
+.ns-tab.on { background: linear-gradient(180deg, #1e40af, #1e3a8a); color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.45), inset 0 1px 0 rgba(96,165,250,.45); }
+.ns-tab span { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: rgba(56,189,248,.2); color: #7dd3fc; font-weight: 700; }
+.ns-right { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.ns-slot[data-slot="stat"] > * { display: inline-flex; align-items: center; gap: 8px; background: var(--ns-card) !important; border: 1px solid var(--ns-line) !important; border-radius: 999px !important; padding: 6px 14px !important; font-size: 14px !important; font-weight: 600; margin: 0 !important; font-variant-numeric: tabular-nums; color: var(--ns-fg); }
+.ns-slot[data-slot="stat"] > *::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ns-ok); box-shadow: 0 0 8px var(--ns-ok); }
+.ns-slot[data-slot="clock"] > *, .ns-clock { font: 700 16px var(--ns-mono) !important; color: var(--ns-fg) !important; margin: 0 !important; font-variant-numeric: tabular-nums; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }   /* 리플레이 중 날짜가 붙어도 넘치지 않게 */
+.ns-slot[data-slot="full"] > *, .ns-full { background: var(--ns-card); color: var(--ns-fg); border: 1px solid var(--ns-line); border-radius: 9px; padding: 7px 12px; cursor: pointer; font: 700 14px var(--ns-sans); }
+.ns-slot[data-slot="full"] > *:hover, .ns-full:hover { border-color: var(--ns-acc); background: var(--ns-card2); }
+.ns-slot[data-slot="help"] > * { display: inline-flex; align-items: center; gap: 6px; color: var(--ns-sub) !important; text-decoration: none; border: 1px solid var(--ns-line) !important; border-radius: 9px !important; padding: 6px 11px !important; font: 700 14px var(--ns-sans) !important; background: transparent !important; }   /* 10-29 도움말(noise-help.html) — 머리 오른쪽 */
+.ns-slot[data-slot="help"] > *:hover { color: #fff !important; border-color: var(--ns-acc) !important; }
+/* 화면의 옛 머리 = 보조 줄(화면 고유 조작만 남는다) */
+.ns-sub { min-height: 46px; padding: 6px 18px !important; background: var(--ns-elev) !important; border-bottom: 1px solid var(--ns-line) !important; gap: 12px !important; font-size: 14px; }
+.ns-sub select, .ns-sub input[type=date] { font-size: 14px !important; padding: 5px 10px !important; border-radius: 8px !important; }
+.ns-gnb { min-width: 0; } .ns-gnb > * { flex-shrink: 0; } .ns-nav { flex-shrink: 1; min-width: 0; }
+.ns-slot[data-slot="stat"] > * { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }   /* 10-28 통계 화면 저장 상태 글자가 길어 머리가 넘쳤다 */
+@media (max-width: 1700px) { .ns-tab span { display: none; } .ns-tab { padding: 8px 15px; } .ns-slot[data-slot="stat"] > * { max-width: 220px; } }
+@media (max-width: 1280px) { .ns-brand span { display: none; } .ns-slot[data-slot="stat"] { display: none; } }
+@media (max-width: 900px) {
+  .ns-gnb { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
+  .ns-nav { order: 9; width: 100%; margin: 0; overflow-x: auto; } .ns-tab { padding: 7px 12px; font-size: 14px; }
+  .ns-right { margin-left: auto; } .ns-slot[data-slot="stat"] { display: none; }
+}
+@media print { .ns-gnb { display: none !important; } }
+/* 10-29 운영자 목업 — 브랜드 점 · 탭 이름(긴/짧은) · 「항적 기반 예측」 표식 */
+.ns-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 8px #38bdf8; margin-right: 8px; vertical-align: 1px; }
+.ns-brand b { color: #38bdf8; }
+.ns-tab .ns-tl, .ns-tab .ns-ts { display: inline !important; background: none !important; padding: 0 !important; font: inherit !important; color: inherit !important; border-radius: 0 !important; }
+.ns-tab .ns-ts { display: none !important; }
+@media (max-width: 600px) { .ns-tab .ns-tl { display: none !important; } .ns-tab .ns-ts { display: inline !important; } }
+@media (max-width: 1440px) { .ns-tab .ns-tl { display: none !important; } .ns-tab .ns-ts { display: inline !important; } .ns-tab { padding: 8px 13px; } }   /* 10-29: 긴 탭 이름이 1366 이하에서 잘렸다 */
+@media (max-width: 1440px) { .ns-slot[data-slot="help"] > *, .ns-slot[data-slot="full"] > * { font-size: 0 !important; padding: 7px !important; gap: 0; } .ns-slot[data-slot="help"] .nic, .ns-slot[data-slot="full"] .nic { width: 18px; height: 18px; } }   /* 도움말·전체화면 = 아이콘만 */
+@media (max-width: 1100px) and (min-width: 601px) { .ns-brand { font-size: 0; } .ns-brand .ns-dot { margin: 0; } .ns-back { display: none; } .ns-slot[data-slot="help"] > * { font-size: 0 !important; padding: 6px !important; gap: 0; } .ns-slot[data-slot="help"] .nic { width: 18px; height: 18px; } .ns-slot[data-slot="full"] { display: none; } }
+/* 10-29 목업 머리 색 — 바탕 #0f172a · 메뉴 칸 #020617 · 켜진 탭 #0284c7(단색) */
+.ns-gnb { background: #0f172a; border-bottom-color: #1e293b; }
+.ns-nav { background: rgba(2,6,23,.9); border-color: #1e293b; border-radius: 12px; padding: 4px; gap: 4px; }
+.ns-tab { color: #94a3b8; font-size: 14px; border-radius: 8px; } .ns-tab:hover { color: #fff; background: transparent; }
+.ns-tab.on { background: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,.35); color: #fff; }
+.ns-slot[data-slot="clock"] > *, .ns-clock { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 5px 12px; color: #cbd5e1 !important; font-size: 14px !important; }
+.ns-tab-m { display: none !important; }                                       /* 10-29 「리플레이」 탭은 폰 아래 탭바에만 */

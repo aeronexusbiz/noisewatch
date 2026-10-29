@@ -1,0 +1,101 @@
+/* AeroNexus Biz 소음 감시(모의) 화면 (2026-10-27) — share.css 와 같은 색 체계 */
+:root { --bg: #0d1117; --fg: #e6edf3; --mut: #8b949e; --line: #30363d; --card: #161b22; --acc: #58a6ff; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.45 system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; display: flex; flex-direction: column; }
+.nz-top { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; background: #0f1520; }
+.nz-top h1 { font-size: 15px; margin: 0; font-weight: 600; }
+.nz-top h1 b { color: var(--acc); } .nz-top h1 span { color: var(--mut); font-weight: 400; margin-left: 4px; }
+.nz-back { color: var(--mut); text-decoration: none; font-size: 20px; line-height: 1; padding: 0 4px; }
+.nz-top select { background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; font: inherit; }
+.nz-sim { background: #3d1f00; color: #ffb86b; border: 1px solid #9a4b00; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; cursor: help; }
+a.nz-link { color: var(--acc); text-decoration: none; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+a.nz-link:hover { border-color: var(--acc); }
+.nz-clock { font-variant-numeric: tabular-nums; font-family: ui-monospace, Menlo, monospace; color: var(--mut); }
+.nz-stat { margin-left: auto; font-variant-numeric: tabular-nums; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.nz-lbl { display: inline-flex; gap: 4px; align-items: center; font-size: 12px; color: var(--mut); cursor: pointer; }
+.nz-body { flex: 1; min-height: 0; display: flex; }
+#nzMap { flex: 1; min-height: 0; background: #000; }
+.nz-side { width: 340px; overflow: auto; border-left: 1px solid var(--line); background: var(--card); padding: 10px; }
+.nz-leg { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--mut); margin-bottom: 8px; }
+.nz-leg i { font-style: normal; display: inline-flex; align-items: center; gap: 3px; } .nz-leg i::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.nz-foot { font-size: 11px; color: var(--mut); padding: 4px 12px; border-top: 1px solid var(--line); background: #0f1520; }
+.nz-foot b { color: #ffb86b; }
+#nzToast { position: fixed; left: 50%; bottom: 48px; transform: translateX(-50%); background: #21262d; border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; z-index: 1500; }
+#nzToast[hidden] { display: none; }
+
+/* 측정기 카드 */
+.nz-card { background: #0d1117; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; cursor: pointer; }
+.nz-card.hot { border-color: var(--c, #ef4444); box-shadow: 0 0 0 1px var(--c, #ef4444) inset; }
+.nz-card .h { display: flex; align-items: baseline; gap: 8px; }
+.nz-card .h b { font-size: 15px; } .nz-card .h small { color: var(--mut); }
+.nz-card .big { display: flex; align-items: baseline; gap: 6px; margin: 2px 0; }
+.nz-card .big b { font-size: 38px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--c, #22c55e); line-height: 1.05; }
+.nz-card .big span { color: var(--mut); font-size: 12px; }
+.nz-card .bar { position: relative; height: 8px; border-radius: 4px; margin: 6px 0 4px; background: linear-gradient(90deg, #22c55e 0%, #84cc16 25%, #eab308 50%, #f97316 75%, #ef4444 100%); }
+.nz-card .bar i { position: absolute; top: -3px; width: 3px; height: 14px; background: #fff; border-radius: 2px; left: var(--p, 0%); transform: translateX(-50%); box-shadow: 0 0 3px #000; transition: left .5s linear; }
+.nz-card .bar u { position: absolute; top: -2px; width: 1px; height: 12px; background: rgba(255,255,255,.45); left: var(--p, 0%); }   /* 배경소음 눈금 */
+.nz-card .sub { font-size: 12px; color: var(--mut); display: flex; justify-content: space-between; }
+.nz-card .src { font-size: 12px; margin-top: 6px; min-height: 18px; }
+.nz-card .src b { color: #fff; } .nz-card .src .ph { color: #ffb86b; } .nz-card .src .c { font-weight: 700; }
+.nz-card canvas { display: block; width: 100%; height: 56px; margin-top: 6px; border-radius: 6px; background: #0b0f14; }
+.nz-card .note { font-size: 11px; color: var(--mut); margin-top: 4px; }
+.nz-ev-h { font-weight: 600; margin: 4px 0 6px; } .nz-ev-h small { color: var(--mut); font-weight: 400; }
+.nz-ev .it { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: center; padding: 5px 6px; border-radius: 6px; font-size: 12px; }
+.nz-ev .it:nth-child(odd) { background: #0d1117; }
+.nz-ev .it time { color: var(--mut); font-variant-numeric: tabular-nums; }
+.nz-ev .it b { font-variant-numeric: tabular-nums; color: var(--c, #eab308); }
+.nz-ev .empty { color: var(--mut); font-size: 12px; padding: 6px; }
+
+/* 지도 표지 — 측정기(원·맥동 고리) · 항공기(회전 아이콘) · 기여선 */
+.nz-sen { width: 0 !important; height: 0 !important; }
+.nz-sen .dot { position: absolute; left: 0; top: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--c, #22c55e); border: 2px solid #fff; box-shadow: 0 0 8px var(--c, #22c55e); transition: background .4s, box-shadow .4s; }
+.nz-sen .ring { position: absolute; left: 0; top: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; border: 2px solid var(--c, #22c55e); opacity: 0; transform: scale(1); }
+.nz-sen.on .ring { animation: nzPulse var(--dur, 2s) ease-out infinite; }
+.nz-sen.on .ring.r2 { animation-delay: calc(var(--dur, 2s) / 2); }
+@keyframes nzPulse { 0% { transform: scale(1); opacity: .45; } 100% { transform: scale(var(--sc, 2)); opacity: 0; } }   /* 10-29 옅게(0.9→0.45) — 시선을 빼앗지 않게 */
+.nz-sen .lbl { position: absolute; left: 13px; top: -11px; white-space: nowrap; background: rgba(10,15,22,.9); border: 1.5px solid var(--c, #22c55e); border-radius: 8px; padding: 2px 8px; font-size: 12px; font-weight: 700; color: #f1f5f9; }
+.nz-sen .lbl b { font-size: 14px; color: var(--c, #22c55e); font-variant-numeric: tabular-nums; margin-left: 4px; }
+.nz-sen .lbl .est { margin-left: 4px; font-size: 9px; font-weight: 600; color: #94a3b8; border: 1px solid #475569; border-radius: 4px; padding: 0 3px; vertical-align: 2px; }   /* 「추정」 — 실측 아님(10-29) */
+.nz-sen.quiet .lbl b { color: #94a3b8; } .nz-sen.quiet .dot { opacity: .55; }   /* 배경 수준일 때 흐리게 */
+.nz-ac { width: 0 !important; height: 0 !important; }    /* 위치는 noise.js anim() 이 매 프레임 추측항법으로 보간(10-28 — CSS transition 은 1초 걸음이라 끊겼다) */
+.nz-ac { --s: 34px; }                                                                 /* 아이콘 한 변 — noise.js acPx(기종 계열별) */
+.nz-ac svg { position: absolute; left: calc(var(--s) / -2); top: calc(var(--s) / -2); width: var(--s); height: var(--s); transform: rotate(var(--r, 0deg)); filter: drop-shadow(0 2px 3px rgba(0,0,0,.6)); cursor: pointer; }
+.nz-ac svg path { fill: #f5a243; stroke: #7c3e0a; stroke-width: 2.2; stroke-linejoin: round; }
+.nz-ac.gnd svg path { fill: #b8bec7; stroke: #374151; }
+.nz-ac.loud svg path { fill: #ff7a45; stroke: #7f1d1d; } .nz-ac.loud svg { filter: drop-shadow(0 0 6px rgba(255,90,40,.85)); }
+.nz-ac .lbl { position: absolute; left: calc(var(--s) / 2 + 6px); top: -14px; white-space: nowrap; background: rgba(248,250,252,.94); border: 1px solid #94a3b8; border-radius: 6px; padding: 1px 7px 2px; box-shadow: 0 1px 4px rgba(0,0,0,.45); color: #0f172a; line-height: 1.15; pointer-events: none; }
+.nz-ac .lbl b { display: block; font: 700 15px/1.2 ui-monospace, Menlo, monospace; letter-spacing: .02em; }
+.nz-ac .lbl small { display: block; font-size: 10px; color: #475569; }
+.nz-ac.loud .lbl { border-color: #ef4444; } .nz-ac.gnd .lbl { opacity: .85; }
+/* 10-29 리뷰: 최근 소음 기록의 편명·단계 색(인라인 #fff 가 라이트 모드 흰 바탕에서 안 보였다) */
+.nz-ev .it .evf { color: #fff; } .nz-ev .it .evp { color: #ffb86b; }
+path.nz-link, .leaflet-pane .nz-link { pointer-events: none; }   /* 10-29: 머리의 링크(a.nz-link · 도움말)와 이름이 같아 도움말이 안 눌렸다 → 지도 위 기여선만
+.nz-link-lbl { background: rgba(10,15,22,.85); border: 1px solid var(--c, #eab308); color: var(--c, #eab308); border-radius: 6px; padding: 1px 6px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: none; }
+.nz-link-lbl::before { display: none; }
+.nz-rwy { pointer-events: none; }
+.nz-ring { pointer-events: none; }
+.nz-ring-lbl { pointer-events: none; width: 0 !important; height: 0 !important; }
+.nz-ring-lbl span { position: absolute; left: 3px; top: -7px; white-space: nowrap; font: 700 10px/1.3 system-ui; color: var(--c); text-shadow: 0 0 3px #000, 0 0 3px #000; }
+.nz-btn { background: #21262d; color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 3px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+.nz-btn:hover { border-color: var(--mut); } .nz-btn.on { background: #3d1f00; border-color: #9a4b00; color: #ffb86b; }
+.nz-rp { display: flex; align-items: center; gap: 10px; padding: 6px 12px; background: #1b1409; border-bottom: 1px solid #9a4b00; flex-wrap: wrap; }
+.nz-rp[hidden] { display: none; }
+.nz-rp input[type=date], .nz-rp select { background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; font: inherit; font-size: 12px; color-scheme: dark; }
+.nz-rp input[type=range] { flex: 1; min-width: 160px; accent-color: #ffb86b; }
+.nz-rp b { font-family: ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; color: #ffb86b; }
+.nz-rp-ev { font-size: 12px; color: var(--mut); cursor: pointer; } .nz-rp-ev:hover { color: var(--fg); }
+body.rp .nz-clock { color: #ffb86b; }
+.leaflet-tooltip.nz-tip { background: #161b22; color: #e6edf3; border: 1px solid #30363d; width: max-content; max-width: 320px; white-space: normal; }   /* 10-28: 폭을 안 주면 표지 폭만큼 좁게 접혔다 */
+@media (max-width: 860px) {
+  .nz-body { flex-direction: column; }
+  #nzMap { min-height: 48vh; }
+  .nz-side { width: auto; max-height: 46vh; border-left: 0; border-top: 1px solid var(--line); }
+  .nz-stat { margin-left: 0; }
+}
+
+/* 바탕 지도 고르기(Leaflet layers control · 10-29) — 어두운 화면에 맞춤 */
+.leaflet-control-layers { background: rgba(13,17,23,.92); color: #e6edf3; border: 1px solid #30363d; border-radius: 8px; }
+.leaflet-control-layers-toggle { background-color: #161b22; filter: invert(.85); border-radius: 8px; }
+.leaflet-control-layers-expanded { padding: 8px 10px; font: 12px system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+.leaflet-control-layers-separator { border-top-color: #30363d; }

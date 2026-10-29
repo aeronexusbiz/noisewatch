@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이용 안내 · 소음 감시</title>
+<link rel="icon" href="/img/brand/favicon-32.png">
+<link rel="stylesheet" href="/noise-help.css?v=1">
+</head>
+<body>
+<!-- 10-29 운영자 「법적 이슈 보완 — 추천대로」: 공개 화면 이용 안내·개인정보 처리 고지. 법무 확인 전 초안(단독 결론 아님 — 문의처·시행일은 운영자 확정 뒤 고친다). -->
+<nav class="hp-nav no-print">
+  <a href="/noise-watch.html">‹ 관제판</a><a href="/noise.html">지도</a><a href="/noise-dash.html">대시보드</a><a href="/noise-help.html">도움말</a>
+</nav>
+<article class="hp">
+<header>
+  <div class="k">소음 감시</div>
+  <h1>이용 안내 · 개인정보 처리 고지</h1>
+  <p class="lead">이 화면의 소음 값은 모두 <b>항공기 항적으로 계산한 예측값</b>입니다. 소음 측정기로 잰 값이 아닙니다.</p>
+</header>
+
+<section id="t1">
+<h2>1. 이 서비스가 보여 주는 것</h2>
+<ul>
+  <li>공항 주변 <b>예측 지점</b>에서 지금 지나가는 항공기 때문에 들릴 것으로 <b>예상되는</b> 소음 수준과, 그 값을 모은 통계입니다.</li>
+  <li>예측값에는 오차가 있습니다(지형·건물·날씨·항공기 상태에 따라 수 dB 이상 다를 수 있습니다).</li>
+  <li>예측 지점은 우리가 정한 계산 위치이며, 공공기관 측정소가 아닙니다.</li>
+</ul>
+</section>
+
+<section id="t2">
+<h2>2. 쓰면 안 되는 곳</h2>
+<ul>
+  <li>소음 기준 초과 여부, 소음대책지역·보상, 행정 처분·분쟁·소송 같은 <b>법적 판단의 근거</b>로 쓸 수 없습니다.</li>
+  <li>공식 측정 결과는 해당 공항 운영자·지방자치단체·관계 기관의 공표 자료를 확인해 주세요.</li>
+  <li>화면 내용은 예고 없이 바뀌거나 멈출 수 있습니다(시험 운영).</li>
+</ul>
+</section>
+
+<section id="t3">
+<h2>3. 항공기 정보</h2>
+<ul>
+  <li>항적은 ADS-B 수신 자료(AeroNexus)를 씁니다. 항공기가 스스로 내보내는 공개 전파 신호입니다.</li>
+  <li>개인 소유일 수 있는 <b>소형기·헬기와 항공사 편명이 없는 기체</b>는 등록기호·콜사인을 가리고 「소형기」·「헬기」·「비공개」로만 표시합니다.</li>
+</ul>
+</section>
+
+<section id="t4">
+<h2>4. 개인정보 처리</h2>
+<ul>
+  <li>회원가입·로그인이 없고, 이름·연락처·위치 같은 <b>개인정보를 받지 않습니다.</b></li>
+  <li>자료 서버는 요청을 처리하는 동안만 접속 주소(IP)를 메모리에 두고(짧은 시간 요청 수 제한용), 그 주소를 기록 파일에 남기지 않습니다. 오류가 난 요청은 시각과 요청 주소(URL)만 남깁니다.</li>
+  <li>화면은 Vercel이, 자료 연결은 Tailscale이 중계합니다. 이 회사들은 각자의 방침에 따라 접속 기록을 남길 수 있습니다.</li>
+  <li>브라우저에는 고른 바탕 지도 종류만 저장합니다(쿠키를 쓰지 않습니다). 브라우저 설정에서 언제든 지울 수 있습니다.</li>
+</ul>
+</section>
+
+<section id="t5">
+<h2>5. 자료 출처</h2>
+<ul class="src">
+  <li>항적: AeroNexus(ADS-B 수신망)</li>
+  <li>바탕 지도·영상: 브이월드(국토교통부)</li>
+  <li>활주로 위치·번호: 항공정보간행물(eAIP, 국토교통부) 중 활주로 기본 정보만</li>
+  <li>비행장 윤곽: © OpenStreetMap 기여자 (ODbL)</li>
+  <li>바람: 공항 기상 관측(METAR)</li>
+</ul>
+</section>
+
+<p class="foot">시행 2026-10-29 · 시험 운영 중 안내입니다.</p>
+</article>
+</body>
+</html>

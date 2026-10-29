@@ -1,0 +1,139 @@
+/* AeroNexus Biz 소음 감시 — 폰 화면(아이폰 15 이상 · 393~430px) (2026-10-29 · 운영자 「모바일에서 겹침 없이 최적화」)
+   다섯 화면(관제판·지도·통계·보고서·민원 보고서) 맨 뒤에 싣는다 — 데스크톱 모양은 그대로, 600px 이하에서만.
+   · 공통 머리 = 한 줄(공항·모의 표시·시계) · 4탭은 아래 고정 탭바(홈 표시줄 safe-area 위)
+   · 입력칸 16px — iOS 가 입력칸을 누를 때 화면을 확대하지 않게
+   · 지도 화면 = 쪽 스크롤(지도 64svh → 아래 측정소 패널) · 안쪽 스크롤 없앰 · 지도 도구는 한 줄 가로 밀기 */
+@media (max-width: 600px) {
+  :root { --nm-tab: 62px; --nm-safe-b: env(safe-area-inset-bottom, 0px); }
+  input, select, textarea { font-size: 16px !important; }
+
+  /* ── 공통 머리 ── */
+  .ns-gnb { height: auto; min-height: 52px; flex-wrap: nowrap; gap: 8px; padding: calc(6px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 6px max(12px, env(safe-area-inset-left, 0px)); position: sticky; top: 0; }
+  .ns-back, .ns-brand, .ns-slot[data-slot="full"], .ns-slot[data-slot="stat"] { display: none !important; }
+  .ns-slot[data-slot="apt"] select { padding: 6px 8px; max-width: 128px; }
+  .ns-slot[data-slot="sim"] > * { font-size: 11px !important; padding: 3px 8px !important; }
+  .ns-right { margin-left: auto; gap: 6px; min-width: 0; flex-shrink: 1 !important; }
+  .ns-slot[data-slot="clock"] { min-width: 0; flex-shrink: 1; }
+  .ns-slot[data-slot="clock"] > *, .ns-clock { font-size: 14px !important; max-width: 118px; min-width: 0; }
+  body.rp .ns-slot[data-slot="clock"] { display: none; }            /* 10-29 리플레이 시각(날짜 붙음)이 머리를 29px 밀어냈다 — 시각은 리플레이 줄에 있다 */
+  .ns-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1300; margin: 0; width: auto; order: 0; overflow: visible;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 6px max(8px, env(safe-area-inset-left, 0px)) calc(6px + var(--nm-safe-b));
+    background: rgba(8,12,20,.96); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 0; border-top: 1px solid var(--ns-line, #2a364f); border-radius: 0; }
+  .ns-tab { flex-direction: column; justify-content: center; gap: 3px; padding: 6px 0 5px; min-height: 50px; font-size: 11.5px; border-radius: 10px; }
+  .ns-tab .nic { width: 22px; height: 22px; }
+  .ns-tab.on { background: rgba(37,99,235,.28); box-shadow: inset 0 0 0 1px rgba(96,165,250,.45); color: #fff; }
+  .ns-tab.on .nic { color: #7dd3fc; }
+  body { padding-bottom: calc(var(--nm-tab) + var(--nm-safe-b)); }
+  #nwNotice { bottom: calc(var(--nm-tab) + var(--nm-safe-b) + 8px) !important; font-size: 12px; }   /* 10-29 리뷰: 면책 띠가 아래 탭바와 겹쳐 함께 아래 170px 를 덮었다 → 탭바 위로(「확인」으로 닫힌다) */
+  .ns-sub { padding: 6px 12px !important; gap: 8px !important; flex-wrap: wrap; }
+
+  /* ── 지도 화면 ── */
+  html:has(body[data-gnb-page="map"]), body[data-gnb-page="map"] { height: auto; }
+  body[data-gnb-page="map"] { display: block; min-height: 100svh; }
+  body[data-gnb-page="map"] .nz-body { display: flex; flex-direction: column; }
+  body[data-gnb-page="map"] .nz-stage { flex: none; height: 64svh; min-height: 380px; }
+  body[data-gnb-page="map"] .nz-body > .nz-side { max-height: none; overflow: visible; border-top: 1px solid var(--ns-line, #2a364f); }
+  body[data-gnb-page="map"] #nzCards { max-height: none; overflow: visible; padding: 10px; }
+  body[data-gnb-page="map"] .ms-body { overflow: visible; padding: 10px; }
+  body[data-gnb-page="map"] .ms-tabs { position: sticky; top: 52px; z-index: 5; background: var(--ns-elev, #111826); padding: 0 6px; }
+  body[data-gnb-page="map"] .ms-tabs button { font-size: 13px; padding: 11px 2px; }
+  body[data-gnb-page="map"] .ms-hd small { display: none; }
+  .nz-stage .leaflet-control-zoom { display: none; }                 /* 두 손가락 확대 — 단추가 도구 줄과 겹쳤다 */
+  .nz-stage .leaflet-top { top: 56px; }
+  .nz-float { left: 0; right: 0; top: 8px; padding: 0 8px; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; pointer-events: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+  .nz-float::-webkit-scrollbar { display: none; }
+  .nz-pill { flex: none; flex-wrap: nowrap; padding: 4px 6px; gap: 4px; }
+  .nz-opt-btn { display: none !important; }
+  .nz-opt-menu { display: inline-flex !important; position: static; background: transparent; border: 0; padding: 0; box-shadow: none; flex-direction: row; min-width: 0; gap: 4px; }
+  .nz-opt-menu .nz-chip, .nz-opt-menu .nz-btn { width: auto; }
+  .nz-chip, .nz-pill .nz-btn { min-height: 36px; padding: 6px 10px; font-size: 13px; }
+  .nz-stage .nz-rp { top: auto; bottom: 8px; left: 8px; right: 8px; max-width: none; gap: 6px 8px; padding: 8px 10px; }   /* 10-29 아래로 — 위의 레이어 단추·사용 활주로 판과 겹쳤다 */
+  body.rp .nzwx { display: none; }                                    /* 리플레이 중 바람 판 자리 = 리플레이 줄 */
+  .nz-stage .nz-rp input[type=range] { order: 9; flex: 1 1 100%; min-width: 0; }
+  .nz-stage .nz-rp input[type=date] { max-width: 150px; }
+  .nzwx { left: 8px; bottom: 8px; max-width: calc(100% - 104px); padding: 6px 9px; }   /* 오른쪽 아래 「범례」 칩 자리를 비운다 */
+  /* 10-29 지도 위 판 접기·펼치기(noise-fold.js) — 바람·실시간 소음면·범례 · 접힌 채 시작 · 판을 누르면 펼침 */
+  .nf { cursor: pointer; padding-right: 30px !important; -webkit-tap-highlight-color: transparent; }   /* ⚠ position 은 건드리지 않는다 — 판들이 이미 absolute(바람·범례)·relative(leaflet 컨트롤) · relative 를 주면 바람·범례가 지도 위로 튀었다 */
+  .nf-t { display: block; position: absolute; right: 11px; top: 11px; width: 8px; height: 8px; border-right: 2px solid #94a3b8; border-bottom: 2px solid #94a3b8; transform: rotate(45deg); transition: transform .2s; pointer-events: none; }
+  .nf.nf-open .nf-t { transform: rotate(-135deg); top: 14px; }
+  .nzwx.nf-open, .nz-dock.nf-open { z-index: 1001; }  .leaflet-bottom:has(.nl-leg.nf-open) { z-index: 1002; }   /* 펼친 판이 접힌 칩 위로 */
+  .nzwx.nf:not(.nf-open) > .c, .nzwx.nf:not(.nf-open) > .e, .nl-leg.nf:not(.nf-open) > div, .nz-dock.nf:not(.nf-open) > .nz-leg { display: none; }
+  .nzwx .c, .nzwx .e { white-space: normal; }
+  .nz-dock { display: flex !important; right: 8px; bottom: 8px; left: auto; max-width: calc(100% - 16px); padding: 6px 10px; gap: 6px 12px; flex-direction: column; align-items: flex-start; font-size: 12px; }   /* 폰에서 숨겼던 범례를 접힌 칩으로 */
+  .nz-dock .nz-leg { flex-wrap: wrap; font-size: 12px; }
+  .nf-h { font-size: 12.5px; color: #f1f5f9; }
+  .nl-leg.nf { max-width: calc(100vw - 24px); }
+  body.rp .nz-dock { bottom: 124px; }                                  /* 리플레이 줄(아래 약 110px) 위로 */
+  body.rp .nz-stage .leaflet-bottom.leaflet-right { bottom: 172px; }
+  .nz-link-lbl { display: none; }                                     /* 기여선 dB·거리 이름표 — 폰에서 겹쳐 읽히지 않았다(선은 그대로 · 측정소 판에 값) */
+  .nzwx .src { display: none; }
+  .nn-tag { display: none; }                                          /* 국가 측정소 「실측 Lden」 둘째 이름표 — 폰에서 측정기 이름표와 겹쳤다(누르면 풍선에 나온다) */
+  .nz-sen .lbl { font-size: 11px; padding: 1px 6px; } .nz-sen .lbl b { font-size: 13px; }
+  .nz-ac .lbl small { display: none; }
+  .nz-ac .lbl b { font-size: 13px; }
+  .nh-pan { width: calc(100vw - 16px); max-height: 52svh; }
+  .acc { bottom: calc(var(--nm-tab) + var(--nm-safe-b) + 8px) !important; max-height: 58svh !important; }
+  #nzToast { bottom: calc(var(--nm-tab) + var(--nm-safe-b) + 12px); max-width: calc(100vw - 24px); }
+  .nz-foot { padding: 8px 12px; }
+
+  /* ── 관제판: 측정기 2열 작은 판 ── */
+  .nw-main { padding: 10px; gap: 10px; }
+  .nw-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .nw-p { padding: 8px 9px; border-radius: 10px; }
+  .nw-p .h b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .nw-p .chip { font-size: 10.5px; padding: 0 6px; flex: none; }
+  .nw-p .big b { font-size: 30px; }
+  .nw-p .big span, .nw-p .big em { display: none; }
+  .nw-p .bar { margin: 4px 0; }
+  .nw-p canvas.sp { height: 40px; }
+  .nw-p .src { font-size: 11px; min-height: 0; margin: 4px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .nw-p .day { font-size: 10.5px; flex-wrap: wrap; gap: 0 6px; } .nw-p .day b { font-size: 12px; }
+  .nw-p .hrs { height: 16px; }
+  .nw-st h3 { font-size: 11.5px; } .nw-st div { font-size: 13px; }
+  .nw-feed .it { grid-template-columns: 58px 1fr auto; font-size: 12px; }
+
+  /* ── 보고서(통계·민원): 종이 판을 폭에 맞추고 표는 상자 안에서만 가로로 ── */
+  .rp { margin: 8px; padding: 16px 14px; }
+  .rp-h { flex-wrap: wrap; gap: 8px; }
+  .rp table.tb { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .rp-bar { flex-wrap: wrap; gap: 8px; padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px; }
+  .rp-bar > * { white-space: nowrap; }
+  .rp-bar .sp { display: none; }
+  .rp-bar button, .rp-bar select { min-height: 36px; }
+}
+@media print { .ns-nav { display: none !important; } body { padding-bottom: 0 !important; } }
+@media (max-width: 600px) {
+  .ns-slot[data-slot="help"] > * { font-size: 0 !important; padding: 6px !important; gap: 0; }   /* 도움말 = 아이콘만 */
+  .ns-slot[data-slot="help"] .nic { width: 20px; height: 20px; }
+}
+.nf-h, .nf-t { display: none; }                                        /* 접기 머리·화살표는 폰에서만(위 600px 블록이 다시 보인다) */
+@media (max-width: 600px) { .nf-h { display: inline; } .nf-t { display: block; } }
+@media (max-width: 600px) {
+  .ns-slot[data-slot="clock"] > *, .ns-clock { padding: 3px 7px !important; font-size: 13px !important; max-width: 132px; }   /* 10-29 목업 시계 상자 — 폰에서 「KST」가 잘렸다 */
+  .nw-p .src::before { margin-right: 6px; }
+  .nw-top.ns-sub { margin: 10px 10px 0; padding: 12px !important; } .nw-top .nw-view { margin-left: 0; }
+}
+@media (max-width: 600px) {
+  .ns-tab-m { display: flex !important; }                                     /* 10-29 운영자 「리플레이는 모바일은 하단 메뉴에」 — 아래 탭바의 넷째(관리 화면은 다섯째) */
+  .ns-nav { display: flex !important; } .ns-nav .ns-tab { flex: 1 1 0; min-width: 0; }
+  .nz-seg #nzRpBtn { display: none !important; }                              /* 지도 위 모드 줄에서는 뺀다(실시간 소음 · 누적 히트맵만) */
+}
+@media (max-width: 600px) {
+  .ns-slot[data-slot="clock"] { display: none !important; }                 /* 10-29 테마 단추가 들어오며 시계가 잘렸다 — 폰은 상태 표시줄에 시각이 있다 */
+  .ns-theme { width: 32px; height: 32px; }
+}
+/* 10-29 운영자 「지도 위 판을 한쪽으로 — 너무 산만」 — 폰: 바람 · 실시간 소음면 · 범례 세 칩을 왼쪽 아래 한 줄기로 쌓는다(아래부터 범례 → 소음면 → 바람)
+   펼치면 그 칩이 위로 커지며 맨 위에 온다(한 번에 하나만 · noise-fold.js) */
+@media (max-width: 600px) {
+  .nz-dock { left: 8px !important; right: auto !important; bottom: 8px !important; max-width: calc(100% - 16px); }
+  .nz-stage .leaflet-bottom.leaflet-right { left: 0; right: auto; bottom: 47px; }
+  .nz-stage .leaflet-bottom.leaflet-right .nl-leg { margin: 0 0 0 8px !important; }
+  .nzwx { left: 8px; bottom: 86px; max-width: calc(100% - 16px); }
+  .nz-dock.nf-open, .nzwx.nf-open { z-index: 1003; } .leaflet-bottom:has(.nl-leg.nf-open) { z-index: 1003; }
+  body.rp .nz-dock { bottom: 124px !important; }
+  body.rp .nz-stage .leaflet-bottom.leaflet-right { bottom: 163px; }
+}
+@media (max-width: 600px) {   /* 10-29 리뷰: 지점 × 시간대 표 24칸 숫자가 폰 폭에서 서로 겹쳤다 → 표 상자 안에서만 옆으로 밀어 본다(문서는 넘치지 않게) */
+  .nhm { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .nhm-r { min-width: 600px; }
+}

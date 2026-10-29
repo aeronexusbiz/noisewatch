@@ -1,0 +1,138 @@
+/* AeroNexus NoiseWatch — 라이트 모드 (noise-theme.js · 2026-10-29 운영자 「다크모드, 라이트모드」)
+   html[data-theme="light"] 아래에서만 · 바탕 #f1f5f9 · 판 #fff · 선 #e2e8f0/#cbd5e1 · 글 #0f172a/#334155/#64748b · 강조 #0284c7
+   ⚠ 작은 추이 그래프(캔버스)는 선·글자를 밝은 색으로 그리므로 그 칸만 남색 바탕을 둔다. */
+html[data-theme="light"] {
+  color-scheme: light;
+  --ns-bg: #f1f5f9; --ns-elev: #ffffff; --ns-card: #ffffff; --ns-card2: #f8fafc; --ns-line: #e2e8f0; --ns-soft: rgba(15,23,42,.08);
+  --ns-fg: #0f172a; --ns-sub: #334155; --ns-mut: #64748b; --ns-acc: #0284c7;
+  --bg: #f1f5f9; --fg: #0f172a; --mut: #64748b; --line: #e2e8f0; --card: #ffffff; --acc: #0284c7;
+}
+html[data-theme="light"] body, html[data-theme="light"] body[data-gnb-page] { background: #f1f5f9 !important; color: #0f172a; }
+/* 공통 머리 · 브리핑 바 · 아래 탭바 */
+html[data-theme="light"] .ns-gnb { background: #ffffff !important; border-bottom-color: #e2e8f0 !important; color: #0f172a; }
+html[data-theme="light"] .ns-brand { color: #0f172a; } html[data-theme="light"] .ns-back { color: #64748b; }
+html[data-theme="light"] .ns-nav { background: #f1f5f9 !important; border-color: #e2e8f0 !important; }
+html[data-theme="light"] .ns-tab { color: #475569; } html[data-theme="light"] .ns-tab:hover { color: #0f172a; }
+html[data-theme="light"] .ns-tab.on { background: #0284c7 !important; color: #fff !important; }
+html[data-theme="light"] .ns-slot[data-slot="apt"] select { background: #fff; color: #0f172a; border-color: #cbd5e1; }
+html[data-theme="light"] .ns-slot[data-slot="sim"] > * { background: #fffbeb !important; color: #b45309 !important; border-color: #fcd34d !important; }
+html[data-theme="light"] .ns-slot[data-slot="clock"] > *, html[data-theme="light"] .ns-clock { background: #f8fafc !important; border-color: #e2e8f0 !important; color: #334155 !important; }
+html[data-theme="light"] .ns-slot[data-slot="help"] > *, html[data-theme="light"] .ns-slot[data-slot="full"] > *, html[data-theme="light"] .ns-full { background: #fff !important; color: #334155 !important; border-color: #cbd5e1 !important; }
+html[data-theme="light"] .ns-sub { background: #f8fafc !important; border-bottom-color: #e2e8f0 !important; color: #334155; }
+html[data-theme="light"] .ns-sub select, html[data-theme="light"] .ns-sub input { background: #fff !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; color-scheme: light; }
+html[data-theme="light"] .nb-bar { background: #ffffff; border-bottom-color: #e2e8f0; color: #0f172a; }
+html[data-theme="light"] .nb-chip { background: #f8fafc; border-color: #e2e8f0; } html[data-theme="light"] .nb-top em, html[data-theme="light"] .nb-chip em { color: #64748b; }
+html[data-theme="light"] .nb-rwy b, html[data-theme="light"] .nb-src { color: #0369a1; } html[data-theme="light"] .nb-wind b { color: #047857; } html[data-theme="light"] .nb-soon b { color: #0f172a; }
+html[data-theme="light"] .nb-src { background: #f0f9ff; border-color: #bae6fd; }
+html[data-theme="light"] .nb-st.ok { color: #047857; background: #ecfdf5; border-color: #6ee7b7; }
+html[data-theme="light"] .nb-st.warn { color: #b45309; background: #fffbeb; border-color: #fcd34d; }
+html[data-theme="light"] .nb-st.bad { color: #be123c; background: #fff1f2; border-color: #fda4af; }
+@media (max-width: 600px) { html[data-theme="light"] .ns-nav { background: rgba(255,255,255,.96) !important; border-top: 1px solid #e2e8f0 !important; } html[data-theme="light"] .ns-tab.on { box-shadow: none; } }
+/* 테마 단추 */
+.ns-theme { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 34px; border-radius: 9px; border: 1px solid var(--ns-line, #2a364f); background: var(--ns-card, #161f30); color: var(--ns-fg, #f1f5f9); cursor: pointer; }
+.ns-theme .nic { width: 18px; height: 18px; } .ns-theme:hover { border-color: var(--ns-acc, #38bdf8); }
+/* 지도 위 판들 */
+html[data-theme="light"] .nz-stage, html[data-theme="light"] #nzMap { background: #e2e8f0; }
+html[data-theme="light"] .nz-pill, html[data-theme="light"] .nzwx, html[data-theme="light"] .nz-dock, html[data-theme="light"] .nl-leg, html[data-theme="light"] .nh-pan, html[data-theme="light"] .nz-opt-menu, html[data-theme="light"] .nrw-box, html[data-theme="light"] .nb-pan, html[data-theme="light"] .leaflet-control-layers { background: rgba(255,255,255,.96) !important; border-color: #cbd5e1 !important; color: #0f172a !important; box-shadow: 0 4px 14px rgba(15,23,42,.15) !important; }
+html[data-theme="light"] .nz-chip, html[data-theme="light"] .nz-pill .nz-btn { background: #f1f5f9; color: #0f172a; }
+html[data-theme="light"] .nz-chip:has(input:checked) { background: #e0f2fe; border-color: #0284c7; color: #0c4a6e; }
+html[data-theme="light"] .nz-seg .nz-mode { color: #475569 !important; } html[data-theme="light"] .nz-seg .nz-mode.on, html[data-theme="light"] .nz-seg #nzHeatBtn.on, html[data-theme="light"] .nz-seg #nzRpBtn.on { background: #0284c7 !important; color: #fff !important; }
+html[data-theme="light"] .nz-stage .nz-rp { background: rgba(255,255,255,.97); color: #0f172a; border-color: #a855f7; }
+html[data-theme="light"] .nz-stage .nz-rp b { color: #7e22ce; } html[data-theme="light"] .nz-rp input[type=date], html[data-theme="light"] .nz-rp select { background: #fff; color: #0f172a; border-color: #cbd5e1; color-scheme: light; }
+html[data-theme="light"] .nzwx .c { color: #334155; } html[data-theme="light"] .nzwx .e { color: #b45309; } html[data-theme="light"] .nzwx .src, html[data-theme="light"] .nzwx .tg { color: #64748b; }
+html[data-theme="light"] .nz-lv b { color: #334155; } html[data-theme="light"] .nz-lv i.ok { color: #047857; } html[data-theme="light"] .nz-lv i.warn { color: #b45309; } html[data-theme="light"] .nz-lv i.bad { color: #be123c; }
+html[data-theme="light"] .nl-leg small { color: #b45309; } html[data-theme="light"] .nf-h { color: #0f172a; }
+/* 지도 표지: 측정 지점 흰 원 · 항공기 흰 이름표 */
+html[data-theme="light"] .nz-sen .dot { background: #ffffff; box-shadow: 0 2px 6px rgba(15,23,42,.3); } html[data-theme="light"] .nz-sen .dot .n { color: #0f172a; }
+html[data-theme="light"] .nz-sen.lv-warn .dot .n { color: #b45309; } html[data-theme="light"] .nz-sen.lv-bad .dot .n { color: #be123c; }
+html[data-theme="light"] .nz-sen.sel .dot { box-shadow: 0 0 0 3px #fff, 0 0 0 5.5px #0284c7; }
+html[data-theme="light"] .nz-sen .lbl { background: rgba(255,255,255,.96); color: #334155; border-color: #cbd5e1; }
+html[data-theme="light"] .nz-sen.sel .lbl { background: #0284c7; color: #fff; border-color: #0369a1; }
+html[data-theme="light"] .nz-ac .lbl { background: rgba(255,255,255,.96); border-color: #cbd5e1; box-shadow: 0 2px 6px rgba(15,23,42,.2); }
+html[data-theme="light"] .nz-ac .lbl b { color: #0f172a; } html[data-theme="light"] .nz-ac .lbl small { color: #0369a1; }
+html[data-theme="light"] .nz-ac svg path { stroke: #0c4a6e; }
+html[data-theme="light"] .nz-link-lbl, html[data-theme="light"] .nrw-tag span { background: rgba(255,255,255,.96); color: #0f172a; }
+html[data-theme="light"] .leaflet-tooltip.nz-tip { background: #fff; color: #0f172a; border-color: #cbd5e1; }
+html[data-theme="light"] .nz-foot { background: #fff; color: #64748b; border-top-color: #e2e8f0; }
+/* 오른쪽 패널 */
+html[data-theme="light"] .nz-body > .nz-side { background: #ffffff; border-left-color: #e2e8f0; }
+html[data-theme="light"] .nzf { background: #f8fafc; border-bottom-color: #e2e8f0; }
+html[data-theme="light"] .nzf-k { color: #0284c7; } html[data-theme="light"] .nzf-role { background: #e2e8f0; color: #334155; }
+html[data-theme="light"] .nzf-name { color: #0f172a; } html[data-theme="light"] .nzf-why { color: #b45309; }
+html[data-theme="light"] .nzf-today { color: #64748b; } html[data-theme="light"] .nzf-today b { color: #0f172a; } html[data-theme="light"] .nzf-r small { color: #64748b; }
+html[data-theme="light"] .nzf-st { background: #ecfdf5; color: #047857; border-color: #6ee7b7; }
+html[data-theme="light"] .nzf[data-lv="warn"] .nzf-st { background: #fffbeb; color: #b45309; border-color: #fcd34d; } html[data-theme="light"] .nzf[data-lv="bad"] .nzf-st { background: #fff1f2; color: #be123c; border-color: #fda4af; }
+html[data-theme="light"] .nzf-db { color: #059669; } html[data-theme="light"] .nzf[data-lv="warn"] .nzf-db { color: #d97706; } html[data-theme="light"] .nzf[data-lv="bad"] .nzf-db { color: #e11d48; }
+html[data-theme="light"] .nz-body > .nz-side #nzCards { border-bottom-color: #e2e8f0; }
+html[data-theme="light"] .ms-sum, html[data-theme="light"] .ms-sum b { color: #334155; } html[data-theme="light"] .ms-sum small { color: #64748b; } html[data-theme="light"] .ms-sum .ms-big { color: #0284c7; }
+html[data-theme="light"] #nzCards .nz-card, html[data-theme="light"] #nzCards .nz-card.sel { background: #ffffff; border-color: #e2e8f0; }
+html[data-theme="light"] #nzCards .nz-card:hover { border-color: #94a3b8; }
+html[data-theme="light"] #nzCards .nz-card.sel { background: #f0f9ff; border-color: #0284c7; }
+html[data-theme="light"] #nzCards .nz-card > .h > b { color: #0f172a; } html[data-theme="light"] #nzCards .nz-card > .why, html[data-theme="light"] #nzCards .nz-card > .h > .st { color: #64748b; }
+html[data-theme="light"] #nzCards .nz-nosen { background: #f0f9ff; border-color: #7dd3fc; color: #0c4a6e; } html[data-theme="light"] #nzCards .nz-nosen b { color: #0f172a; }
+html[data-theme="light"] .ms-tabs { background: #f8fafc; border-bottom-color: #e2e8f0; } html[data-theme="light"] .ms-tabs button { color: #64748b; }
+html[data-theme="light"] .ms-tabs button.on { color: #0369a1; border-bottom-color: #0284c7; background: #ffffff; }
+html[data-theme="light"] .ns-it.nsc, html[data-theme="light"] .ms-body .ns-it.nsc, html[data-theme="light"] .ms-body .ns-it.nsc:nth-child(odd) { background: #ffffff; border-color: #e2e8f0; }
+html[data-theme="light"] .nsc .l1 b, html[data-theme="light"] .ms-body .nsc .l1 b { color: #0f172a; } html[data-theme="light"] .nsc .l2, html[data-theme="light"] .ms-body .nsc .l2, html[data-theme="light"] .nsc .ty, html[data-theme="light"] .nsc .l1 small, html[data-theme="light"] .nsc .nsr small { color: #64748b; }
+html[data-theme="light"] .nsc .nsb { background: #e0f2fe; color: #0369a1; } html[data-theme="light"] .nsc.d .nsb { background: #fef3c7; color: #92400e; }
+html[data-theme="light"] .ns-sec h4, html[data-theme="light"] .ns-f, html[data-theme="light"] .ns-mut { color: #64748b; }
+html[data-theme="light"] .ms-body .nz-ev .it, html[data-theme="light"] .ms-body .nz-ev .it:nth-child(odd) { background: #ffffff; border-color: #e2e8f0; color: #0f172a; }
+html[data-theme="light"] .nz-ev-h, html[data-theme="light"] .nz-ev .it time { color: #64748b; }
+html[data-theme="light"] .nz-ev .it .evf { color: #0f172a; } html[data-theme="light"] .nz-ev .it .evp { color: #b45309; }   /* 10-29 리뷰: 흰 글자가 흰 바탕 */
+html[data-theme="light"] .nw-p .ph, html[data-theme="light"] .ph { color: #b45309; } html[data-theme="light"] .src b { color: #0f172a; }
+html[data-theme="light"] .ns-st { color: #334155; border-color: #cbd5e1; } html[data-theme="light"] .ns-st.go { color: #15803d; border-color: #86efac; } html[data-theme="light"] .ns-st.hot { color: #be123c; border-color: #fda4af; }
+html[data-theme="light"] .nhm-r b { background: #e2e8f0; color: #0f172a !important; } html[data-theme="light"] .nhm-r b.na { background: repeating-linear-gradient(45deg, #f1f5f9 0 3px, #e2e8f0 3px 6px); }
+html[data-theme="light"] .nhm, html[data-theme="light"] .nhm small, html[data-theme="light"] .nhm-h { color: #334155; }
+html[data-theme="light"] .acc { background: #ffffff; color: #0f172a; border-color: #cbd5e1; }
+/* 상황판 */
+html[data-theme="light"] .nw-top.ns-sub { background: #ffffff !important; border-color: #e2e8f0 !important; }
+html[data-theme="light"] .nw-title { color: #0f172a; } html[data-theme="light"] .nw-title span { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+html[data-theme="light"] .nw-top .nw-view { background: #f1f5f9; border-color: #e2e8f0; } html[data-theme="light"] .nw-top .nw-view button { color: #475569; } html[data-theme="light"] .nw-top .nw-view button.on { background: #0284c7; color: #fff; }
+html[data-theme="light"] .nw-top .nw-sub-hint { color: #64748b; }
+html[data-theme="light"] .nw-p { background: #ffffff; border-color: #e2e8f0; }
+html[data-theme="light"] .nw-p.warn { background: #fffbeb; border-color: #fcd34d; } html[data-theme="light"] .nw-p.bad { background: #fff1f2; border-color: #fda4af; }
+html[data-theme="light"] .nw-p.sel { background: #ffffff; border-color: #0284c7; box-shadow: 0 0 0 2px rgba(2,132,199,.25); }
+html[data-theme="light"] .nw-p .h b { color: #0f172a; } html[data-theme="light"] .nw-p .big span, html[data-theme="light"] .nw-p .big em, html[data-theme="light"] .nw-p .day, html[data-theme="light"] .nw-p .src::before { color: #64748b; }
+html[data-theme="light"] .nw-p .day b { color: #0f172a; } html[data-theme="light"] .nw-p .src, html[data-theme="light"] .nw-p .src b { color: #0369a1; } html[data-theme="light"] .nw-p .src { border-top-color: #e2e8f0; }
+html[data-theme="light"] .nw-p .bar { background: #e2e8f0; }
+html[data-theme="light"] .nw-p .chip, html[data-theme="light"] .nw-now .chip { background: #ecfdf5; color: #047857; border-color: #6ee7b7; }
+html[data-theme="light"] .warn .chip { background: #fffbeb; color: #b45309; border-color: #fcd34d; } html[data-theme="light"] .bad .chip { background: #fff1f2; color: #be123c; border-color: #fda4af; }
+html[data-theme="light"] .nw-focus, html[data-theme="light"] .nw-box, html[data-theme="light"] .nw-today, html[data-theme="light"] .nw-now, html[data-theme="light"] .nw-st, html[data-theme="light"] .nw-tabs button { background: #ffffff; border-color: #e2e8f0; color: #0f172a; }
+html[data-theme="light"] .nw-box h2, html[data-theme="light"] .nw-today h2 { color: #0f172a; border-bottom-color: #e2e8f0; }
+html[data-theme="light"] .nw-feed .it, html[data-theme="light"] .nw-feed .it:nth-child(odd) { background: #f8fafc; border-color: #e2e8f0; color: #0f172a; }
+html[data-theme="light"] .nw-feed .it:hover { background: #f1f5f9; }
+html[data-theme="light"] .nw-foot, html[data-theme="light"] .mut, html[data-theme="light"] .nw-empty { color: #64748b; } html[data-theme="light"] .nw-foot { background: #fff; border-top-color: #e2e8f0; }
+html[data-theme="light"] .hrs i { background: #e2e8f0; } html[data-theme="light"] .hrs i.na { background: repeating-linear-gradient(45deg, #f1f5f9 0 3px, #e2e8f0 3px 6px); }
+html[data-theme="light"] .hrs.big u, html[data-theme="light"] .hrs.big em { color: #334155; }
+html[data-theme="light"] .nw-focus [class^="nwf-"] h3, html[data-theme="light"] .nwf-title b { color: #0f172a; }
+html[data-theme="light"] .kv div { background: #f8fafc; border-color: #e2e8f0; }
+/* 통계·조회 */
+html[data-theme="light"] .nd-sec, html[data-theme="light"] .nd-more, html[data-theme="light"] .nd-tile, html[data-theme="light"] .nd-tiles > * { background: #ffffff; border-color: #e2e8f0; color: #0f172a; }
+html[data-theme="light"] .nd-sec h2, html[data-theme="light"] .nd-sec h3, html[data-theme="light"] .ndl-h h2, html[data-theme="light"] .ndm h2 .ndm-t, html[data-theme="light"] .nd-more > summary { color: #0f172a; }
+html[data-theme="light"] .nd-sec small, html[data-theme="light"] .ndl-mut, html[data-theme="light"] .nd-more > summary small, html[data-theme="light"] .ndl-f { color: #64748b; }
+html[data-theme="light"] .ndl-k { color: #0284c7; } html[data-theme="light"] .ndl-r { background: #f8fafc; border-color: #e2e8f0; }
+html[data-theme="light"] .ndl-f select, html[data-theme="light"] .ndl-f input, html[data-theme="light"] .nd-qf input, html[data-theme="light"] .nd-qf select, html[data-theme="light"] .nd-qf textarea, html[data-theme="light"] .nd-sec select { background: #fff; color: #0f172a; border-color: #cbd5e1; color-scheme: light; }
+html[data-theme="light"] .ndl-why { color: #334155; } html[data-theme="light"] .ndl-why b { color: #0369a1; } html[data-theme="light"] .ndl-max small { color: #334155; }
+html[data-theme="light"] .ndl-max { color: #059669; } html[data-theme="light"] .ndl-max.warn { color: #d97706; } html[data-theme="light"] .ndl-max.bad { color: #e11d48; }
+html[data-theme="light"] .ndl-tb th { color: #64748b; border-bottom-color: #e2e8f0; } html[data-theme="light"] .ndl-tb td { color: #0f172a; border-bottom-color: #f1f5f9; }
+html[data-theme="light"] .ndl-tb td b { color: #0f172a; } html[data-theme="light"] .ndl-tb td small, html[data-theme="light"] .ndl-tb td.tm { color: #64748b; } html[data-theme="light"] .ndl-tb td.ph { color: #0369a1; } html[data-theme="light"] .ndl-tb td.ph.dep { color: #b45309; }
+html[data-theme="light"] .ndl-tb td.db { color: #059669; } html[data-theme="light"] .ndl-tb td.db.warn { color: #d97706; } html[data-theme="light"] .ndl-tb td.db.bad { color: #e11d48; }
+html[data-theme="light"] .nd-table th, html[data-theme="light"] .nd-table td { border-color: #e2e8f0; color: #0f172a; } html[data-theme="light"] .nd-table th { color: #64748b; }
+html[data-theme="light"] .nd-bars, html[data-theme="light"] .nd-bars .b, html[data-theme="light"] .nd-legend, html[data-theme="light"] .nd-multi .t { color: #334155; }
+/* 쉬는 중 안내 · 면책 띠는 그대로(눈에 띄게) */
+html[data-theme="light"] .nhm { background: #ffffff; border-color: #e2e8f0; color: #0f172a; }
+html[data-theme="light"] .nhm-h select { background: #fff; color: #0f172a; border-color: #cbd5e1; color-scheme: light; }
+html[data-theme="light"] .nhm-r > span { color: #334155; } html[data-theme="light"] .nhm-hd i, html[data-theme="light"] .nhm-h small, html[data-theme="light"] .nhm-f { color: #64748b; }
+html[data-theme="light"] .nhm-f b { color: #b45309; } html[data-theme="light"] .nhm-r b:hover { outline-color: #0f172a; }
+html[data-theme="light"] .ns { color: #0f172a; } html[data-theme="light"] .ns-n { background: #e2e8f0; color: #334155; }
+/* 10-29 운영자 「라이트 모드에서 검은 단추·콤보의 글자가 안 보인다」 — 남아 있던 어두운 단추·입력칸을 한꺼번에 밝게 */
+html[data-theme="light"] .nz-btn, html[data-theme="light"] .nw-btn, html[data-theme="light"] .nd-tbl, html[data-theme="light"] .nh-pre button, html[data-theme="light"] .nh-play, html[data-theme="light"] .nwf-more, html[data-theme="light"] .nw-tabs button, html[data-theme="light"] .ndl-f button:not(#ndlGo), html[data-theme="light"] .nd-qf button { background: #f1f5f9 !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; }
+html[data-theme="light"] .nz-btn:hover, html[data-theme="light"] .nw-btn:hover, html[data-theme="light"] .nd-tbl:hover { background: #e2e8f0 !important; }
+html[data-theme="light"] .nz-btn.on, html[data-theme="light"] .nh-pre button.on { background: #e0f2fe !important; color: #0c4a6e !important; border-color: #0284c7 !important; }
+html[data-theme="light"] .nz-pill .nz-btn, html[data-theme="light"] .nz-seg .nz-mode { border-color: transparent !important; }
+html[data-theme="light"] .nz-seg .nz-mode { background: transparent !important; }
+html[data-theme="light"] .nh-x, html[data-theme="light"] .nb-x { color: #64748b !important; background: transparent !important; }
+html[data-theme="light"] select, html[data-theme="light"] input[type="date"], html[data-theme="light"] input[type="time"], html[data-theme="light"] input[type="text"], html[data-theme="light"] input[type="number"], html[data-theme="light"] textarea { background: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; color-scheme: light; }
+html[data-theme="light"] input[type="range"] { color-scheme: light; accent-color: #9333ea; }
+html[data-theme="light"] .nz-rp-ev { color: #475569; } html[data-theme="light"] .nz-rp-ev:hover { color: #0f172a; }
+html[data-theme="light"] .nh-pan, html[data-theme="light"] .nh-pan b, html[data-theme="light"] .nh-row, html[data-theme="light"] .nh-strip { color: #0f172a; } html[data-theme="light"] .nh-h small { color: #b45309; }

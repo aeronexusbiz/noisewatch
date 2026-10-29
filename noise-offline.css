@@ -1,0 +1,10 @@
+/* 「수집 서버 쉬는 중」 띠 (noise-offline.js · 2026-10-29) — 화면 위 가운데 · 폰은 아래 탭바 위 */
+.nw-off { position: fixed; left: 50%; top: 72px; transform: translateX(-50%); z-index: 1400; display: flex; gap: 10px; align-items: flex-start;
+  max-width: min(560px, calc(100vw - 24px)); padding: 10px 14px; border-radius: 12px; background: rgba(40,28,8,.96); border: 1.5px solid #d97706;
+  color: #fde68a; font: 13px/1.45 var(--ns-sans, system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif); box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+.nw-off[hidden] { display: none; }
+.nw-off .nic { color: #fbbf24; width: 20px; height: 20px; margin-top: 1px; }
+.nw-off b { display: block; color: #fff; font-size: 14px; margin-bottom: 2px; }
+.nw-off span { color: #fcd34d; }
+@media (max-width: 600px) { .nw-off { top: auto; left: 12px; right: 12px; transform: none; max-width: none; bottom: calc(var(--nm-tab, 62px) + env(safe-area-inset-bottom, 0px) + 10px); font-size: 12px; } }   /* left 50% 로 두면 폭이 반으로 접혔다 */
+@media print { .nw-off { display: none !important; } }

@@ -1,0 +1,10 @@
+/* 바람·구름 판 (noise-wx.js · 2026-10-28) — 지도 왼쪽 아래 */
+.nzwx { position: absolute; left: 10px; bottom: 10px; z-index: 900; background: rgba(13,17,23,.9); border: 1px solid #30363d; border-radius: 10px; padding: 7px 10px; color: #e6edf3; font: 12px/1.4 system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; max-width: 380px; }
+.nzwx .tg { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #8b949e; cursor: pointer; margin-left: 8px; }
+.nzwx-cv { position: absolute; left: 0; top: 0; z-index: 450; pointer-events: none; }   /* 지도 타일(200)·벡터(400) 위, 표지(600) 아래 — 바람 흐름 입자 */
+.nzwx[hidden] { display: none; }
+.nzwx .h { display: flex; align-items: center; gap: 8px; }
+.nzwx .arr { display: inline-block; font-size: 18px; color: #7dd3fc; transition: transform .6s; }
+.nzwx .w { font-size: 13px; } .nzwx .src { color: #8b949e; font-size: 11px; margin-left: auto; }
+.nzwx .c { color: #c9d1d9; margin-top: 2px; }
+.nzwx .e { color: #ffb86b; margin-top: 2px; font-size: 11px; }
