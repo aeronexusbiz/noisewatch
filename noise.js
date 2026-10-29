@@ -83,7 +83,9 @@
       // 화면 범위 = 측정기·활주로 둘레(소음 피해 지역) — 운영자 10-27 「지도의 최대 화면을 정하고 더 축소되지 않게」: 이 범위 밖으로 못 나가고, 이 범위보다 작게 못 줄인다
       var b = L.latLngBounds(pts).pad(sens.length ? 0.3 : 1.6);          // 측정기 없으면 활주로 둘레 ±10km 안팎 · 10-28: 국가 측정소로 바꾸며 측정기가 남북으로 넓어져 0.6 이면 한 단계 멀어졌다(줌 11) → 0.3
       S.map.fitBounds(b, { padding: [20, 20] });
-      S.map.setMaxBounds(b.pad(0.15)); S.map.setMinZoom(S.map.getZoom()); S.map.options.maxBoundsViscosity = 1.0;
+      // 10-29 운영자 「확대 범위를 조금 더 넓게」 — 첫 화면은 그대로, 한 단계 더 축소·옮길 수 있는 범위도 넓게
+      //   (두 단계는 시험해 보니 지점 이름표가 한데 뭉치고, 항적은 공항 30km 안만 와서 지도 대부분이 비었다)
+      S.map.setMaxBounds(b.pad(0.6)); S.map.setMinZoom(Math.max(7, S.map.getZoom() - 1)); S.map.options.maxBoundsViscosity = 1.0;
       // 10-29 지도 측정소 라벨 겹침 방지: 위도 순으로 좌·우 지시 방향을 번갈아 배치(활주로 서쪽은 왼쪽, 동쪽은 오른쪽)
       var arp = S.arp[S.apt] || [37.558, 126.791];
       sens.slice().sort(function (x, y) { return y.lat - x.lat; }).forEach(function (s, i) {
