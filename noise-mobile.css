@@ -137,3 +137,10 @@
   .nhm { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .nhm-r { min-width: 600px; }
 }
+@media (max-width: 600px) {   /* 10-29 리뷰: 폰에서 32px 보다 작던 단추 — 손가락으로 누르기 쉽게(최소 36px) */
+  .nmi-tab, .nmi-x { min-height: 36px; } .nmi-x { width: 40px; }
+  .acc-x { width: 36px; height: 36px; }
+  .ms-big { display: inline-flex; align-items: center; min-height: 32px; padding: 0 6px; }
+  .nd-top select, .nd-top input, .ndl-f select, .ndl-f input, .ndl-f button { min-height: 36px; }
+  .nw-view button { min-height: 36px; }
+}

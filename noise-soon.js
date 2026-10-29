@@ -12,7 +12,7 @@
   function mmss(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
   function col(db) { return window.NoiseBrief ? NoiseBrief.level(db).c : db >= 70 ? '#f43f5e' : db >= 60 ? '#f59e0b' : '#10b981'; }   // 10-29 리뷰: 체감 등급(60·70) 하나로
   function pred(p, cls) {
-    if (!p || !p.length) return '<span class="ns-mut">연장선 위 측정기 없음</span>';
+    if (!p || !p.length) return '<span class="ns-mut">–</span>';   // 10-29 리뷰: 지점 없는 공항에서 모든 줄에 같은 문구가 반복됐다
     return p.slice(0, 2).map(function (o) { return esc(o.name) + ' <b style="color:' + col(o.db) + '">~' + Math.round(o.db) + 'dB</b>'; }).join(' · ') + (cls === 'class' ? ' <small title="기종을 몰라(또는 표에 없어) 계열 값으로 추정">계열</small>' : '');
   }
 
@@ -35,7 +35,7 @@
       el.querySelector('.ns-n.a').textContent = d.arr.length; el.querySelector('.ns-n.d').textContent = d.dep.length;
       // 10-29 운영자 목업 — 카드: [도착·남은 시간 | 출발·시각] 뱃지 · 편명 · 기종 / 경로 한 줄 · 오른쪽 = 영향 지점 + 예상 dB
       var pr = function (p) {
-        if (!p || !p.length) return '<span class="ns-mut">연장선 위 지점 없음</span>';
+        if (!p || !p.length) return '<span class="ns-mut">–</span>';
         return '<small>' + esc(p[0].name) + '</small><b style="color:' + col(p[0].db) + '">예상 ~' + Math.round(p[0].db) + ' dB</b>';
       };
       el.querySelector('.ns-arr').innerHTML = d.arr.length ? d.arr.map(function (a) {

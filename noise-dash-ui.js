@@ -32,7 +32,8 @@
     more.addEventListener('toggle', function () { if (more.open) setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 30); });   // 닫혀 있는 동안 그린 그래프를 펼칠 때 다시 그린다
     fetch('/noise/sensors?apt=' + apt(), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
       $('ndlSpot').innerHTML = (d.sensors || []).map(function (s) { return '<option value="' + esc(s.id) + '">' + esc(s.name) + '</option>'; }).join('');
-      if (!(d.sensors || []).length) { $('ndlGo').disabled = $('ndlSpot').disabled = true; look.querySelector('.ndl-sum').innerHTML = '<div class="ndl-mut">이 공항은 측정 지점이 없어 조회할 수 없습니다 — 지도에서 예측 소음면을 보세요.</div>'; }   // 10-29 리뷰: 빈 목록인데 눌러 「통과 없음」으로 오해
+      // 지점이 없으면 지점 × 시간대 표도 비어 있다 — 함께 숨긴다
+      if (!(d.sensors || []).length) { if (mxSec) mxSec.hidden = true; $('ndlGo').disabled = $('ndlSpot').disabled = true; look.querySelector('.ndl-sum').innerHTML = '<div class="ndl-mut">이 공항은 측정 지점이 없어 조회할 수 없습니다 — 지도에서 예측 소음면을 보세요.</div>'; }   // 10-29 리뷰: 빈 목록인데 눌러 「통과 없음」으로 오해
     }).catch(function () {});
     $('ndlGo').onclick = run;
   }

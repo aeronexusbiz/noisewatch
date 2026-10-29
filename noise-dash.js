@@ -44,7 +44,7 @@
     }).then(function (d) {
       S.all = (d && d.sensors) || [];                                   // 옛 측정기 포함(민원 목록·조회의 이름 찾기)
       S.sens = S.all.filter(function (s) { return !s.retired; });
-      $('ndSen').innerHTML = '<option value="">측정기 전체</option>' + S.sens.map(function (s) { return '<option value="' + esc(s.id) + '">' + esc(s.name) + '</option>'; }).join('');
+      $('ndSen').innerHTML = '<option value="">전체 지점</option>' + S.sens.map(function (s) { return '<option value="' + esc(s.id) + '">' + esc(s.name) + '</option>'; }).join('');
       $('ndQS').innerHTML = $('ndCpS').innerHTML = S.sens.map(function (s) { return '<option value="' + esc(s.id) + '">' + esc(s.name) + '</option>'; }).join('');
       cpInit();
       if (!S.sens.length) { $('ndTiles').innerHTML = '<div class="nd-empty">' + esc(S.names[S.apt]) + ' — 가정한 측정기가 없습니다(noise_sensors.json).</div>'; return; }

@@ -7,11 +7,12 @@
   'use strict';
   var B = { live: null, soon: null, el: null, seenLive: 0, seenSoon: 0 };
   var PH = { arr: '착륙 접근', dep: '이륙 상승', roll: '활주', taxi: '지상 이동', enr: '통과' };
-  var DIR = ['북', '북동', '동', '남동', '남', '남서', '서', '북서'];
+  var DIR = ['북', '북북동', '북동', '동북동', '동', '동남동', '남동', '남남동', '남', '남남서', '남서', '서남서', '서', '서북서', '북서', '북북서'];   // 10-29 바람 판과 같은 16방위
   function level(db) {
-    if (db >= 70) return { k: 'bad', word: '경보', label: '경보 · 시끄러움', c: '#f43f5e' };
-    if (db >= 60) return { k: 'warn', word: '주의', label: '주의 · 대화 인지', c: '#f59e0b' };
-    return { k: 'ok', word: '평온', label: '평온 · 일상 수준', c: '#10b981' };
+    var lt = document.documentElement.dataset.theme === 'light';      // 10-29 리뷰: 라이트 흰 바탕에 밝은 초록·주황 글자 대비 2:1대 → 라이트는 짙은 색(4.5:1 이상)
+    if (db >= 70) return { k: 'bad', word: '경보', label: '경보 · 시끄러움', c: lt ? '#be123c' : '#f43f5e' };
+    if (db >= 60) return { k: 'warn', word: '주의', label: '주의 · 대화 인지', c: lt ? '#b45309' : '#f59e0b' };
+    return { k: 'ok', word: '평온', label: '평온 · 일상 수준', c: lt ? '#047857' : '#10b981' };
   }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function apt() {
@@ -84,7 +85,7 @@
     }
     if (d) {
       var w = d.wx, wEl = B.el.querySelector('.nb-wind b');
-      wEl.textContent = !w || w.ws == null ? '–' : w.ws < 3 || w.wd == null ? '약함(' + Math.round(w.ws || 0) + 'kt)' : DIR[Math.round(w.wd / 45) % 8] + '풍 ' + Math.round(w.ws) + 'kt';
+      wEl.textContent = !w || w.ws == null ? '–' : w.ws < 3 || w.wd == null ? '약함(' + Math.round(w.ws || 0) + 'kt)' : DIR[Math.round(w.wd / 22.5) % 16] + '풍 ' + Math.round(w.ws) + 'kt';
     }
     var s = B.soon;
     if (s) {

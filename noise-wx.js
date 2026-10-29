@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   var W = { el: null, last: null, map: null, cv: null, g: null, parts: [], on: true, raf: 0, t: 0 };
-  var DIR = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  var DIR = ['북', '북북동', '북동', '동북동', '동', '동남동', '남동', '남남동', '남', '남남서', '남서', '서남서', '서', '서북서', '북서', '북북서'];   // 10-29 리뷰: 브리핑 바(한글)와 같은 말로(옛 SSE·NNW)
   var COVER = { CLR: '맑음', SKC: '맑음', FEW: '구름 조금', SCT: '구름 많음', BKN: '흐림', OVC: '온흐림', OVX: '시정 장애', CAVOK: '쾌청(CAVOK)' };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function dirName(d) { return d == null ? '가변' : DIR[Math.round(d / 22.5) % 16]; }

@@ -74,7 +74,7 @@
       var sens = (r[0] && r[0].sensors) || [], meta = r[1] && r[1].meta;
       S.hist = (r[2] && r[2].sensors) || {};
       if (!sens.length) {                                              // 10-28 운영자 「인천도 측정기 없이 항공기·기종만으로 예측」 — 멈추지 않고 소음면·고리·구역 소음으로
-        $('nzCards').innerHTML = '<div class="nz-nosen"><b>이 공항에는 소음측정기가 없습니다</b><span>항공기 위치·기종으로 <b>지도 전체를 예측</b>합니다 — <i class="nic" data-ic="surface"></i> 실시간 소음면 · <i class="nic" data-ic="rings"></i> 소음 고리 · <i class="nic" data-ic="box"></i> 구역 소음 · <i class="nic" data-ic="heat"></i> 누적 히트맵. 모의값.</span></div>';
+        $('nzCards').innerHTML = '<div class="nz-nosen"><b>이 공항에는 예측 지점이 없습니다</b><span>항공기 위치·기종으로 <b>지도 전체를 예측</b>합니다 — <i class="nic" data-ic="surface"></i> 실시간 소음면 · <i class="nic" data-ic="rings"></i> 소음 고리 · <i class="nic" data-ic="box"></i> 구역 소음 · <i class="nic" data-ic="heat"></i> 누적 히트맵. 모의값.</span></div>';
         if ($('nzLive')) $('nzLive').checked = true;                    // 예측이 바로 보이게(NoiseLive.init 이 켜진 상태를 읽는다)
       }
       var pts = sens.map(function (s) { return [s.lat, s.lon]; });
@@ -108,7 +108,7 @@
     var shortName = s.name.replace(/\s*지점$/, '');
     var html = '<div class="ring"></div><div class="ring r2"></div><div class="dot" data-sid="' + esc(s.id) + '"><em class="n">–</em></div><div class="lbl" title="이 숫자는 실측이 아니라 지금 항적으로 계산한 추정값(배경 포함)입니다. 아래 보라 라벨이 국가 측정소의 어제 실측 Lden입니다."><span>' + esc(shortName) + '</span><b>–</b><span class="est">추정</span></div>';
     var m = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: 'nz-sen' + (s._left ? ' left' : ''), html: html, iconSize: null }), zIndexOffset: 500 }).addTo(S.map);
-    m.bindTooltip('<b>' + esc(s.name) + '</b> — 측정기(가정)<br>' + esc(s.note || '') + '<br>배경소음 ' + s.bg + 'dB(A) 추정 · 표고 ' + (s.elev || 0) + 'm', { className: 'nz-tip', direction: 'top', offset: [0, -12] });
+    m.bindTooltip('<b>' + esc(s.name) + '</b> — 예측 지점(가정)<br>' + esc(s.note || '') + '<br>배경소음 ' + s.bg + 'dB(A) 추정 · 표고 ' + (s.elev || 0) + 'm', { className: 'nz-tip', direction: 'top', offset: [0, -12] });
     S.sens[s.id] = { s: s, m: m, db: s.bg, target: s.bg };
     var c = document.createElement('div'); c.className = 'nz-card'; c.dataset.id = s.id;
     c.innerHTML = '<div class="fh">선택 지점 집중 모니터링</div>' +                 // 10-29 목업: 누른 카드 = 집중 모니터링 판(.sel)

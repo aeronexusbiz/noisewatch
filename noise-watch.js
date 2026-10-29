@@ -53,7 +53,7 @@
     }).then(function (r) {
       S.sens = (r[0] && r[0].sensors) || [];
       S.hist = (r[1] && r[1].sensors) || {};
-      if (!S.sens.length) { $('nwGrid').innerHTML = '<div class="nw-empty">이 공항에는 아직 예측 지점이 없습니다 — 지도 화면에서 항적 기반 예측 소음면을 볼 수 있습니다.</div>'; return; }
+      if (!S.sens.length) { document.body.classList.add('nw-nosen'); $('nwGrid').innerHTML = '<div class="nw-empty">이 공항에는 아직 예측 지점이 없습니다 — <a href="/noise.html?apt=' + S.apt + '">지도 화면</a>에서 항적 기반 예측 소음면을 볼 수 있습니다.</div>'; return; }   // 10-29 리뷰: 빈 카드들은 숨긴다(noise-watch.css)
       S.sid = sById(q.get('sid')) ? q.get('sid') : S.sens[0].id;
       build();
       if (window.NoiseSoon) NoiseSoon.mount($('nwSoon'), { apt: S.apt });   // 곧 보일 항공기(noise-soon.js)

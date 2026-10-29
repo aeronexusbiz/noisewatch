@@ -166,3 +166,5 @@ body[data-gnb-page="watch"] { background: #0b1120; }
 .nw-box h2, .nw-today h2 { font-size: 14px; font-weight: 800; color: #fff; padding-bottom: 10px; border-bottom: 1px solid #1e293b; margin-bottom: 12px; }
 .nw-feed .it { background: rgba(2,6,23,.7); border: 1px solid #1e293b; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 12px; }
 .nw-feed .it:nth-child(odd) { background: rgba(2,6,23,.7); }
+/* 10-29 리뷰: 지점 없는 공항(인천) — 빈 집중 판·사건·경보 카드는 숨기고 안내만 넓게 */
+body.nw-nosen .nw-focus, body.nw-nosen .nw-low { display: none; } body.nw-nosen .nw-grid { display: block; } body.nw-nosen .nw-empty { max-width: 640px; margin: 24px auto; text-align: center; }

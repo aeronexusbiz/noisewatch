@@ -159,3 +159,7 @@ html[data-theme="light"] #nwNotice button { background: #0284c7 !important; colo
 html[data-theme="light"] .nz-foot a, html[data-theme="light"] .nw-foot a, html[data-theme="light"] .nd-foot a { color: #0369a1; }
 html[data-theme="light"] .ns-brand b { color: #0284c7; }
 html[data-theme="light"] .nz-foot b, html[data-theme="light"] .nw-foot b, html[data-theme="light"] .nd-foot b { color: #b45309; }
+/* 10-29 리뷰: 라이트 글자 대비 2:1대 — 로고·주황 활주로 글자·보조 글자 */
+html[data-theme="light"] .ns-rwy, html[data-theme="light"] .nw-rwy { color: #b45309 !important; }
+html[data-theme="light"] .nz-leg i, html[data-theme="light"] .nz-leg small { color: #475569; }
+html[data-theme="light"] .ns-brand .ns-dot { background: #0284c7; }

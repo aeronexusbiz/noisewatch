@@ -11,16 +11,16 @@
 <link rel="stylesheet" href="/ac-card.css?v=4">
 <link rel="stylesheet" href="/noise-wx.css?v=2">
 <link rel="stylesheet" href="/noise-shell.css?v=8">                <!-- 공통 머리(GNB) -->
-<link rel="stylesheet" href="/noise-skin.css?v=6">                 <!-- 시안 모양(떠 있는 줄·450px 패널) -->
+<link rel="stylesheet" href="/noise-skin.css?v=7">                 <!-- 시안 모양(떠 있는 줄·450px 패널) -->
 <link rel="stylesheet" href="/noise-icons.css?v=1">                <!-- 자체 SVG 아이콘 -->
 <script src="/noise-icons.js?v=6"></script>                         <!-- 이모지 대신 SVG (data-ic) -->
 <script src="/noise-offline.js?v=3"></script>                       <!-- 수집 서버(맥미니) 쉬는 중 안내 — 화면 fetch 보다 먼저 -->
-<script src="/noise-brief.js?v=4"></script>                         <!-- 한 줄 실시간 브리핑 바(목업) — 화면 fetch 보다 먼저 -->
-<link rel="stylesheet" href="/noise-theme-light.css?v=6">            <!-- 10-29 리뷰: 스크립트가 끼우면 늦게 와서 라이트가 다크로 번쩍였다 → 머리에 바로 -->
+<script src="/noise-brief.js?v=5"></script>                         <!-- 한 줄 실시간 브리핑 바(목업) — 화면 fetch 보다 먼저 -->
+<link rel="stylesheet" href="/noise-theme-light.css?v=7">            <!-- 10-29 리뷰: 스크립트가 끼우면 늦게 와서 라이트가 다크로 번쩍였다 → 머리에 바로 -->
 <script src="/noise-theme.js?v=3"></script>                         <!-- 다크/라이트 모드(그리기 전에 정한다) -->
 <script src="/noise-mapinfo.js?v=2"></script>                       <!-- 10-29 지도 위 세 판(바람·소음면·등급)을 탭 판 하나로 — 옛 폰 접기(noise-fold.js)를 대신 -->
 <link rel="stylesheet" href="/noise-rwyflow.css?v=2">              <!-- 지금 활주로 착륙·이륙 방향 -->
-<link rel="stylesheet" href="/noise-mobile.css?v=9">               <!-- 폰(600px 이하) 화면 — 맨 뒤에 -->
+<link rel="stylesheet" href="/noise-mobile.css?v=10">               <!-- 폰(600px 이하) 화면 — 맨 뒤에 -->
 <link rel="stylesheet" href="/noise-mapinfo.css?v=2">              <!-- 10-29 지도 정보 탭 판(바람·소음면·등급) — 폰 규칙 뒤 -->
 </head>
 <body data-gnb-page="map">
@@ -40,7 +40,7 @@
 <div class="nz-stage">
 <div class="nz-float" aria-label="지도 표시·도구">
   <div class="nz-pill" aria-label="핵심 지도 모드">
-    <label class="nz-chip" title="측정기 없는 곳도 지금 몇 dB 인지 — 항공기 기종별 기준 소음으로 지도 전체 추정(모의)"><input type="checkbox" id="nzLive" checked> <i class="nic" data-ic="surface"></i> 실시간 소음면</label>
+    <label class="nz-chip" title="지점이 없는 곳도 지금 몇 dB 인지 — 항공기 기종별 기준 소음으로 지도 전체 추정(모의)"><input type="checkbox" id="nzLive" checked> <i class="nic" data-ic="surface"></i> 실시간 소음면</label>
     <button type="button" id="nzHeatBtn" class="nz-btn" title="저장된 항적으로 쌓은 지면 소음(시간대별 · 최근 7일) — 어느 곳이 언제 시끄러운지"><i class="nic" data-ic="heat"></i> 누적 히트맵</button>
     <button type="button" id="nzRpBtn" class="nz-btn" title="저장된 하루를 다시 보기(항공기 위치 4초 간격 · 최근 7일)"><i class="nic" data-ic="replay"></i> 일별 리플레이</button>
   </div>
@@ -71,7 +71,7 @@
   </div>
 </div>
   <aside class="nz-side" aria-label="측정기 현황">
-    <div class="ms-hd"><b><i class="nic" data-ic="sensor"></i> 측정소 실시간 현황</b><small>누르면 크게 보기 · 지도 이동 · dB(A)</small></div>
+    <div class="ms-hd"><b><i class="nic" data-ic="sensor"></i> 예측 지점 실시간 현황</b><small>누르면 크게 보기 · 지도 이동 · dB(A)</small></div>
     <div id="nzCards"></div>
     <div class="ms-tabs" role="tablist">                     <!-- 아래 3탭(noise-side.js) -->
       <button type="button" class="on" data-mt="soon" role="tab"><i class="nic" data-ic="arrive"></i> 곧 보일 항공기</button>
@@ -95,11 +95,11 @@
 <script src="/noise-hourmx.js?v=3"></script>
 <script src="/noise-heat.js?v=3"></script>                  <!-- 누적 히트맵 · 시간대 -->
 <script src="/noise-live.js?v=4"></script>                  <!-- 실시간 소음면 -->
-<script src="/noise-wx.js?v=3"></script>                    <!-- 바람·구름(METAR)·소음 영향 안내 (10-28) -->
-<script src="/noise-soon.js?v=6"></script>                  <!-- 곧 보일 항공기 -->
+<script src="/noise-wx.js?v=4"></script>                    <!-- 바람·구름(METAR)·소음 영향 안내 (10-28) -->
+<script src="/noise-soon.js?v=7"></script>                  <!-- 곧 보일 항공기 -->
 <script src="/noise-box.js?v=2"></script>                   <!-- 구역 소음(박스) -->
 <script src="/noise-rwyflow.js?v=1"></script>               <!-- 지금 활주로 착륙·이륙 방향 (10-29) -->
-<script src="/noise.js?v=24"></script>
+<script src="/noise.js?v=25"></script>
 <script src="/noise-side.js?v=4"></script>                   <!-- 오른쪽 패널 타일·탭 -->
 <script src="/noise-shell.js?v=6"></script>                  <!-- 공통 머리(GNB) — 머리 요소를 옮긴다 -->
 </body>
