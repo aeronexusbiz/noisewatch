@@ -163,7 +163,7 @@
 
   /* 지도 · 일반 화면 */
   html.nw-pub .nz-opt-menu label.nz-chip:has(#nzLines), html.nw-pub .nz-opt-menu label.nz-chip:has(#nzFollow) { display: none !important; }
-  html.nw-pub body[data-gnb-page="map"] .nz-stage { height: 58svh; }
+  html body[data-gnb-page="map"] .nz-stage { height: calc(100svh - var(--nm-top, 120px) - var(--nm-tab) - var(--nm-safe-b)); }   /* 10-31 운영자 「지도를 아래 탭바까지 — 지점 목록은 스크롤해야 보이게」 · --nm-top = 지도 윗변(noise-phone.js 가 잰다) */
   /* 지도 · 지점 목록(일반·기관용 같이) — 1열 · 고른 지점 아래에서 펼침(noise-phone.js) · 펼친 판엔 원인·10분 추이(기관용은 오늘 Lden 도) */
   body[data-gnb-page="map"] #nzCards { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   body[data-gnb-page="map"] #nzCards .nz-card { padding: 10px 12px; min-height: 52px; }
