@@ -1,0 +1,24 @@
+/* 지점 설명 풍선(noise-senpop.js · 2026-10-31) — 폰은 지도 위 지점 이름표를 숨기고 숫자 동그라미만 남긴다(누르면 이 풍선). 데스크톱은 이름표를 그대로 두고 눌러도 풍선. */
+.nz-sen .dot { cursor: pointer; }
+.nsp { position: absolute; z-index: 950; width: 260px; max-width: calc(100% - 16px); box-sizing: border-box; padding: 12px 14px 12px; border-radius: 12px;
+  background: rgba(15, 23, 42, .97); color: #e2e8f0; border: 1px solid #334155; border-top: 3px solid var(--nsp-c, #10b981); box-shadow: 0 10px 28px rgba(0, 0, 0, .45);
+  font: 13px/1.5 var(--ns-sans, system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif); }
+.nsp[hidden] { display: none; }
+.nsp[data-lv="warn"] { --nsp-c: #f59e0b; } .nsp[data-lv="bad"] { --nsp-c: #f43f5e; }
+.nsp-x { position: absolute; right: 4px; top: 4px; width: 32px; height: 32px; border: 0; border-radius: 8px; background: none; color: #94a3b8; font-size: 20px; line-height: 1; cursor: pointer; }
+.nsp-x:hover { color: #fff; background: rgba(255, 255, 255, .06); }
+.nsp-h { display: flex; align-items: center; gap: 8px; padding-right: 28px; }
+.nsp-name { font-size: 16px; font-weight: 800; color: #fff; }
+.nsp-lv { font-size: 12px; font-weight: 700; color: var(--nsp-c, #10b981); }
+.nsp-db { margin: 2px 0 6px; font-size: 30px; font-weight: 900; line-height: 1.1; color: var(--nsp-c, #10b981); font-variant-numeric: tabular-nums; }
+.nsp-db small { margin-left: 4px; font-size: 12px; font-weight: 600; color: #94a3b8; }
+.nsp p { margin: 0 0 4px; color: #cbd5e1; }
+.nsp-why { color: #fcd34d !important; }
+.nsp-go { margin-top: 6px; width: 100%; min-height: 36px; border: 1px solid #38bdf8; border-radius: 8px; background: rgba(56, 189, 248, .1); color: #7dd3fc; font: 700 13px var(--ns-sans, system-ui, sans-serif); cursor: pointer; }
+.nsp-go:hover { background: rgba(56, 189, 248, .2); }
+.nsp button:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
+body.nsp-open .leaflet-tooltip.nz-tip { display: none; }                 /* 옛 지점 툴팁과 겹치지 않게 */
+@media (max-width: 600px) {
+  .nz-sen .lbl { display: none !important; }                            /* 이름표는 빼고 숫자만 — 겹쳐 읽히지 않았다(운영자 10-31) */
+}
+@media print { .nsp { display: none; } }
