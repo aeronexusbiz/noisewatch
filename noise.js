@@ -51,6 +51,7 @@
   function initMap() {
     S.map = L.map('nzMap', { zoomControl: true, attributionControl: false, maxZoom: 19 });
     S.map.createPane('nzAc').style.zIndex = 690;
+    if (window.NoiseNear) NoiseNear.setMap(S.map);                     // 10-31 「가까운 지점」(noise-near.js) — 위치는 화면 안에서만
     if (window.AcCard && AcCard.setMap) AcCard.setMap(S.map);       // 10-29 기체 카드가 지나온 길을 이 지도에 긋는다                     // 10-29 항공기는 맨 앞 — 기여선 이름표(tooltipPane 650)·측정기·고리 이름표(markerPane 600) 위, 팝업(700) 아래
     // 바탕 지도 고르기(10-29 운영자 「위성 아닌 버전도」) — 브이월드 위성 / 일반(Base) / 야간(midnight). gray 는 중계가 막혀 있어 뺌. 고른 것은 이 브라우저에 기억
     var tl = function (p, o) { return L.tileLayer('/vworld/' + p, Object.assign({ minZoom: 6, maxZoom: 19, maxNativeZoom: 19 }, o || {})); };

@@ -163,3 +163,13 @@ html[data-theme="light"] .nz-foot b, html[data-theme="light"] .nw-foot b, html[d
 html[data-theme="light"] .ns-rwy, html[data-theme="light"] .nw-rwy { color: #b45309 !important; }
 html[data-theme="light"] .nz-leg i, html[data-theme="light"] .nz-leg small { color: #475569; }
 html[data-theme="light"] .ns-brand .ns-dot { background: #0284c7; }
+html[data-theme="light"] .ns-role { background: #fff; color: #334155; border-color: #cbd5e1; }   /* 10-31 머리 「기관용 화면」·「일반 화면」(noise-role.css) */
+html[data-theme="light"] .ns-role:hover { color: #0284c7; border-color: #0284c7; }
+html[data-theme="light"] .ns-menu { border-color: #cbd5e1; } html[data-theme="light"] .ns-menu i { background: #334155; }   /* 10-31 폰 ☰ 메뉴(noise-phone.js) */
+html[data-theme="light"] .ns-menu-p:not([hidden]) { background: #fff; border-color: #cbd5e1; box-shadow: 0 10px 30px rgba(15,23,42,.18); }
+html[data-theme="light"] .ns-mi { color: #0f172a; } html[data-theme="light"] .ns-mi:active, html[data-theme="light"] .ns-mi:hover { background: #f1f5f9; }
+html[data-theme="light"] body[data-gnb-page="map"] #nzFocus.nzf-in { background: #f0f9ff; border-color: #0284c7; }
+@media (max-width: 600px) { html[data-theme="light"] body[data-gnb-page="map"] #nzCards .nz-card.sel > .h > b { color: #0f172a; } }
+html[data-theme="light"] .nz-near { background: rgba(255,255,255,.96); color: #0f172a; border-color: #cbd5e1; box-shadow: 0 4px 14px rgba(15,23,42,.15); }   /* 10-31 가까운 지점(noise-near.js) */
+html[data-theme="light"] .nz-near .nic { color: #0284c7; }
+@media (max-width: 600px) { html[data-theme="light"] .nhm-r > span:first-child { background: #fff; } }   /* 10-31 폰 통계 표 이름 칸 고정(noise-mobile.css) */

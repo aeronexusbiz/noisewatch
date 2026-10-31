@@ -63,7 +63,13 @@
       var mt = nav.querySelector('.ns-tab[data-k="map"]');
       setInterval(function () { var on = document.body.classList.contains('rp'); rpt.classList.toggle('on', on); if (mt) mt.classList.toggle('on', !on); }, 400);
     }
-    var fix = function () { var a = apt(); g.querySelectorAll('.ns-tab').forEach(function (t) { var u = new URL(t.getAttribute('href'), location.origin); u.searchParams.set('apt', a); t.href = u.pathname + u.search; }); };
+    // 10-31 화면 구성 나누기(noise-role.js) — 일반: 「기관용 화면」(상황판으로) · 기관용: 「일반 화면」(실시간 지도로). 인증은 나중에 이 단추에 붙인다
+    var R = window.NoiseRole, rb = document.createElement('a');
+    rb.className = 'ns-role'; rb.dataset.k = 'role';
+    if (R && !R.org) { rb.href = '/noise-watch.html'; rb.title = '관제·공항·지자체 담당자용 — 지점별 상황판·시간대 통계·누적 히트맵·리플레이'; rb.innerHTML = '<i class="nic" data-ic="monitor"></i> 기관용 화면'; rb.onclick = function () { R.set('org'); }; }
+    else { rb.href = '/noise.html'; rb.title = '누구나 보는 실시간 지도 화면으로'; rb.innerHTML = '<i class="nic" data-ic="map"></i> 일반 화면'; rb.onclick = function () { if (R) R.set('pub'); }; }
+    g.querySelector('.ns-right').insertBefore(rb, g.querySelector('.ns-right').firstChild);
+    var fix = function () { var a = apt(); g.querySelectorAll('.ns-tab, .ns-role').forEach(function (t) { var u = new URL(t.getAttribute('href'), location.origin); u.searchParams.set('apt', a); t.href = u.pathname + u.search; }); };
     fix();
     var sel = g.querySelector('[data-slot="apt"] select'); if (sel) sel.addEventListener('change', fix);
     setTimeout(fix, 1500);                                                    // 화면 JS 가 공항 목록을 채운 뒤 한 번 더

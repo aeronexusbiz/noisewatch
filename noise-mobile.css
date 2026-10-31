@@ -144,3 +144,52 @@
   .nd-top select, .nd-top input, .ndl-f select, .ndl-f input, .ndl-f button { min-height: 36px; }
   .nw-view button { min-height: 36px; }
 }
+/* 10-31 폰 — 운영자 「폰 화면 최적화가 목표」(noise-phone.js · 일반/기관용 = noise-role.js)
+   머리: 서비스 이름을 다시 보이고 · 테마·기관용·도움말은 ☰ 하나로 / 지도(일반): 지점 목록 1열 · 고른 지점 아래에서 펼침 · 지도 스위치는 소음면·고리 둘만 */
+.ns-menu, .ns-menu-p { display: none; }
+@media (max-width: 600px) {
+  .ns-gnb .ns-brand { display: inline-flex !important; align-items: center; font-size: 0; flex-shrink: 0; }
+  .ns-gnb .ns-brand .ns-dot { width: 8px; height: 8px; margin-right: 5px; }
+  .ns-gnb .ns-brand b { font-size: 15px; letter-spacing: -.01em; }
+  .ns-slot[data-slot="apt"] select { max-width: 112px; }
+  .ns-gnb .ns-role, .ns-gnb .ns-theme, .ns-gnb .ns-slot[data-slot="help"] { display: none !important; }
+  .ns-menu { display: inline-flex; flex-direction: column; justify-content: center; gap: 4px; width: 36px; height: 36px; padding: 0 9px; border: 1px solid var(--ns-line, #2a364f); border-radius: 9px; background: transparent; cursor: pointer; flex-shrink: 0; }
+  .ns-menu i { display: block; height: 2px; border-radius: 1px; background: var(--ns-sub, #cbd5e1); }
+  .ns-menu[aria-expanded="true"] { border-color: var(--ns-acc, #38bdf8); }
+  .ns-menu-p:not([hidden]) { display: flex; flex-direction: column; position: fixed; top: calc(54px + env(safe-area-inset-top, 0px)); right: 10px; z-index: 1400; min-width: 190px; padding: 6px; border-radius: 12px;
+    background: #0f172a; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+  .ns-mi { display: block; text-align: left; padding: 12px 14px; border: 0; border-radius: 8px; background: transparent; color: #e2e8f0; font: 600 15px var(--ns-sans, system-ui, sans-serif); text-decoration: none; cursor: pointer; }
+  .ns-mi:active, .ns-mi:hover { background: #1e293b; }
+
+  /* 지도 · 일반 화면 */
+  html.nw-pub .nz-opt-menu label.nz-chip:has(#nzLines), html.nw-pub .nz-opt-menu label.nz-chip:has(#nzFollow) { display: none !important; }
+  html.nw-pub body[data-gnb-page="map"] .nz-stage { height: 58svh; }
+  /* 지도 · 지점 목록(일반·기관용 같이) — 1열 · 고른 지점 아래에서 펼침(noise-phone.js) · 펼친 판엔 원인·10분 추이(기관용은 오늘 Lden 도) */
+  body[data-gnb-page="map"] #nzCards { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  body[data-gnb-page="map"] #nzCards .nz-card { padding: 10px 12px; min-height: 52px; }
+  body[data-gnb-page="map"] #nzCards .nz-card > .h > b { font-size: 15px; }
+  body[data-gnb-page="map"] #nzCards .nz-card > .big b { font-size: 20px; }
+  body[data-gnb-page="map"] #nzCards .nz-card > .why { font-size: 13px; }
+  body[data-gnb-page="map"] #nzCards .nz-card.sel { border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding: 12px; }
+  body[data-gnb-page="map"] #nzCards .nz-card.sel > .h > b { font-size: 17px; font-weight: 800; color: #fff; }
+  body[data-gnb-page="map"] #nzCards .nz-card.sel > .big b { font-size: 34px; line-height: 1; }          /* 눈에 띄는 것은 이 숫자 하나 — 고른 지점의 지금 dB */
+  body[data-gnb-page="map"] .ms-sum small { display: none; }                                       /* 「누르면 위에 크게」 — 폰에서는 그 자리에서 펼친다 */
+  body[data-gnb-page="map"] #nzCards .nz-card:not(.sel) { padding: 8px 12px; min-height: 0; }
+  body[data-gnb-page="map"] #nzFocus.nzf-in { order: 1; grid-column: 1 / -1; margin: -7px 0 0; padding: 8px 12px 10px; border: 1px solid #38bdf8; border-top: 0; border-radius: 0 0 8px 8px; background: rgba(8,47,73,.35); }
+  body[data-gnb-page="map"] #nzFocus.nzf-in.nzf-off { display: none !important; }
+  body[data-gnb-page="map"] #nzFocus.nzf-in .nzf-h, body[data-gnb-page="map"] #nzFocus.nzf-in .nzf-name, body[data-gnb-page="map"] #nzFocus.nzf-in .nzf-r > div:first-child { display: none; }
+  body[data-gnb-page="map"] #nzFocus.nzf-in .nzf-m { margin: 0 0 6px; }
+  body[data-gnb-page="map"] #nzFocus.nzf-in .nzf-why { font-size: 13px; }
+}
+/* 10-31 폰 · 기관용 상황판·통계 — 카드 높이를 줄여 8개 지점이 한두 화면에 들어오게(데스크톱 그대로) */
+@media (max-width: 600px) {
+  .nw-top .nw-title { display: none; }                                       /* 아래 탭바가 「상황판」을 이미 말한다 — 보기 전환만 남긴다 */
+  .nw-top.ns-sub { padding: 8px !important; }
+  .nw-grid .nw-p { padding: 10px 11px; gap: 4px; }
+  .nw-grid .nw-p .bar { display: none; }                                      /* 숫자 색이 같은 말을 한다 */
+  .nw-grid .nw-p .big b { font-size: 28px; line-height: 1.1; }
+  .nw-grid .nw-p .src { padding-top: 5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: unset; }
+  .nw-grid .nw-p .src::before { display: none; }                              /* 「주원인」 이름표 — 좁은 칸에서 원인 글자를 밀어냈다 */
+  .nw-grid .nw-p .day { gap: 0 8px; }
+  .nhm-r > span:first-child { position: sticky; left: 0; z-index: 1; background: var(--ns-card, #0f172a); }   /* 통계 지점×시간대 표: 옆으로 밀어도 지점 이름은 남게 */
+}

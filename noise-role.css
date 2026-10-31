@@ -1,0 +1,17 @@
+/* 화면 구성 나누기(noise-role.js · 2026-10-31) — 일반(html.nw-pub)에서 감추는 것: 실시간이 아닌 것(누적·과거·통계)과 기관용 화면으로 가는 탭.
+   접근 제한이 아니라 구성이다(자료는 서버가 그대로 낸다 — 인증을 붙일 때 서버에서도 막는다). 라이트 색은 noise-theme-light.css. */
+html.nw-pub { --nm-tab: 0px; }                                                     /* 폰 아래 탭바가 없으니 그 자리도 없앤다 */
+html.nw-pub .ns-nav { display: none !important; }                                  /* 탭(지도·상황판·통계·리플레이) — 일반은 지도 하나 */
+html.nw-pub .nz-float > .nz-pill:not(.nz-opt),                                     /* 지도 모드 3단(실시간·누적 히트맵·일별 리플레이) */
+html.nw-pub #nzBoxBtn,                                                             /* 구역 소음(누적 포함) */
+html.nw-pub .ms-tabs button[data-mt="ev"], html.nw-pub .ms-tabs button[data-mt="hm"],   /* 최근 60dB+ 기록 · 시간대별 표 */
+html.nw-pub .ms-pane[data-mp="ev"], html.nw-pub .ms-pane[data-mp="hm"],
+html.nw-pub .nzf-today, html.nw-pub .nz-card .today,                              /* 오늘 Lden·최대·사건 수 */
+html.nw-pub .ms-big { display: none !important; }                                  /* 「크게 보기 →」(상황판) */
+
+/* 머리 오른쪽 「기관용 화면」 / 「일반 화면」 */
+.ns-role { display: inline-flex; align-items: center; gap: 6px; color: var(--ns-sub, #94a3b8); text-decoration: none; border: 1px solid var(--ns-line, #2a364f); border-radius: 9px; padding: 6px 11px; font: 700 14px var(--ns-sans, system-ui, sans-serif); background: transparent; cursor: pointer; white-space: nowrap; }
+.ns-role:hover { color: #fff; border-color: var(--ns-acc, #38bdf8); }
+@media (max-width: 1440px) { .ns-role { padding: 6px 9px; font-size: 13px; } }
+@media (max-width: 600px) { .ns-role { padding: 5px 8px; font-size: 12px; } .ns-role .nic { display: none; } }
+@media print { .ns-role { display: none !important; } }

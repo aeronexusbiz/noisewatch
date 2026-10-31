@@ -1,0 +1,10 @@
+/* 가까운 지점 단추(noise-near.js · 2026-10-31) — 지도 오른쪽 아래 · 폰에서는 지도 정보 판(바람·소음면·등급) 위 */
+.nz-near { position: absolute; right: 12px; bottom: 16px; z-index: 900; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 14px; border-radius: 99px;
+  border: 1px solid #334155; background: rgba(15,23,42,.92); color: #e2e8f0; font: 700 14px var(--ns-sans, system-ui, sans-serif); cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.35); }
+.nz-near .nic { width: 18px; height: 18px; color: #38bdf8; }
+.nz-near:hover { border-color: #38bdf8; }
+.nz-near:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
+.nz-near.busy { opacity: .6; cursor: progress; }
+body.rp .nz-near { display: none; }                                   /* 리플레이 중에는 리플레이 줄 자리 */
+@media (max-width: 600px) { .nz-near { right: 10px; bottom: 66px; min-height: 40px; padding: 8px 12px; font-size: 13px; } }
+@media print { .nz-near { display: none; } }

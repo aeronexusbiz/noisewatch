@@ -61,6 +61,7 @@
     head.querySelector('.ms-big').onclick = function () { this.href = '/noise-watch.html?apt=' + apt(); };
     var day = {};
     function today() {
+      if (document.documentElement.classList.contains('nw-pub')) return;   // 10-31 일반 화면은 오늘 Lden 을 보이지 않는다(noise-role.css) — 부르지도 않는다
       fetch('/noise/daily?apt=' + apt() + '&days=1', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
         if (!d || !d.ok) return;
         Object.keys(d.sensors || {}).forEach(function (k) { var a = d.sensors[k]; day[k] = a && a[a.length - 1]; });
