@@ -58,6 +58,7 @@
   });
   // 10-29 운영자 「법적 이슈 보완 — 추천대로」: 공개 화면 첫 진입 면책 띠(닫으면 이 탭에서는 다시 안 뜸) · 화면 아래 출처 줄을 공개용 한 줄로(파일명·「가정」 설명 대신 이용 안내 링크)
   var FOOT = '<a href="/noise-terms.html">이용 안내·개인정보</a> · 소음 값은 항적으로 계산한 <b>예측값</b>(실측 아님 · 법적 판단 근거 아님) · 영상 © 브이월드(국토교통부) · 항적 AeroNexus · 활주로 eAIP · 비행장 윤곽 © OpenStreetMap';
+  // 10-31 운영자 「접속자에게 임시서버 운영 중 · 불안정할 수 있음 공지」 — 첫 진입 안내 띠 맨 앞(.nw-tmp) · 쉬는 중 띠(noise-offline.js) · 이용 안내 2절
   function notice() {
     [].forEach.call(document.querySelectorAll('.nz-foot,.nw-foot,.nd-foot'), function (f) { f.innerHTML = FOOT; });
     var seen = false; try { seen = sessionStorage.getItem('nw.notice') === '1'; } catch (e) { /* 저장 안 되는 브라우저 — 매번 보인다 */ }
@@ -66,10 +67,10 @@
     css.textContent = '#nwNotice{position:fixed;left:16px;right:16px;bottom:16px;margin:0 auto;z-index:10000;max-width:680px;box-sizing:border-box;display:flex;gap:10px;align-items:flex-start;' +
       'padding:10px 12px;border-radius:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;box-shadow:0 6px 24px rgba(0,0,0,.4);font:13px/1.5 system-ui,sans-serif}' +
       '@media (max-width:600px){#nwNotice{bottom:calc(var(--nm-tab, 62px) + env(safe-area-inset-bottom, 0px) + 8px)}}' +   // 폰: 아래 탭바(noise-mobile.css) 위로 — a5 제보 10-29
-      '#nwNotice a{color:#93c5fd}#nwNotice button{flex:none;border:0;border-radius:6px;padding:4px 10px;background:#334155;color:#fff;font:600 12px system-ui,sans-serif;cursor:pointer}';
+      '#nwNotice .nw-tmp{display:block;margin-bottom:4px;color:#fcd34d}#nwNotice a{color:#93c5fd}#nwNotice button{flex:none;border:0;border-radius:6px;padding:4px 10px;background:#334155;color:#fff;font:600 12px system-ui,sans-serif;cursor:pointer}';
     document.head.appendChild(css);
     var d = document.createElement('div'); d.id = 'nwNotice'; d.setAttribute('role', 'note');
-    d.innerHTML = '<div>이 화면의 소음 값은 항공기 항적으로 계산한 <b>예측값</b>입니다. 측정기로 잰 값이 아니며 오차가 있고, 소음 기준·보상 같은 <b>법적 판단의 근거로 쓸 수 없습니다.</b> <a href="/noise-terms.html">이용 안내·개인정보</a></div><button type="button">확인</button>';
+    d.innerHTML = '<div><b class="nw-tmp">지금은 임시 서버로 운영 중이라 접속이 느리거나 잠시 끊길 수 있습니다.</b> 이 화면의 소음 값은 항공기 항적으로 계산한 <b>예측값</b>입니다. 측정기로 잰 값이 아니며 오차가 있고, 소음 기준·보상 같은 <b>법적 판단의 근거로 쓸 수 없습니다.</b> <a href="/noise-terms.html">이용 안내·개인정보</a></div><button type="button">확인</button>';
     d.querySelector('button').onclick = function () { d.remove(); try { sessionStorage.setItem('nw.notice', '1'); } catch (e) { /* 무시 */ } };
     document.body.appendChild(d);
   }

@@ -14,7 +14,7 @@
       el.innerHTML = '<i class="nic" data-ic="clock"></i><div><b>수집 서버가 잠시 쉬고 있습니다</b><span></span></div>';
       document.body.appendChild(el);
     }
-    el.querySelector('span').textContent = hhmm(since) + '부터 새 자료를 받지 못했습니다 · 지금 보이는 값은 마지막으로 받은 것 · 서버가 켜지면 저절로 이어집니다';
+    el.querySelector('span').textContent = '지금은 임시 서버로 운영 중이라 가끔 멈출 수 있습니다 · ' + hhmm(since) + '부터 새 자료를 받지 못했습니다 · 지금 보이는 값은 마지막으로 받은 것 · 서버가 켜지면 저절로 이어집니다';
     el.hidden = false;
   }
   function ok() { fail = 0; since = 0; if (el) el.hidden = true; }

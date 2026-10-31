@@ -173,3 +173,4 @@ html[data-theme="light"] body[data-gnb-page="map"] #nzFocus.nzf-in { background:
 html[data-theme="light"] .nz-near { background: rgba(255,255,255,.96); color: #0f172a; border-color: #cbd5e1; box-shadow: 0 4px 14px rgba(15,23,42,.15); }   /* 10-31 가까운 지점(noise-near.js) */
 html[data-theme="light"] .nz-near .nic { color: #0284c7; }
 @media (max-width: 600px) { html[data-theme="light"] .nhm-r > span:first-child { background: #fff; } }   /* 10-31 폰 통계 표 이름 칸 고정(noise-mobile.css) */
+html[data-theme="light"] #nwNotice .nw-tmp { color: #b45309 !important; }   /* 10-31 임시 서버 공지(noise-public.js) */

@@ -61,4 +61,4 @@
 })();
 
 /* 공개 화면 정리(noise-public.js · 10-29) — 이 파일이 모든 화면에 실리므로 여기서 함께 싣는다 */
-(function () { if (window.NW_PUBLIC !== undefined || document.querySelector('script[src^="/noise-public.js"]')) return; var s = document.createElement('script'); s.src = '/noise-public.js?v=5'; (document.head || document.documentElement).appendChild(s); })();
+(function () { if (window.NW_PUBLIC !== undefined || document.querySelector('script[src^="/noise-public.js"]')) return; var s = document.createElement('script'); s.src = '/noise-public.js?v=6'; (document.head || document.documentElement).appendChild(s); })();
