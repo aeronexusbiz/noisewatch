@@ -154,8 +154,8 @@ html[data-theme="light"] .nmi-tab.on { color: #0369a1; background: #e0f2fe; box-
 html[data-theme="light"] .nmi.closed .nmi-tab.on { background: none; box-shadow: none; color: #64748b; }
 /* 10-29 리뷰: 라이트에 남은 어두운 상자 — 대시보드 그래프 판·상황판/지도 10분 추이·면책 띠·하단 링크 */
 html[data-theme="light"] .ch, html[data-theme="light"] #nwfSp, html[data-theme="light"] .nzf-sp { background: #f8fafc !important; border-color: #e2e8f0 !important; }
-html[data-theme="light"] #nwNotice { background: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; box-shadow: 0 8px 24px rgba(15,23,42,.18) !important; }
-html[data-theme="light"] #nwNotice button { background: #0284c7 !important; color: #fff !important; }
+html[data-theme="light"] #nwNotice { background: #fffbeb !important; color: #0f172a !important; border-bottom-color: #fde68a !important; }   /* 10-31 한 줄 띠(noise-public.js) */
+html[data-theme="light"] #nwNotice button { background: #fff !important; color: #334155 !important; border-color: #cbd5e1 !important; } html[data-theme="light"] #nwNotice a { color: #0369a1; }
 html[data-theme="light"] .nz-foot a, html[data-theme="light"] .nw-foot a, html[data-theme="light"] .nd-foot a { color: #0369a1; }
 html[data-theme="light"] .ns-brand b { color: #0284c7; }
 html[data-theme="light"] .nz-foot b, html[data-theme="light"] .nw-foot b, html[data-theme="light"] .nd-foot b { color: #b45309; }

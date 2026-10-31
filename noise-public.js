@@ -63,16 +63,29 @@
     [].forEach.call(document.querySelectorAll('.nz-foot,.nw-foot,.nd-foot'), function (f) { f.innerHTML = FOOT; });
     var seen = false; try { seen = sessionStorage.getItem('nw.notice') === '1'; } catch (e) { /* 저장 안 되는 브라우저 — 매번 보인다 */ }
     if (seen || /\/noise-terms\.html$/.test(location.pathname)) return;
+    // 10-31 운영자 「안내 띠가 너무 큼」(디자인 리뷰 2) — 화면을 덮는 떠 있는 상자 → 머리(·브리핑 바) 바로 아래 한 줄 띠(내용을 밀어낼 뿐 가리지 않는다) · 폰은 짧은 문구
     var css = document.createElement('style');
-    css.textContent = '#nwNotice{position:fixed;left:16px;right:16px;bottom:16px;margin:0 auto;z-index:10000;max-width:680px;box-sizing:border-box;display:flex;gap:10px;align-items:flex-start;' +
-      'padding:10px 12px;border-radius:10px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;box-shadow:0 6px 24px rgba(0,0,0,.4);font:13px/1.5 system-ui,sans-serif}' +
-      '@media (max-width:600px){#nwNotice{bottom:calc(var(--nm-tab, 62px) + env(safe-area-inset-bottom, 0px) + 8px)}}' +   // 폰: 아래 탭바(noise-mobile.css) 위로 — a5 제보 10-29
-      '#nwNotice .nw-tmp{display:block;margin-bottom:4px;color:#fcd34d}#nwNotice a{color:#93c5fd}#nwNotice button{flex:none;border:0;border-radius:6px;padding:4px 10px;background:#334155;color:#fff;font:600 12px system-ui,sans-serif;cursor:pointer}';
+    css.textContent = '#nwNotice{flex:none;display:flex;align-items:center;gap:10px;padding:7px 16px;background:#1c1607;color:#e2e8f0;border-bottom:1px solid #3f3410;font:13px/1.45 var(--ns-sans,system-ui,sans-serif)}' +
+      '#nwNotice .nw-t{flex:1;min-width:0}#nwNotice .nw-tmp{color:#fcd34d;font-weight:700;margin-right:6px}#nwNotice .nw-s{display:none}#nwNotice a{color:#93c5fd;white-space:nowrap}' +
+      '#nwNotice button{flex:none;min-height:28px;border:1px solid #475569;border-radius:6px;padding:3px 10px;background:transparent;color:#e2e8f0;font:600 12px var(--ns-sans,system-ui,sans-serif);cursor:pointer}' +
+      '#nwNotice button:focus-visible{outline:2px solid #fcd34d;outline-offset:2px}' +
+      '@media (max-width:600px){#nwNotice{padding:6px 12px;font-size:12px}#nwNotice .nw-l{display:none}#nwNotice .nw-s{display:inline}}' +
+      '@media print{#nwNotice{display:none}}';
     document.head.appendChild(css);
     var d = document.createElement('div'); d.id = 'nwNotice'; d.setAttribute('role', 'note');
-    d.innerHTML = '<div><b class="nw-tmp">지금은 임시 서버로 운영 중이라 접속이 느리거나 잠시 끊길 수 있습니다.</b> 이 화면의 소음 값은 항공기 항적으로 계산한 <b>예측값</b>입니다. 측정기로 잰 값이 아니며 오차가 있고, 소음 기준·보상 같은 <b>법적 판단의 근거로 쓸 수 없습니다.</b> <a href="/noise-terms.html">이용 안내·개인정보</a></div><button type="button">확인</button>';
-    d.querySelector('button').onclick = function () { d.remove(); try { sessionStorage.setItem('nw.notice', '1'); } catch (e) { /* 무시 */ } };
-    document.body.appendChild(d);
+    d.innerHTML = '<div class="nw-t"><span class="nw-tmp">임시 서버 운영 중</span>' +
+      '<span class="nw-l">접속이 느리거나 잠시 끊길 수 있습니다. 소음 값은 항적으로 계산한 <b>예측값</b>으로, 측정값이 아니며 소음 기준·보상 같은 <b>법적 판단의 근거로 쓸 수 없습니다.</b></span>' +
+      '<span class="nw-s">접속이 끊길 수 있습니다. 소음 값은 <b>예측값</b>(실측·법적 근거 아님).</span> <a href="/noise-terms.html">이용 안내</a></div><button type="button">확인</button>';
+    var fit = function () { window.dispatchEvent(new Event('resize')); };   // 띠가 생기고 사라질 때 지도 크기를 다시 잰다(Leaflet)
+    d.querySelector('button').onclick = function () { d.remove(); fit(); try { sessionStorage.setItem('nw.notice', '1'); } catch (e) { /* 무시 */ } };
+    var n = 0;
+    (function place() {                                                // 공통 머리가 생긴 뒤 그 아래(브리핑 바가 먼저 있으면 그 아래) — 머리가 없는 화면은 맨 위
+      var g = document.querySelector('.ns-gnb');
+      if (!g && ++n < 30) { setTimeout(place, 100); return; }
+      if (!g) document.body.insertBefore(d, document.body.firstChild);
+      else { var r = g.nextSibling; if (r && r.classList && r.classList.contains('nb-bar')) r = r.nextSibling; g.parentNode.insertBefore(d, r); }
+      fit();
+    })();
   }
   function start() { if (PUBLIC) notice(); walk(document.body); mo.observe(document.body, { childList: true, subtree: true, characterData: true }); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
