@@ -1,5 +1,6 @@
-/* 지점 설명 풍선(noise-senpop.js · 2026-10-31) — 폰은 지도 위 지점 이름표를 숨기고 숫자 동그라미만 남긴다(누르면 이 풍선). 데스크톱은 이름표를 그대로 두고 눌러도 풍선. */
+/* 지점 설명 풍선(noise-senpop.js · 2026-10-31) — 지도 위 지점 이름표를 숨기고 숫자 동그라미만 남긴다(누르면 이 풍선). 운영자 10-31 「여전히 글자가 있음」 → 데스크톱도 숨김. */
 .nz-sen .dot { cursor: pointer; }
+.nz-sen .lbl { display: none !important; }
 .nsp { position: absolute; z-index: 950; width: 260px; max-width: calc(100% - 16px); box-sizing: border-box; padding: 12px 14px 12px; border-radius: 12px;
   background: rgba(15, 23, 42, .97); color: #e2e8f0; border: 1px solid #334155; border-top: 3px solid var(--nsp-c, #10b981); box-shadow: 0 10px 28px rgba(0, 0, 0, .45);
   font: 13px/1.5 var(--ns-sans, system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif); }
@@ -18,7 +19,4 @@
 .nsp-go:hover { background: rgba(56, 189, 248, .2); }
 .nsp button:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
 body.nsp-open .leaflet-tooltip.nz-tip { display: none; }                 /* 옛 지점 툴팁과 겹치지 않게 */
-@media (max-width: 600px) {
-  .nz-sen .lbl { display: none !important; }                            /* 이름표는 빼고 숫자만 — 겹쳐 읽히지 않았다(운영자 10-31) */
-}
 @media print { .nsp { display: none; } }
