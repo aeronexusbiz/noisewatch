@@ -101,6 +101,14 @@
   .rp-bar .sp { display: none; }
   .rp-bar button, .rp-bar select { min-height: 36px; }
 }
+@media (max-width: 600px) {
+  /* 모바일은 역할과 무관하게 핵심 4탭을 고정 노출한다. */
+  html.nw-pub { --nm-tab: 62px; }
+  html.nw-pub .ns-nav { display: grid !important; }
+  .ns-nav { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .ns-nav .ns-tab[data-k="report"] { display: none !important; }
+  .nzwx-open { top: 104px; left: 10px; min-height: 40px; }
+}
 /* 6인치대 갤럭시 일부는 360 CSS px — 중복 예측 배지를 덜어 공항 선택·메뉴의 36px 터치 영역을 지킨다. */
 @media (max-width: 375px) {
   .ns-gnb { gap: 6px; padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }

@@ -8,3 +8,8 @@
 .nzwx .w { font-size: 13px; } .nzwx .src { color: #8b949e; font-size: 11px; margin-left: auto; }
 .nzwx .c { color: #c9d1d9; margin-top: 2px; }
 .nzwx .e { color: #ffb86b; margin-top: 2px; font-size: 11px; }
+.nzwx-x { flex: none; display: inline-grid; place-items: center; width: 28px; height: 28px; margin: -3px -5px -3px 2px; padding: 0; border: 0; border-radius: 7px; background: transparent; color: #cbd5e1; font: 700 20px/1 system-ui; cursor: pointer; }
+.nzwx-x:hover, .nzwx-x:focus-visible { background: rgba(255,255,255,.12); color: #fff; }
+.nzwx-open { position: absolute; left: 10px; top: 112px; z-index: 900; min-height: 36px; padding: 7px 11px; border: 1px solid #334155; border-radius: 9px; background: rgba(15,23,42,.94); color: #e2e8f0; font: 700 12px system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+.nzwx-open[hidden] { display: none; }
+.nzwx-open:hover, .nzwx-open:focus-visible { border-color: #38bdf8; outline: 2px solid #38bdf8; outline-offset: 2px; }

@@ -4,7 +4,7 @@
  *   NoiseWx.frame(d) — noise.js 가 프레임마다 한 줄. ⚠ 추정값. */
 (function () {
   'use strict';
-  var W = { el: null, last: null, map: null, cv: null, g: null, parts: [], on: true, raf: 0, t: 0 };
+  var W = { el: null, open: null, last: null, map: null, cv: null, g: null, parts: [], on: true, closed: false, raf: 0, t: 0 };
   var DIR = ['북', '북북동', '북동', '동북동', '동', '동남동', '남동', '남남동', '남', '남남서', '남서', '서남서', '서', '서북서', '북서', '북북서'];   // 10-29 리뷰: 브리핑 바(한글)와 같은 말로(옛 SSE·NNW)
   var COVER = { CLR: '맑음', SKC: '맑음', FEW: '구름 조금', SCT: '구름 많음', BKN: '흐림', OVC: '온흐림', OVX: '시정 장애', CAVOK: '쾌청(CAVOK)' };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -13,10 +13,20 @@
     if (W.el) return;
     var host = document.getElementById('nzMap'); if (!host) return;
     W.el = document.createElement('div'); W.el.className = 'nzwx'; W.el.hidden = true;
-    W.el.innerHTML = '<div class="h"><span class="arr" title="바람이 가는 방향"><i class="nic" data-ic="arrow"></i></span><b class="w">–</b><span class="src"></span><label class="tg" title="지도 위 바람 흐름 켜고 끄기"><input type="checkbox" checked> 흐름</label></div><div class="c"></div><div class="e"></div>';
+    W.el.innerHTML = '<div class="h"><span class="arr" title="바람이 가는 방향"><i class="nic" data-ic="arrow"></i></span><b class="w">–</b><span class="src"></span><label class="tg" title="지도 위 바람 흐름 켜고 끄기"><input type="checkbox" checked> 흐름</label><button type="button" class="nzwx-x" aria-label="바람 정보와 흐름 닫기">×</button></div><div class="c"></div><div class="e"></div>';
     host.appendChild(W.el);
     W.el.querySelector('.tg input').onchange = function () { W.on = this.checked; if (!W.on && W.g) W.g.clearRect(0, 0, W.cv.width, W.cv.height); };
     W.cv = document.createElement('canvas'); W.cv.className = 'nzwx-cv'; host.appendChild(W.cv); W.g = W.cv.getContext('2d');
+    W.open = document.createElement('button'); W.open.type = 'button'; W.open.className = 'nzwx-open'; W.open.hidden = true; W.open.textContent = '바람'; W.open.setAttribute('aria-label', '바람 정보와 흐름 다시 열기'); host.appendChild(W.open);
+    W.el.querySelector('.nzwx-x').onclick = function (e) {
+      e.stopPropagation(); W.closed = true; W.on = false; W.el.hidden = true; W.open.hidden = false;
+      if (W.g) W.g.clearRect(0, 0, W.cv.width, W.cv.height);
+      var fold = document.querySelector('.nmi:not(.closed) .nmi-x'); if (fold) fold.click();
+    };
+    W.open.onclick = function () {
+      W.closed = false; W.on = true; W.el.querySelector('.tg input').checked = true; W.open.hidden = true; W.el.hidden = !W.last;
+      var tab = document.querySelector('.nmi-tab[data-k="wx"]'); if (tab && W.last) tab.click();
+    };
     var fit = function () { W.cv.width = host.clientWidth; W.cv.height = host.clientHeight; W.parts = []; };
     fit(); window.addEventListener('resize', fit);
     W.raf = requestAnimationFrame(tick);
@@ -48,7 +58,7 @@
     var x = d && d.wx;
     W.last = x || null;
     if (!x) { W.el.hidden = true; return; }
-    W.el.hidden = false;
+    W.el.hidden = W.closed;
     var to = x.wd == null ? null : (x.wd + 180) % 360, ws = x.ws == null ? null : Math.round(x.ws);
     var arr = W.el.querySelector('.arr'); arr.style.transform = 'rotate(' + ((to == null ? 0 : to) - 90) + 'deg)'; arr.style.opacity = to == null ? 0.3 : 1;
     W.el.querySelector('.w').textContent = ws == null ? '바람 –' : ws < 1 ? '바람 고요' : '바람 ' + dirName(x.wd) + (x.wd != null ? '(' + x.wd + '°) ' : ' ') + ws + 'kt' + (x.gust ? ' 돌풍 ' + Math.round(x.gust) : '');
