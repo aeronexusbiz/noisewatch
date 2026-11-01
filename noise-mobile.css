@@ -101,6 +101,23 @@
   .rp-bar .sp { display: none; }
   .rp-bar button, .rp-bar select { min-height: 36px; }
 }
+@media (max-width: 600px) {
+  /* 일반 모바일은 핵심 모드 2개 + 표시 2개를 한 화면에 고정해 가로로 잘리지 않게 한다. */
+  html.nw-pub .nz-float { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: visible; gap: 6px; }
+  html.nw-pub .nz-float > .nz-pill { width: 100%; min-width: 0; padding: 4px; }
+  html.nw-pub .nz-opt-menu { width: 100%; overflow: hidden; }
+  html.nw-pub .nz-float > .nz-pill > .nz-btn,
+  html.nw-pub .nz-opt-menu > .nz-chip { flex: 1 1 0; min-width: 0; justify-content: center; padding-inline: 3px; font-size: 11.5px; }
+  html.nw-pub .nz-opt-menu .nz-long { display: none; }
+  html.nw-pub .nz-opt-menu .nz-short { display: inline; }
+  body.nz-region .nz-ac .lbl { display: none !important; }                 /* 두 공항을 보는 지역 줌에서는 겹치는 편명표를 숨김 */
+  body.nz-region .nz-sen .lbl { display: none !important; }
+  body.nz-region .nz-ac svg { width: 24px; height: 24px; }
+  .nz-airport-context { display: none; white-space: nowrap; transform: translate(-50%, -50%); padding: 5px 8px; border: 2px solid #38bdf8; border-radius: 9px; background: rgba(8,47,73,.94); color: #fff; box-shadow: 0 3px 12px rgba(0,0,0,.55); text-align: center; }
+  .nz-airport-context b, .nz-airport-context span { display: block; font: 800 12px/1.2 -apple-system, "Apple SD Gothic Neo", sans-serif; }
+  .nz-airport-context span { margin-top: 1px; color: #7dd3fc; font-size: 10px; letter-spacing: .04em; }
+  body.nz-region .nz-airport-context { display: block; }
+}
 @media print { .ns-nav { display: none !important; } body { padding-bottom: 0 !important; } }
 @media (max-width: 600px) {
   .ns-slot[data-slot="help"] > * { font-size: 0 !important; padding: 6px !important; gap: 0; }   /* 도움말 = 아이콘만 */
@@ -192,4 +209,7 @@
   .nw-grid .nw-p .src::before { display: none; }                              /* 「주원인」 이름표 — 좁은 칸에서 원인 글자를 밀어냈다 */
   .nw-grid .nw-p .day { gap: 0 8px; }
   .nhm-r > span:first-child { position: sticky; left: 0; z-index: 1; background: var(--ns-card, #0f172a); }   /* 통계 지점×시간대 표: 옆으로 밀어도 지점 이름은 남게 */
+}
+@media (max-width: 600px) and (prefers-reduced-motion: reduce) {
+  .nz-ac, .nz-sen, .nz-card, .nz-stage .leaflet-zoom-animated { transition: none !important; animation: none !important; }
 }

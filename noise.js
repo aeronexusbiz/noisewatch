@@ -65,6 +65,12 @@
     S.map.on('baselayerchange', function (e) { try { localStorage.setItem('biz.noise.base', e.name); } catch (_) {} if (e.name === '위성') { if (!S.map.hasLayer(names)) names.addTo(S.map); } else if (S.map.hasLayer(names)) S.map.removeLayer(names); });
     S.map.setView(S.arp[S.apt] || [36.2, 127.8], 12);
   }
+  function mobileRegionalBounds(localBounds) {
+    if (!window.matchMedia || !window.matchMedia('(max-width: 600px)').matches) return null;
+    var peer = S.apt === 'RKSS' ? 'RKSI' : S.apt === 'RKSI' ? 'RKSS' : null;
+    if (!peer || !S.arp[S.apt] || !S.arp[peer]) return null;
+    return L.latLngBounds([S.arp[S.apt], S.arp[peer]]).pad(0.18).extend(localBounds);
+  }
   /* 공항 도면 = 계류장 2D 와 같은 자료(apt-2d-layer.js) — 어느 공항이든 같은 그림 */
   function loadApt() {
     Promise.all([
@@ -86,7 +92,24 @@
       S.map.fitBounds(b, { padding: [20, 20] });
       // 10-29 운영자 「확대 범위를 조금 더 넓게」 — 첫 화면은 그대로, 한 단계 더 축소·옮길 수 있는 범위도 넓게
       //   (두 단계는 시험해 보니 지점 이름표가 한데 뭉치고, 항적은 공항 30km 안만 와서 지도 대부분이 비었다)
-      S.map.setMaxBounds(b.pad(0.6)); S.map.setMinZoom(Math.max(7, S.map.getZoom() - 1)); S.map.options.maxBoundsViscosity = 1.0;
+      var regional = mobileRegionalBounds(b);
+      if (regional) {
+        // 폰에서 최대 축소하면 김포↔인천 두 공항이 한 화면에 들어온다. 첫 화면은 기존 공항 중심을 유지한다.
+        S.map.setMaxBounds(regional.pad(0.35));
+        // 현재 공항을 화면 중심에 둔 채 반대편 공항까지 보여야 하므로 fit zoom보다 한 단계 더 여유를 둔다.
+        var regionalMin = Math.max(7, S.map.getBoundsZoom(regional, false, [18, 18]) - 1);
+        S.map.setMinZoom(regionalMin);
+        [['RKSS', '김포공항'], ['RKSI', '인천공항']].forEach(function (a) {
+          var p = S.arp[a[0]]; if (!p) return;
+          L.marker(p, { icon: L.divIcon({ className: 'nz-airport-context', html: '<b>' + a[1] + '</b><span>' + a[0] + '</span>', iconSize: null }), interactive: false, zIndexOffset: 850 }).addTo(S.map);
+        });
+        var regionalMode = function () { document.body.classList.toggle('nz-region', S.map.getZoom() <= regionalMin); };
+        S.map.on('zoomend', regionalMode); regionalMode();
+      } else {
+        S.map.setMaxBounds(b.pad(0.6));
+        S.map.setMinZoom(Math.max(7, S.map.getZoom() - 1));
+      }
+      S.map.options.maxBoundsViscosity = 1.0;
       // 10-29 지도 측정소 라벨 겹침 방지: 위도 순으로 좌·우 지시 방향을 번갈아 배치(활주로 서쪽은 왼쪽, 동쪽은 오른쪽)
       var arp = S.arp[S.apt] || [37.558, 126.791];
       sens.slice().sort(function (x, y) { return y.lat - x.lat; }).forEach(function (s, i) {
@@ -112,14 +135,16 @@
     m.bindTooltip('<b>' + esc(s.name) + '</b> — 예측 지점(가정)<br>' + esc(s.note || '') + '<br>배경소음 ' + s.bg + 'dB(A) 추정 · 표고 ' + (s.elev || 0) + 'm', { className: 'nz-tip', direction: 'top', offset: [0, -12] });
     S.sens[s.id] = { s: s, m: m, db: s.bg, target: s.bg };
     var c = document.createElement('div'); c.className = 'nz-card'; c.dataset.id = s.id;
+    c.setAttribute('role', 'button'); c.tabIndex = 0; c.setAttribute('aria-label', s.name + ' 예측 지점 지도에서 보기');
     c.innerHTML = '<div class="fh">선택 지점 집중 모니터링</div>' +                 // 10-29 목업: 누른 카드 = 집중 모니터링 판(.sel)
-      '<div class="h"><b>' + esc(s.name) + '</b><small>측정기 · 가정 위치</small><span class="st">–</span></div>' +
+      '<div class="h"><b>' + esc(s.name) + '</b><small>예측 지점</small><span class="st">–</span></div>' +
       '<div class="big"><b>–</b><span>dB(A) · 모의</span></div>' +
       '<div class="bar"><u style="--p:' + pct(s.bg) + '%" title="배경소음 ' + s.bg + '"></u><i></i></div>' +
       '<div class="sub"><span>배경 ' + s.bg + '</span><span class="pk">10분 최대 –</span></div>' +
       '<div class="why">항공기 영향 없음</div><div class="src">항공기 영향 없음</div><canvas width="320" height="56"></canvas>' +   // .why = 한 줄 요약용 원인(목업 타일)
       '<div class="today"></div><div class="note">' + esc(s.note || '') + '</div>';
     c.onclick = function () { S.map.flyTo([s.lat, s.lon], Math.max(S.map.getZoom(), 14)); };
+    c.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); c.click(); } };
     $('nzCards').appendChild(c);
     S.cards[s.id] = c;
     S.shown[s.id] = s.bg;
@@ -152,7 +177,8 @@
     if (window.NoiseWx) NoiseWx.frame(d);                              // 바람·구름(METAR) + 소음 영향 안내(noise-wx.js)
     drawLinks(d.sensors);
     events(d.sensors);
-    $('nzStat').textContent = '항공기 ' + (d.ac || []).length + ' · 측정기 ' + d.sensors.length + (d.mode === 'replay' ? ' · 리플레이' : d.mode === 'sim' ? ' · 모의' : ' · 실측');
+    var lag = Math.max(0, Math.round(Date.now() / 1000 - d.now));
+    $('nzStat').textContent = '항공기 ' + (d.ac || []).length + ' · 예측 지점 ' + d.sensors.length + (lag >= 5 ? ' · 자료 ' + lag + '초 지연' : '') + (d.mode === 'replay' ? ' · 리플레이' : d.mode === 'sim' ? ' · 모의' : ' · 실측');
     if (S.follow) {
       var top = d.sensors.slice().sort(function (a, b) { return b.db - a.db; })[0];
       if (top && top.db > top.bg + 5) S.map.panTo([top.lat, top.lon], { animate: true, duration: 0.8 });

@@ -7,6 +7,7 @@ body { font: 15px/1.5 var(--ns-sans, system-ui, sans-serif); background: var(--n
 .nz-float { position: absolute; top: 14px; left: 56px; right: 14px; z-index: 900; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; pointer-events: none; }
 .nz-pill { pointer-events: auto; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; background: rgba(11,15,23,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,.18); border-radius: 12px; padding: 6px 10px; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
 .nz-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.06); color: #f1f5f9; border: 1px solid transparent; border-radius: 8px; padding: 6px 12px; font: 700 13.5px var(--ns-sans, sans-serif); cursor: pointer; user-select: none; transition: background .15s, border-color .15s; white-space: nowrap; }
+.nz-short { display: none; }
 .nz-chip:hover { background: rgba(255,255,255,.14); }
 .nz-chip input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
 .nz-chip:has(input:checked) { background: rgba(56,189,248,.22); border-color: #38bdf8; color: #fff; }
@@ -159,5 +160,7 @@ body[data-gnb-page="map"] { background: #0b1120; }
 .ms-body .ns > .ns-h { display: none; }                                    /* 탭 이름과 겹치는 「곧 보일 항공기」 머리 · 활주로는 브리핑 바에 */
 /* 10-29 리뷰: 하단 「이용 안내·개인정보」 링크가 브라우저 기본 파랑(다크에서 대비 1.95) */
 .nz-foot a, .nw-foot a, .nd-foot a { color: #7dd3fc; }
+/* 공통 키보드 포커스 — 지도 도구·카드·탭을 마우스 없이도 식별 */
+:where(a, button, select, input, summary, [tabindex]):focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
 /* 10-29 리뷰: 공항 근처 지상 기체 이름표 3~4개가 쌓여 지점·활주로 표지를 가렸다 → 지상 기체는 이름표를 숨기고 가리키면 보인다 */
 .nz-ac.gnd .lbl { display: none; } .nz-ac.gnd:hover .lbl, .nz-ac.gnd:focus .lbl { display: block; }

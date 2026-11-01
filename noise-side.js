@@ -20,10 +20,16 @@
     function sel(c) { cards.querySelectorAll('.nz-card.sel').forEach(function (x) { if (x !== c) x.classList.remove('sel'); }); if (c) c.classList.add('sel'); }
     cards.addEventListener('click', function (e) { var c = e.target.closest('.nz-card'); if (c) sel(c); });
     new MutationObserver(function () { if (!cards.querySelector('.nz-card.sel')) sel(cards.querySelector('.nz-card')); }).observe(cards, { childList: true });
-    document.querySelectorAll('.ms-tabs button').forEach(function (b) {
-      b.onclick = function () {
-        document.querySelectorAll('.ms-tabs button').forEach(function (x) { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
-        document.querySelectorAll('.ms-pane').forEach(function (p) { p.classList.toggle('on', p.dataset.mp === b.dataset.mt); });
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.ms-tabs button'));
+    function pickTab(b) {
+      tabs.forEach(function (x) { var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1; });
+      document.querySelectorAll('.ms-pane').forEach(function (p) { var on = p.dataset.mp === b.dataset.mt; p.classList.toggle('on', on); p.hidden = !on; });
+    }
+    tabs.forEach(function (b) {
+      b.onclick = function () { pickTab(b); };
+      b.onkeydown = function (e) {
+        var i = tabs.indexOf(b), n = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -99;
+        if (n !== -99) { e.preventDefault(); var next = tabs[(n + tabs.length) % tabs.length]; pickTab(next); next.focus(); }
       };
     });
   }
