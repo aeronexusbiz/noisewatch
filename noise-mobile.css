@@ -105,7 +105,7 @@
   /* 모바일은 역할과 무관하게 핵심 4탭을 고정 노출한다. */
   html.nw-pub { --nm-tab: 62px; }
   html.nw-pub .ns-nav { display: grid !important; }
-  .ns-nav { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .ns-nav { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }   /* 11-02 「3D」 탭이 더해져 다섯 칸(지도·상황판·통계·3D·리플레이) */
   .ns-nav .ns-tab[data-k="report"] { display: none !important; }
   .nzwx-open { top: 104px; left: 10px; min-height: 40px; }
 }
