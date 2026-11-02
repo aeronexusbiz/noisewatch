@@ -11,7 +11,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 
 // full = 위성 영상을 구운 장면(맥 로컬만 · 공개 제외) · pub = 영상 없는 장면(공개) + 화면이 VWorld 타일을 지형에 입힌다(2D 지도와 같은 중계)
 //   sat = 지형 UV 범위(airport-blender rkss-sat-z16.json · 경도 직선 · 위도 메르카토르)
-const SCENES = { RKSS: { full: '/scene3d/rkss.glb?v=3', pub: '/scene3d/rkss-pub.glb?v=3', ref: [37.5583, 126.7906], sat: { S: 37.488, W: 126.728, N: 37.604, E: 126.888 } } };
+const SCENES = { RKSS: { full: '/scene3d/rkss.glb?v=3', pub: '/scene3d/rkss-pub.glb?v=4', ref: [37.5583, 126.7906], sat: { S: 37.488, W: 126.728, N: 37.604, E: 126.888 } } };
 const APT = 'RKSS', SC = SCENES[APT];
 const KX = Math.cos(SC.ref[0] * Math.PI / 180) * 111320, KY = 110574;
 const enu = (lat, lon) => [(lon - SC.ref[1]) * KX, -(lat - SC.ref[0]) * KY];   // [x, z]
@@ -102,7 +102,7 @@ loader.load(url, g => {
       ms.forEach(m => { m.transparent = true; m.depthWrite = false; m.polygonOffset = true; m.polygonOffsetFactor = o.name.startsWith('airfield') ? -3 : -2; }); o.renderOrder = o.name.startsWith('airfield') ? 2 : 1; }
     if (o.name === 'terrain') { ground.push(o); if (pub) liveSat(o); }
   });
-  S.add(g.scene); $('n3Load') && $('n3Load').remove(); sensorsPlace();
+  S.add(g.scene); $('n3Load') && $('n3Load').remove(); sensorsPlace(); lights();
 }, x => { if (x.total && $('n3Pct')) $('n3Pct').textContent = Math.round(x.loaded / x.total * 100) + '%'; },
 () => {
   if (!pub) { loadScene(SC.pub, true); return; }                               // 로컬에 영상 장면이 없으면 공개 장면으로
@@ -112,6 +112,30 @@ loader.load(url, g => {
 });
 }
 loadScene(LOCAL ? SC.full : SC.pub, !LOCAL);
+
+// ── 공항 등화(scene3d/<apt>-lights.json · tools/make_lights.py) — 유도로 가장자리 파랑·중심선 초록 · 활주로 가장자리·중심선 흰색 · 시단 초록 · 끝 빨강 ──
+let LIGHTS = null;
+function lights() {
+  if (LIGHTS) return;
+  fetch('/scene3d/' + APT.toLowerCase() + '-lights.json?v=1').then(r => r.ok ? r.json() : null).then(J => {
+    if (!J) return;
+    const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.25, 'rgba(255,255,255,.85)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    const tex = new THREE.CanvasTexture(c), H = new Map();
+    const hAt = (x, z) => { const k = Math.round(x / 150) + ',' + Math.round(z / 150); if (!H.has(k)) H.set(k, groundAt(Math.round(x / 150) * 150, Math.round(z / 150) * 150)); return H.get(k); };
+    LIGHTS = new THREE.Group(); LIGHTS.name = 'aptLights';
+    const COL = { b: 0x3b82ff, g: 0x22e07a, w: 0xfff4d6, r: 0xff3b30 };
+    Object.keys(COL).forEach(k => {
+      const a = J[k] || [], pos = new Float32Array(a.length / 2 * 3);
+      for (let i = 0; i < a.length / 2; i++) { pos[i * 3] = a[i * 2]; pos[i * 3 + 1] = hAt(a[i * 2], a[i * 2 + 1]) + 2.2; pos[i * 3 + 2] = a[i * 2 + 1]; }
+      const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const pts = new THREE.Points(geo, new THREE.PointsMaterial({ color: COL[k], map: tex, size: k === 'w' || k === 'r' ? 14 : 12, sizeAttenuation: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+      pts.renderOrder = 6; LIGHTS.add(pts);
+    });
+    LIGHTS.visible = $('n3Lit').checked; S.add(LIGHTS);
+  }).catch(() => {});
+}
+$('n3Lit').onchange = e => { if (LIGHTS) LIGHTS.visible = e.target.checked; };
 
 // ── 조절판 접기(폰은 접고 시작 · 고른 것은 이 브라우저에만 기억) ──
 {
