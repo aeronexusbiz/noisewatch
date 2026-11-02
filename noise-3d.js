@@ -142,7 +142,15 @@ function setLabel(o, lines, col) {
 }
 
 // ── 항공기 ──
-const SIZE = { small: 0.45, narrow: 1, wide: 1.6, heavy: 1.8, heli: 0.4 };
+const SIZE = { small: 0.6, narrow: 1, wide: 1, heavy: 1.12, heli: 0.4 };   // 실사형 모형은 실제 치수(협동체 37.6m · 광동체 62.8m) — 그 비율
+// 실사형 기체(airport-blender/scenes/aircraft.py → /scene3d/aircraft.glb · 자체 제작 범용 도장) — 못 받으면 아래 간이 모형
+//   노드 ac_narrow·ac_wide ─ *_body · *_gear · 재질 ac_tail(단계 색) · 원점 = 주 착륙장치 접지점 · eye = 조종석 눈 [앞 m, 위 m]
+const ACT = { narrow: null, wide: null }, EYE = { narrow: [16.6, 4.4], wide: [29.4, 6.3] };
+loader.load('/scene3d/aircraft.glb?v=1', g => {
+  ['narrow', 'wide'].forEach(k => { const n = g.scene.getObjectByName('ac_' + k); if (n) { n.position.set(0, 0, 0); ACT[k] = n; } });
+  ACS.forEach(o => swapModel(o));                                               // 먼저 나온 항공기도 실사형으로
+});
+function famOf(cls) { return cls === 'wide' || cls === 'heavy' ? 'wide' : 'narrow'; }
 const bodyM = new THREE.MeshStandardMaterial({ color: 0xf4f6f8, roughness: 0.35, metalness: 0.3 });
 const tailM = { arr: new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.4 }), dep: new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.4 }), other: new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4 }) };
 const G = {
@@ -154,7 +162,18 @@ const G = {
   stab: (() => { const s = new THREE.Shape([new THREE.Vector2(0, 0), new THREE.Vector2(6.5, 2.5), new THREE.Vector2(6.5, 4), new THREE.Vector2(0, 3.5)]); const a = new THREE.ShapeGeometry(s); const b = a.clone().scale(-1, 1, 1); return [a, b].map(q => q.rotateX(Math.PI / 2).translate(0, 0.8, 15)); })(),
   eng: new THREE.CylinderGeometry(1.1, 1.1, 4, 12).rotateX(Math.PI / 2)
 };
-function plane(phase) {
+const tailReal = {};
+function plane(phase, cls) {
+  const T = ACT[famOf(cls)];
+  if (T) {
+    const g = T.clone(true), ph = phase in tailM ? phase : 'other';
+    g.traverse(m => {
+      if (!m.isMesh) return; m.castShadow = false; m.userData.pick = true;
+      if (m.material && m.material.name === 'ac_tail') { if (!tailReal[ph]) { tailReal[ph] = m.material.clone(); tailReal[ph].color.copy(tailM[ph].color); } m.material = tailReal[ph]; }
+      if (/_gear$/.test(m.name)) g.userData.gear = m;
+    });
+    g.userData.real = famOf(cls); return g;
+  }
   const g = new THREE.Group(), tm = tailM[phase] || tailM.other;
   [G.fus, G.nose, G.cone].forEach(q => g.add(new THREE.Mesh(q, bodyM)));
   G.wing.forEach(q => { const m = new THREE.Mesh(q, bodyM); m.material.side = THREE.DoubleSide; g.add(m); });
@@ -169,14 +188,19 @@ function acObj(a) {
   let o = ACS.get(a.hex);
   if (!o) {
     o = { hex: a.hex, root: new THREE.Group(), trail: [], lastTrail: 0, pos: null, wavesAt: 0 };
-    o.model = plane(a.phase); o.root.add(o.model); o.model.userData.hex = a.hex; o.model.traverse(m => { m.userData.hex = a.hex; });
+    o.cls = a.cls; o.model = plane(a.phase, a.cls); o.root.add(o.model); o.model.traverse(m => { m.userData.hex = a.hex; });
     o.drop = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), lineM); S.add(o.drop);
     const tg = new THREE.BufferGeometry(); tg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(180 * 3), 3)); tg.setDrawRange(0, 0);
     o.trailLine = new THREE.Line(tg, new THREE.LineBasicMaterial({ color: a.phase === 'dep' ? 0xfb923c : 0x7dd3fc, transparent: true, opacity: 0.8 })); o.trailLine.frustumCulled = false; S.add(o.trailLine);
     S.add(o.root); ACS.set(a.hex, o);
   }
-  if (o.phase !== a.phase) { o.phase = a.phase; const tm = tailM[a.phase] || tailM.other; o.model.children.forEach(m => { if (m.geometry === G.fin) m.material = tm; }); }
+  if (o.phase !== a.phase) { const first = o.phase == null; o.phase = a.phase; if (!first) swapModel(o); }
   return o;
+}
+function swapModel(o) {                                                         // 모형 바꿔 끼우기(실사형 도착 · 단계가 바뀌어 꼬리 색)
+  const sc = o.model.scale.x, rot = o.model.rotation.clone(), vis = o.model.visible;
+  o.root.remove(o.model); o.model = plane(o.phase, o.cls); o.model.scale.setScalar(sc); o.model.rotation.copy(rot); o.model.visible = vis;
+  o.model.traverse(m => { m.userData.hex = o.hex; }); o.root.add(o.model);
 }
 function dropAc(o) { if (follow === o.hex) stopFollow(); S.remove(o.root); S.remove(o.drop); S.remove(o.trailLine); if (o.lb) { o.lb.material.map.dispose(); o.lb.material.dispose(); } o.trailLine.geometry.dispose(); o.drop.geometry.dispose(); ACS.delete(o.hex); }
 
@@ -239,7 +263,7 @@ function pull() {
       if (a.lat == null || a.lon == null) return;
       seen.add(a.hex); const o = acObj(a); o.d = a; o.t = now;
       const [x, z] = enu(a.lat, a.lon), gy = groundAt(x, z);
-      const y = (a.alt == null || a.alt === 'ground') ? gy + 3 : Math.max(gy + 3, a.alt * 0.3048);
+      const y = (a.alt == null || a.alt === 'ground') ? gy + 1.8 : Math.max(gy + 1.8, a.alt * 0.3048);   // 공항 바닥층(+1.6m) 위
       o.obs = new THREE.Vector3(x, y, z); if (!o.pos) o.pos = o.obs.clone();
       const big = $('n3Big').checked ? 3 : 1; o.model.scale.setScalar((SIZE[a.cls] || 1) * big);
       setLabel(o, [(a.flight || a.hex).trim() + (a.type ? ' · ' + a.type : ''), (PHASE[a.phase] || '') + (a.alt != null && a.alt !== 'ground' ? ' · ' + Math.round(a.alt * 0.3048).toLocaleString() + ' m' : ' · 지상') + (a.db != null ? ' · ' + a.db.toFixed(0) + ' dB' : '')], lvl(a.db || 0).c);
@@ -274,7 +298,8 @@ function startFollow(hex) {
 function setFview(v) {
   fview = v; const o = follow && ACS.get(follow);
   document.querySelectorAll('#n3FBar [data-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === v)));
-  ctl.enabled = v === 'orbit'; C.fov = v === 'cockpit' ? 62 : 40; C.updateProjectionMatrix();
+  ctl.enabled = v === 'orbit'; C.fov = v === 'cockpit' ? 62 : 40; C.updateProjectionMatrix(); $('n3Ck').hidden = !(o && v === 'cockpit');
+  if (o && v === 'cockpit' && !$('n3Panel').classList.contains('folded')) $('n3Fold').click();   // 창틀이 조절판을 가리지 않게 접는다
   if (o) { o.model.visible = v !== 'cockpit'; if (o.lb) o.lb.visible = v !== 'cockpit'; }
   if (v === 'orbit' && o) { const off = C.position.clone().sub(o.pos); if (off.length() > 2500 || off.length() < 80) off.setLength(900); ctl.target.copy(o.pos); C.position.copy(o.pos).add(off); }
   const bar = $('n3FBar'); bar.hidden = !o;
@@ -283,7 +308,7 @@ function setFview(v) {
 function stopFollow() {
   const o = follow && ACS.get(follow); if (o) { o.model.visible = true; if (o.lb) o.lb.visible = true; }
   if (follow && fview !== 'orbit') { ctl.target.copy(o ? o.pos : ctl.target); }
-  follow = null; markList(); ctl.enabled = true; C.fov = 40; C.updateProjectionMatrix(); $('n3FBar').hidden = true;
+  follow = null; markList(); ctl.enabled = true; C.fov = 40; C.updateProjectionMatrix(); $('n3FBar').hidden = true; $('n3Ck').hidden = true;
 }
 document.querySelectorAll('#n3FBar [data-f]').forEach(b => b.onclick = () => setFview(b.dataset.f));
 $('n3FStop').onclick = () => stopFollow();
@@ -301,7 +326,18 @@ window.N3 = { waves: () => WAVES.length, acs: () => ACS.size, busy: () => [...AC
 
 // ── 그리기 ──
 const UP = new THREE.Vector3(0, 1, 0);
-let prev = performance.now() / 1000;
+let prev = performance.now() / 1000, ckAt = 0;
+// ── 조종석 계기(창틀·글레어실드·PFD·방위) — 서버가 준 속도·고도·방위·승강률로 그린다(자세는 승강률로 근사, 기울기 없음) ──
+function cockpitPanel(o) {
+  const a = o.d || {}, alt = a.alt != null && a.alt !== 'ground' ? Math.round(a.alt) : 0, spd = Math.round(a.gs || 0), hdg = Math.round(((a.track || 0) + 360) % 360), vs = Math.round(a.vr || 0);
+  const pitchDeg = (o.pitch || 0) * 180 / Math.PI;
+  $('ckSpd').textContent = spd; $('ckAlt').textContent = alt.toLocaleString(); $('ckVs').textContent = (vs > 0 ? '+' : '') + vs.toLocaleString();
+  $('ckHdg').textContent = String(hdg).padStart(3, '0') + '°';
+  $('ckHor').setAttribute('transform', 'translate(0 ' + Math.max(-38, Math.min(38, pitchDeg * 3)).toFixed(1) + ')');
+  $('ckRose').setAttribute('transform', 'rotate(' + (-hdg) + ' 0 0)');
+  $('ckDb').textContent = a.db != null ? a.db.toFixed(0) + ' dB' : '–';
+  $('ckPh').textContent = PHASE[a.phase] || '';
+}
 go('over', true); resize();
 R.setAnimationLoop(() => {
   const now = performance.now() / 1000, dt = Math.min(0.1, now - prev); prev = now;
@@ -316,14 +352,17 @@ R.setAnimationLoop(() => {
     if (o.hdg == null) o.hdg = trk; else { let dh = ((trk - o.hdg + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; o.hdg += dh * (1 - Math.exp(-dt * 2)); }   // 시점이 흔들리지 않게 방향을 천천히 따른다
     o.pitch = pitch;
     const gy = groundAt(o.pos.x, o.pos.z), pa = o.drop.geometry.attributes.position;
-    pa.setXYZ(0, o.pos.x, o.pos.y, o.pos.z); pa.setXYZ(1, o.pos.x, gy, o.pos.z); pa.needsUpdate = true; o.drop.visible = o.pos.y - gy > 15;
+    pa.setXYZ(0, o.pos.x, o.pos.y, o.pos.z); pa.setXYZ(1, o.pos.x, gy, o.pos.z); pa.needsUpdate = true;
+    const agl = o.pos.y - gy, mine = !follow || follow === o.hex;                 // 11-02 운영자 「고른 기체만 보이기」 — 따라가는 동안 다른 항공기는 숨긴다
+    o.root.visible = mine; o.drop.visible = mine && agl > 15;
+    const gr = o.model.userData.gear; if (gr) gr.visible = agl < 60 || (a.phase === 'arr' && agl < 900) || (a.phase === 'dep' && agl < 250);   // 착륙장치 — 지상·접근 900m 아래·이륙 직후
     if (now - o.lastTrail > 1) {                                                       // 지나온 길 — 1초마다 한 점 · 3분
       o.lastTrail = now; o.trail.push(o.pos.clone()); if (o.trail.length > 180) o.trail.shift();
       const ta = o.trailLine.geometry.attributes.position; o.trail.forEach((p, i) => ta.setXYZ(i, p.x, p.y, p.z)); ta.needsUpdate = true; o.trailLine.geometry.setDrawRange(0, o.trail.length);
     }
-    o.trailLine.visible = $('n3Trail').checked;
+    o.trailLine.visible = $('n3Trail').checked && mine;
     const busy = (a.phase === 'arr' || a.phase === 'dep') && o.pos.y - gy < 1800;      // 이착륙 중(지면 위 1.8km 아래)만 퍼짐
-    if (busy && $('n3Wave').checked && now - o.wavesAt > WAVE_EVERY) { o.wavesAt = now; spawnWave(o); }
+    if (busy && mine && $('n3Wave').checked && now - o.wavesAt > WAVE_EVERY) { o.wavesAt = now; spawnWave(o); }
   });
   stepWaves(now);
   SEN.forEach(o => { const s = o.loud ? 1 + 0.25 * Math.sin(now * 5) : 1; o.head.scale.setScalar(s); });
@@ -332,11 +371,14 @@ R.setAnimationLoop(() => {
   else if (fo && fo.hdg != null) {
     const sc = fo.model.scale.x, fwd = new THREE.Vector3(Math.sin(fo.hdg), Math.sin(fo.pitch || 0), -Math.cos(fo.hdg)).normalize();
     if (fview === 'chase') {                                                        // 뒤따라가기 — 꼬리 뒤 위쪽에서 진행 방향을 본다
-      const want = fo.pos.clone().addScaledVector(fwd, -70 * sc - 120).add(new THREE.Vector3(0, 22 * sc + 35, 0));
+      const len = (fo.model.userData.real === 'wide' ? 63 : 38) * sc;
+      const want = fo.pos.clone().addScaledVector(fwd, -len * 1.9 - 25).add(new THREE.Vector3(0, len * 0.45 + 8, 0));
       C.position.lerp(want, 1 - Math.exp(-dt * 3)); C.lookAt(fo.pos.clone().addScaledVector(fwd, 60 * sc));
     } else {                                                                        // 조종석 — 기수 위에서 앞을 본다(내 기체는 숨김)
-      C.position.copy(fo.pos).addScaledVector(fwd, 17 * sc).add(new THREE.Vector3(0, 1.6 * sc, 0));
+      const ey = EYE[fo.model.userData.real || 'narrow'];
+      C.position.copy(fo.pos).addScaledVector(fwd, ey[0] * sc).add(new THREE.Vector3(0, ey[1] * sc, 0));
       C.lookAt(C.position.clone().addScaledVector(fwd, 1000).add(new THREE.Vector3(0, -60, 0)));
+      if (now - ckAt > 0.12) { ckAt = now; cockpitPanel(fo); }
     }
   }
   if (anim) {

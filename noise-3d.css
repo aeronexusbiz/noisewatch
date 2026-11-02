@@ -41,3 +41,18 @@ body.n3-body { display: flex; flex-direction: column; }
 .n3-fbar button { background: var(--ns-card, #161f30); color: var(--ns-sub, #cbd5e1); border: 1px solid var(--ns-line, #2a364f); border-radius: 8px; padding: 6px 10px; font: 700 13px var(--ns-sans); cursor: pointer; }
 .n3-fbar button[aria-pressed="true"] { background: #1d4ed8; border-color: #3b82f6; color: #fff; }
 .n3-fbar button:focus-visible { outline: 2px solid var(--ns-acc, #38bdf8); outline-offset: 2px; }
+/* 조종석 창틀·계기(11-02) — 화면 위에 겹치고 누름은 지도로 통과 */
+.n3-ck { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.n3-ck[hidden] { display: none; }
+.n3-ck-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
+.n3-ck-panel { position: absolute; left: 50%; bottom: 2%; transform: translateX(-50%); display: flex; gap: 18px; width: min(760px, 92%); height: 30%; }
+.n3-ck-pfd, .n3-ck-nd { position: relative; flex: 1; background: #05070a; border: 3px solid #2c333d; border-radius: 10px; box-shadow: inset 0 0 18px rgba(0,0,0,.8); display: grid; place-items: center; color: #e2e8f0; font: 700 13px var(--ns-mono, ui-monospace, monospace); }
+.n3-ck-ai, .n3-ck-nd svg { height: 82%; aspect-ratio: 1; }
+.n3-ck-tape { position: absolute; top: 50%; transform: translateY(-50%); display: grid; gap: 2px; background: rgba(15, 23, 42, .85); border: 1px solid #334155; border-radius: 6px; padding: 4px 8px; text-align: center; }
+.n3-ck-tape.l { left: 8px; } .n3-ck-tape.r { right: 8px; }
+.n3-ck-tape b { font-size: 18px; color: #f8fafc; } .n3-ck-tape small { font-size: 10px; color: #94a3b8; font-family: var(--ns-sans); }
+.n3-ck-nd { grid-template-rows: 1fr auto; }
+.n3-ck-nd > b { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 1px 8px; }
+.n3-ck-nd > span { position: absolute; bottom: 8px; left: 10px; font: 600 11px var(--ns-sans); color: #94a3b8; }
+.n3-ck-nd > span.db { left: auto; right: 10px; } .n3-ck-nd > span.db b { color: #facc15; }
+.n3-panel, .n3-fbar { z-index: 4; }

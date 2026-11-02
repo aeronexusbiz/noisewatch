@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>AeroNexus NoiseWatch · 3D 보기</title>
 <link rel="icon" href="/img/brand/favicon-32.png">
-<link rel="stylesheet" href="/noise-3d.css?v=4">
+<link rel="stylesheet" href="/noise-3d.css?v=6">
 <link rel="stylesheet" href="/noise-shell.css?v=8">                <!-- 공통 머리(GNB) -->
 <link rel="stylesheet" href="/noise-icons.css?v=1">
 <script src="/noise-icons.js?v=8"></script>
@@ -15,7 +15,7 @@
 <script src="/noise-brief.js?v=5"></script>                         <!-- NoiseBrief.level(db) — 색·말 하나로 -->
 <link rel="stylesheet" href="/noise-theme-light.css?v=18">
 <script src="/noise-theme.js?v=3"></script>
-<link rel="stylesheet" href="/noise-mobile.css?v=21">               <!-- 폰 화면 — 맨 뒤에 -->
+<link rel="stylesheet" href="/noise-mobile.css?v=22">               <!-- 폰 화면 — 맨 뒤에 -->
 </head>
 <body data-gnb-page="3d" class="n3-body">
 <!-- 화면: 일반·기관 둘 다 (2026-11-02 운영자 「소음와치 3D 모드와 항공기도 3D로」) -->
@@ -26,6 +26,30 @@
 </header>
 <main class="n3-main">
   <canvas id="n3c" aria-label="김포공항 주변 3D 지도 — 항공기와 소음 측정 지점"></canvas>
+  <div class="n3-ck" id="n3Ck" hidden aria-hidden="true">                <!-- 조종석 창틀·계기(11-02 · AeroNexus 3D착륙 조종석 시점 참고 · 그림은 새로 그림) -->
+    <svg class="n3-ck-frame" viewBox="0 0 1000 600" preserveAspectRatio="none">
+      <path d="M0 0H1000V600H0Z M40 70 L470 40 L478 360 L60 380 Z M530 40 L960 70 L940 380 L522 360 Z" fill-rule="evenodd" fill="#1a1f26"/>
+      <path d="M40 70 L470 40 L478 360 L60 380 Z M530 40 L960 70 L940 380 L522 360 Z" fill="none" stroke="#2c333d" stroke-width="10"/>
+      <path d="M0 395 Q500 350 1000 395 V600 H0 Z" fill="#14181e"/>
+    </svg>
+    <div class="n3-ck-panel">
+      <div class="n3-ck-pfd">
+        <svg viewBox="-60 -60 120 120" class="n3-ck-ai"><defs><clipPath id="ckClip"><rect x="-50" y="-50" width="100" height="100" rx="8"/></clipPath></defs>
+          <g clip-path="url(#ckClip)"><g id="ckHor"><rect x="-120" y="-160" width="240" height="160" fill="#2f7fd1"/><rect x="-120" y="0" width="240" height="160" fill="#7a4f2a"/><line x1="-120" y1="0" x2="120" y2="0" stroke="#fff" stroke-width="1.2"/>
+            <g stroke="#fff" stroke-width=".8"><line x1="-12" y1="-15" x2="12" y2="-15"/><line x1="-12" y1="15" x2="12" y2="15"/><line x1="-6" y1="-7.5" x2="6" y2="-7.5"/><line x1="-6" y1="7.5" x2="6" y2="7.5"/></g></g></g>
+          <path d="M-30 0H-10L-6 5M30 0H10L6 5" stroke="#facc15" stroke-width="3" fill="none"/><circle r="1.8" fill="#facc15"/>
+        </svg>
+        <div class="n3-ck-tape l"><small>속도 kt</small><b id="ckSpd">0</b></div>
+        <div class="n3-ck-tape r"><small>고도 ft</small><b id="ckAlt">0</b><small id="ckVs">0</small></div>
+      </div>
+      <div class="n3-ck-nd">
+        <svg viewBox="-60 -60 120 120"><circle r="48" fill="none" stroke="#3b4656" stroke-width="1.2"/><g id="ckRose">
+          <text y="-38" text-anchor="middle" fill="#e2e8f0" font-size="9">N</text><text x="40" y="3" text-anchor="middle" fill="#94a3b8" font-size="8">E</text><text y="44" text-anchor="middle" fill="#94a3b8" font-size="8">S</text><text x="-40" y="3" text-anchor="middle" fill="#94a3b8" font-size="8">W</text></g>
+          <path d="M0 -20 L5 8 L0 4 L-5 8 Z" fill="#f8fafc"/></svg>
+        <b id="ckHdg">000°</b><span id="ckPh"></span><span class="db">소음 <b id="ckDb">–</b></span>
+      </div>
+    </div>
+  </div>
   <div class="n3-fbar" id="n3FBar" role="group" aria-label="고른 항공기 보기" hidden>
     <b id="n3FName" translate="no"></b>
     <button type="button" data-f="chase" aria-pressed="true">뒤따라가기</button><button type="button" data-f="cockpit" aria-pressed="false">조종석</button><button type="button" data-f="orbit" aria-pressed="false">주변 돌아보기</button><button type="button" id="n3FStop">그만</button>
@@ -55,6 +79,6 @@
 </main>
 <script src="/noise-shell.js?v=8"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
-<script type="module" src="/noise-3d.js?v=4"></script>
+<script type="module" src="/noise-3d.js?v=6"></script>
 </body>
 </html>
