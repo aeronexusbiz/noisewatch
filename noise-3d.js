@@ -348,12 +348,12 @@ window.N3 = { pos: h => { const o = ACS.get(h); return o && o.pos ? [o.pos.x, o.
 function sampleAt(o, now) {
   const sm = o.smp || [];
   if (sm.length < 2) return { p: sm.length ? sm[0].p : o.obs, dir: null };
-  const gaps = sm.slice(1).map((q, i) => q.t - sm[i].t).sort((x, y) => x - y), med = gaps[gaps.length >> 1];
-  const rt = now - Math.max(1.5, Math.min(6, med * 1.3));
+  const gaps = sm.slice(1).map((q, i) => q.t - sm[i].t).sort((x, y) => x - y), p90 = gaps[Math.min(gaps.length - 1, Math.floor(gaps.length * 0.9))];
+  const rt = now - Math.max(2, Math.min(8, p90 * 1.25));                   // 간격이 들쭉날쭉한 공개 경로도 거의 늘 두 점 사이에서 그리게
   let i = sm.length - 2;
   while (i > 0 && sm[i].t > rt) i--;
   const A = sm[i], B = sm[i + 1], span = Math.max(0.2, B.t - A.t);
-  const k = Math.min((rt - A.t) / span, 1 + 6 / span);                     // 1 넘으면 같은 속도로 이어 감(상한 6초)
+  const k = Math.min((rt - A.t) / span, 1 + 1.5 / span);                   // 1 넘으면 같은 속도로 이어 감(상한 1.5초 — 길면 다음 점보다 앞서 되돌아간다)
   const p = A.p.clone().lerp(B.p, Math.max(0, k));
   const dx = B.p.x - A.p.x, dz = B.p.z - A.p.z;
   return { p, dir: dx * dx + dz * dz > 4 ? Math.atan2(dx, -dz) : null };
@@ -382,6 +382,11 @@ R.setAnimationLoop(() => {
     let trk = (a.track || 0) * Math.PI / 180;
     const tgt = sampleAt(o, now);
     if (tgt.dir) trk = tgt.dir;
+    if (o.lastTgt && a.alt !== 'ground' && v > 30) {                        // 공중 기체는 진행 방향으로 되돌아가지 않는다
+      const back = (tgt.p.x - o.lastTgt.x) * Math.sin(trk) - (tgt.p.z - o.lastTgt.z) * Math.cos(trk);
+      if (back < 0 && back > -400) tgt.p.copy(o.lastTgt);
+    }
+    o.lastTgt = tgt.p.clone();
     o.pos.lerp(tgt.p, 1 - Math.exp(-dt * 5));
     o.root.position.copy(o.pos);
     const pitch = v > 20 ? Math.atan2((a.vr || 0) * 0.3048 / 60, v) : 0;
