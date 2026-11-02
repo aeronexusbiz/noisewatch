@@ -34,3 +34,10 @@ body.n3-body { display: flex; flex-direction: column; }
 .n3-panel.folded .n3-fold { margin: 0; width: auto; }
 .n3-panel.folded .n3-fold::after { content: "▾"; margin-left: 10px; }
 .n3-fold:focus-visible { outline: 2px solid var(--ns-acc, #38bdf8); outline-offset: 2px; }
+/* 고른 항공기 보기 띠(11-02 운영자 「항공기 뒤따라가기와 조종석에서 보기」) */
+.n3-fbar { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; background: rgba(17, 24, 38, .9); border: 1px solid var(--ns-line, #2a364f); border-radius: 12px; padding: 6px 8px; z-index: 5; max-width: calc(100% - 24px); flex-wrap: wrap; justify-content: center; }
+.n3-fbar[hidden] { display: none; }
+.n3-fbar b { font-weight: 800; margin: 0 6px; white-space: nowrap; }
+.n3-fbar button { background: var(--ns-card, #161f30); color: var(--ns-sub, #cbd5e1); border: 1px solid var(--ns-line, #2a364f); border-radius: 8px; padding: 6px 10px; font: 700 13px var(--ns-sans); cursor: pointer; }
+.n3-fbar button[aria-pressed="true"] { background: #1d4ed8; border-color: #3b82f6; color: #fff; }
+.n3-fbar button:focus-visible { outline: 2px solid var(--ns-acc, #38bdf8); outline-offset: 2px; }
