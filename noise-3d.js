@@ -256,6 +256,8 @@ let lastData = 0;
 function pull() {
   fetch('/noise/live?apt=' + APT, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => {
     if (!d || !d.ok) return;
+    if (d.now && pull.last && d.now <= pull.last) return;            // 공개 경로(CDN)에서 예전 응답이 늦게 섞여 온다 — 서버 시각이 거꾸로면 버린다
+    if (d.now) pull.last = d.now;
     const now = performance.now() / 1000; lastData = now;
     senData = d.sensors || []; sensorsPlace();
     const seen = new Set();
@@ -267,7 +269,8 @@ function pull() {
       o.obs = new THREE.Vector3(x, y, z); if (!o.pos) o.pos = o.obs.clone();
       // 11-02 운영자 「앞뒤로 버벅인다」 — 서버 위치는 수신이 몇 초씩 늦거나 같은 값이 되풀이된다. 바뀐 점만 쌓아 두고 조금 늦게(약 3초) 그 사이를 잇는다(앞뒤 튐 없음)
       o.smp = o.smp || []; const last = o.smp[o.smp.length - 1];
-      if (!last || last.p.distanceToSquared(o.obs) > 0.25) { o.smp.push({ t: now, p: o.obs.clone() }); if (o.smp.length > 12) o.smp.shift(); }
+      const back = last && a.alt !== 'ground' && a.gs > 60 && ((o.obs.x - last.p.x) * Math.sin((a.track || 0) * Math.PI / 180) - (o.obs.z - last.p.z) * Math.cos((a.track || 0) * Math.PI / 180)) < -5;   // 진행 반대로 물러난 점은 버린다
+      if (!back && (!last || last.p.distanceToSquared(o.obs) > 0.25)) { o.smp.push({ t: now, p: o.obs.clone() }); if (o.smp.length > 12) o.smp.shift(); }
       const big = $('n3Big').checked ? 3 : 1; o.model.scale.setScalar((SIZE[a.cls] || 1) * big);
       setLabel(o, [(a.flight || a.hex).trim() + (a.type ? ' · ' + a.type : ''), (PHASE[a.phase] || '') + (a.alt != null && a.alt !== 'ground' ? ' · ' + Math.round(a.alt * 0.3048).toLocaleString() + ' m' : ' · 지상') + (a.db != null ? ' · ' + a.db.toFixed(0) + ' dB' : '')], lvl(a.db || 0).c);
       o.lb.position.set(0, 40 * big * (SIZE[a.cls] || 1) / 3 + 30, 0);
