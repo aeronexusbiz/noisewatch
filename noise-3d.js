@@ -78,7 +78,7 @@ loader.load(SC.url, g => {
   S.add(g.scene); $('n3Load').remove(); sensorsPlace();
 }, x => { if (x.total) $('n3Pct').textContent = Math.round(x.loaded / x.total * 100) + '%'; },
 () => {
-  $('n3Load').textContent = '3D 지도 자료를 받지 못했습니다. 항공기와 측정 지점은 평면 위에 그립니다.';
+  $('n3Load').textContent = '배경 지도 없이 평면 위에 그리는 중입니다'; $('n3Load').classList.add('n3-chip');   // 공개 주소는 장면 파일을 내지 않는다(위성 영상 재배포 확인 전) — 가운데 대신 구석 칩으로
   const pl = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), new THREE.MeshStandardMaterial({ color: 0x6b7b5e }));
   pl.rotation.x = -Math.PI / 2; pl.position.y = 10; S.add(pl); ground.push(pl); sensorsPlace();
 });

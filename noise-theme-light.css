@@ -185,3 +185,4 @@ html[data-theme="light"] .n3-chk, html[data-theme="light"] .n3-legend, html[data
 html[data-theme="light"] .n3-legend p, html[data-theme="light"] .n3-ac small, html[data-theme="light"] .n3-empty { color: #475569; }
 html[data-theme="light"] .n3-ac { color: #0f172a; } html[data-theme="light"] .n3-ac:hover, html[data-theme="light"] .n3-ac.on { background: #f1f5f9; border-color: #cbd5e1; }
 html[data-theme="light"] body.n3-body { background: #eef2f7; }
+html[data-theme="light"] .n3-load.n3-chip { background: rgba(255, 255, 255, .94); border-color: #cbd5e1; color: #334155; }
