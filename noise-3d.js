@@ -11,7 +11,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 
 // full = 위성 영상을 구운 장면(맥 로컬만 · 공개 제외) · pub = 영상 없는 장면(공개) + 화면이 VWorld 타일을 지형에 입힌다(2D 지도와 같은 중계)
 //   sat = 지형 UV 범위(airport-blender rkss-sat-z16.json · 경도 직선 · 위도 메르카토르)
-const SCENES = { RKSS: { full: '/scene3d/rkss.glb?v=1', pub: '/scene3d/rkss-pub.glb?v=1', ref: [37.5583, 126.7906], sat: { S: 37.488, W: 126.728, N: 37.604, E: 126.888 } } };
+const SCENES = { RKSS: { full: '/scene3d/rkss.glb?v=2', pub: '/scene3d/rkss-pub.glb?v=2', ref: [37.5583, 126.7906], sat: { S: 37.488, W: 126.728, N: 37.604, E: 126.888 } } };
 const APT = 'RKSS', SC = SCENES[APT];
 const KX = Math.cos(SC.ref[0] * Math.PI / 180) * 111320, KY = 110574;
 const enu = (lat, lon) => [(lon - SC.ref[1]) * KX, -(lat - SC.ref[0]) * KY];   // [x, z]
