@@ -9,7 +9,9 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Sky } from 'three/addons/objects/Sky.js';
 
-const SCENES = { RKSS: { url: '/scene3d/rkss.glb?v=1', ref: [37.5583, 126.7906] } };
+// full = 위성 영상을 구운 장면(맥 로컬만 · 공개 제외) · pub = 영상 없는 장면(공개) + 화면이 VWorld 타일을 지형에 입힌다(2D 지도와 같은 중계)
+//   sat = 지형 UV 범위(airport-blender rkss-sat-z16.json · 경도 직선 · 위도 메르카토르)
+const SCENES = { RKSS: { full: '/scene3d/rkss.glb?v=1', pub: '/scene3d/rkss-pub.glb?v=1', ref: [37.5583, 126.7906], sat: { S: 37.488, W: 126.728, N: 37.604, E: 126.888 } } };
 const APT = 'RKSS', SC = SCENES[APT];
 const KX = Math.cos(SC.ref[0] * Math.PI / 180) * 111320, KY = 110574;
 const enu = (lat, lon) => [(lon - SC.ref[1]) * KX, -(lat - SC.ref[0]) * KY];   // [x, z]
@@ -66,22 +68,59 @@ function groundAt(x, z) {
 }
 const draco = new DRACOLoader(); draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
 const loader = new GLTFLoader(); loader.setDRACOLoader(draco);
-loader.load(SC.url, g => {
+const LOCAL = /^(127\.|localhost$|192\.168\.|10\.)/.test(location.hostname) && !new URLSearchParams(location.search).has('pub');   // ?pub=1 — 로컬에서 공개 장면 시험
+// 지형에 위성 타일 입히기(공개 장면) — 같은 출처 /vworld/ 중계라 캔버스가 오염되지 않는다 · 폰은 한 단계 낮게 · 동시 8장
+function liveSat(mesh) {
+  const B = SC.sat, Z = matchMedia('(pointer: coarse)').matches ? 14 : 15;
+  const tx = lon => (lon + 180) / 360 * 2 ** Z, ty = lat => { const r = lat * Math.PI / 180; return (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * 2 ** Z; };
+  const x0 = Math.floor(tx(B.W)), x1 = Math.floor(tx(B.E)), y0 = Math.floor(ty(B.N)), y1 = Math.floor(ty(B.S));
+  const ox = (tx(B.W) - x0) * 256, oy = (ty(B.N) - y0) * 256;
+  const cvs = document.createElement('canvas'); cvs.width = Math.round((tx(B.E) - tx(B.W)) * 256); cvs.height = Math.round((ty(B.S) - ty(B.N)) * 256);
+  const g = cvs.getContext('2d'); g.fillStyle = '#6b7b5e'; g.fillRect(0, 0, cvs.width, cvs.height);
+  const tex = new THREE.CanvasTexture(cvs); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = R.capabilities.getMaxAnisotropy();
+  const m = mesh.material; m.map = tex; m.color.set(0xffffff); m.roughness = 1; m.metalness = 0; m.needsUpdate = true;
+  const q = []; for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) q.push([x, y]);
+  const c = [(x0 + x1) / 2, (y0 + y1) / 2]; q.sort((a, b) => Math.hypot(a[0] - c[0], a[1] - c[1]) - Math.hypot(b[0] - c[0], b[1] - c[1]));   // 공항 가운데부터
+  let dirty = false, live = 0;
+  const tick = setInterval(() => { if (dirty) { tex.needsUpdate = true; dirty = false; } if (!q.length && !live) clearInterval(tick); }, 400);
+  const next = () => {
+    const t = q.shift(); if (!t) return; live++;
+    const im = new Image(); im.decoding = 'async';
+    im.onload = () => { g.drawImage(im, (t[0] - x0) * 256 - ox, (t[1] - y0) * 256 - oy); dirty = true; live--; next(); };
+    im.onerror = () => { live--; next(); };
+    im.src = '/vworld/Satellite/' + Z + '/' + t[1] + '/' + t[0] + '.jpeg';
+  };
+  for (let i = 0; i < 8; i++) next();
+}
+function loadScene(url, pub) {
+loader.load(url, g => {
   g.scene.traverse(o => {
     if (!o.isMesh) return;
     const ms = Array.isArray(o.material) ? o.material : [o.material];
     ms.forEach(m => { if (m.map) { m.map.anisotropy = R.capabilities.getMaxAnisotropy(); m.map.colorSpace = THREE.SRGBColorSpace; } });
     if (/^(airfield|landside)/.test(o.name)) { o.position.y += o.name.startsWith('airfield') ? 1.6 : 0.9;   // 지형과 0.3m 차이는 멀리서 깊이가 모자라 위성 가림 얼룩이 비쳤다(11-02)
       ms.forEach(m => { m.transparent = true; m.depthWrite = false; m.polygonOffset = true; m.polygonOffsetFactor = o.name.startsWith('airfield') ? -3 : -2; }); o.renderOrder = o.name.startsWith('airfield') ? 2 : 1; }
-    if (o.name === 'terrain') ground.push(o);
+    if (o.name === 'terrain') { ground.push(o); if (pub) liveSat(o); }
   });
-  S.add(g.scene); $('n3Load').remove(); sensorsPlace();
-}, x => { if (x.total) $('n3Pct').textContent = Math.round(x.loaded / x.total * 100) + '%'; },
+  S.add(g.scene); $('n3Load') && $('n3Load').remove(); sensorsPlace();
+}, x => { if (x.total && $('n3Pct')) $('n3Pct').textContent = Math.round(x.loaded / x.total * 100) + '%'; },
 () => {
-  $('n3Load').textContent = '배경 지도 없이 평면 위에 그리는 중입니다'; $('n3Load').classList.add('n3-chip');   // 공개 주소는 장면 파일을 내지 않는다(위성 영상 재배포 확인 전) — 가운데 대신 구석 칩으로
+  if (!pub) { loadScene(SC.pub, true); return; }                               // 로컬에 영상 장면이 없으면 공개 장면으로
+  $('n3Load').textContent = '배경 지도 없이 평면 위에 그리는 중입니다'; $('n3Load').classList.add('n3-chip');
   const pl = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), new THREE.MeshStandardMaterial({ color: 0x6b7b5e }));
   pl.rotation.x = -Math.PI / 2; pl.position.y = 10; S.add(pl); ground.push(pl); sensorsPlace();
 });
+}
+loadScene(LOCAL ? SC.full : SC.pub, !LOCAL);
+
+// ── 조절판 접기(폰은 접고 시작 · 고른 것은 이 브라우저에만 기억) ──
+{
+  const P = $('n3Panel'), F = $('n3Fold'); let st = null;
+  try { st = localStorage.getItem('nw.n3.fold'); } catch (e) { /* 저장소 막힘 */ }
+  const set = f => { P.classList.toggle('folded', f); F.setAttribute('aria-expanded', String(!f)); F.textContent = f ? '조절판 펼치기' : '조절판 접기'; };
+  set(st ? st === '1' : matchMedia('(max-width: 600px)').matches);
+  F.onclick = () => { const f = !P.classList.contains('folded'); set(f); try { localStorage.setItem('nw.n3.fold', f ? '1' : '0'); } catch (e) { /* 무시 */ } };
+}
 
 // ── 글자판(화면 크기 고정 스프라이트) ──
 function label(lines, col) {
