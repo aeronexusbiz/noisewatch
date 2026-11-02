@@ -305,7 +305,7 @@ function setFview(v) {
   fview = v; const o = follow && ACS.get(follow);
   document.querySelectorAll('#n3FBar [data-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === v)));
   $('n3FFar').hidden = $('n3FNear').hidden = v !== 'chase';
-  ctl.enabled = v === 'orbit'; C.fov = v === 'cockpit' ? 62 : 40; C.updateProjectionMatrix(); $('n3Ck').hidden = !(o && v === 'cockpit');
+  ctl.enabled = v === 'orbit'; C.fov = v === 'cockpit' ? 62 : 40; C.updateProjectionMatrix(); if (CK) CK.show(!!(o && v === 'cockpit')); ckYaw = ckPitch = 0; if (o) o.chase = null;
   if (o && v === 'cockpit' && !$('n3Panel').classList.contains('folded')) $('n3Fold').click();   // 창틀이 조절판을 가리지 않게 접는다
   if (o) { o.model.visible = v !== 'cockpit'; if (o.lb) o.lb.visible = v !== 'cockpit'; }
   if (v === 'orbit' && o) { const off = C.position.clone().sub(o.pos); if (off.length() > 2500 || off.length() < 80) off.setLength(900); ctl.target.copy(o.pos); C.position.copy(o.pos).add(off); }
@@ -315,20 +315,22 @@ function setFview(v) {
 function stopFollow() {
   const o = follow && ACS.get(follow); if (o) { o.model.visible = true; if (o.lb) o.lb.visible = true; }
   if (follow && fview !== 'orbit') { ctl.target.copy(o ? o.pos : ctl.target); }
-  follow = null; markList(); ctl.enabled = true; C.fov = 40; C.updateProjectionMatrix(); $('n3FBar').hidden = true; $('n3Ck').hidden = true;
+  follow = null; markList(); ctl.enabled = true; C.fov = 40; C.updateProjectionMatrix(); $('n3FBar').hidden = true; if (CK) CK.show(false);
 }
 document.querySelectorAll('#n3FBar [data-f]').forEach(b => b.onclick = () => setFview(b.dataset.f));
 // 뒤따라가기 조절 — 끌기: 둘레 돌기·위아래 · 휠/집기·단추: 거리(0.3~12배) · 두 번 누르기: 처음 자리
 { let drag = null, pinch = null;
   const chaseOn = () => follow && fview === 'chase';
   const zoom = f => { chDist = Math.max(0.3, Math.min(12, chDist * f)); };
-  cv.addEventListener('pointerdown', e => { if (chaseOn() && e.isPrimary) drag = { x: e.clientX, y: e.clientY, yaw: chYaw, pit: chPitch }; });
-  addEventListener('pointermove', e => { if (!drag || !chaseOn() || pinch) return; chYaw = drag.yaw - (e.clientX - drag.x) * 0.008; chPitch = Math.max(-0.05, Math.min(1.35, drag.pit + (e.clientY - drag.y) * 0.006)); });
+  const ckOn = () => follow && fview === 'cockpit';
+  cv.addEventListener('pointerdown', e => { if ((chaseOn() || ckOn()) && e.isPrimary) drag = { x: e.clientX, y: e.clientY, yaw: chYaw, pit: chPitch, cy: ckYaw, cp: ckPitch }; });
+  addEventListener('pointermove', e => { if (drag && ckOn()) { const k = C.fov * Math.PI / 180 / Math.max(1, cv.clientHeight); ckYaw = Math.max(-1.6, Math.min(1.6, drag.cy + (e.clientX - drag.x) * k)); ckPitch = Math.max(-0.6, Math.min(0.5, drag.cp + (e.clientY - drag.y) * k)); return; }
+    if (!drag || !chaseOn() || pinch) return; chYaw = drag.yaw - (e.clientX - drag.x) * 0.008; chPitch = Math.max(-0.05, Math.min(1.35, drag.pit + (e.clientY - drag.y) * 0.006)); });
   addEventListener('pointerup', () => { drag = null; });
   cv.addEventListener('wheel', e => { if (!chaseOn()) return; e.preventDefault(); zoom(Math.exp(e.deltaY * 0.0015)); }, { passive: false });
   cv.addEventListener('touchmove', e => { if (!chaseOn() || e.touches.length !== 2) { pinch = null; return; } const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); if (pinch) zoom(pinch / d); pinch = d; }, { passive: true });
   cv.addEventListener('touchend', () => { pinch = null; });
-  cv.addEventListener('dblclick', () => { if (chaseOn()) { chDist = 1; chYaw = 0; chPitch = 0.22; } });
+  cv.addEventListener('dblclick', () => { if (chaseOn()) { chDist = 1; chYaw = 0; chPitch = 0.22; } if (ckOn()) ckYaw = ckPitch = 0; });
   $('n3FFar').onclick = () => zoom(1.6); $('n3FNear').onclick = () => zoom(1 / 1.6);
 }
 $('n3FStop').onclick = () => stopFollow();
@@ -361,17 +363,15 @@ function sampleAt(o, now) {
 
 // ── 그리기 ──
 const UP = new THREE.Vector3(0, 1, 0);
-let prev = performance.now() / 1000, ckAt = 0;
-// ── 조종석 계기(창틀·글레어실드·PFD·방위) — 서버가 준 속도·고도·방위·승강률로 그린다(자세는 승강률로 근사, 기울기 없음) ──
-function cockpitPanel(o) {
-  const a = o.d || {}, alt = a.alt != null && a.alt !== 'ground' ? Math.round(a.alt) : 0, spd = Math.round(a.gs || 0), hdg = Math.round(((a.track || 0) + 360) % 360), vs = Math.round(a.vr || 0);
-  const pitchDeg = (o.pitch || 0) * 180 / Math.PI;
-  $('ckSpd').textContent = spd; $('ckAlt').textContent = alt.toLocaleString(); $('ckVs').textContent = (vs > 0 ? '+' : '') + vs.toLocaleString();
-  $('ckHdg').textContent = String(hdg).padStart(3, '0') + '°';
-  $('ckHor').setAttribute('transform', 'translate(0 ' + Math.max(-38, Math.min(38, pitchDeg * 3)).toFixed(1) + ')');
-  $('ckRose').setAttribute('transform', 'rotate(' + (-hdg) + ' 0 0)');
-  $('ckDb').textContent = a.db != null ? a.db.toFixed(0) + ' dB' : '–';
-  $('ckPh').textContent = PHASE[a.phase] || '';
+let prev = performance.now() / 1000, ckAt = 0, ckYaw = 0, ckPitch = 0;
+// 조종석 화면(noise-cockpit.js) — 창틀·글레어실드·PFD·ND·정보 화면. 없으면 시점만
+const CK = window.NoiseCockpit ? window.NoiseCockpit.create(document.querySelector('.n3-main')) : null;
+function cockpitState(o) {
+  const a = o.d || {}, near = senData.map(q => { const [x, z] = enu(q.lat, q.lon); return { x: x - o.pos.x, y: -(z - o.pos.z), name: q.name, db: q.db }; });
+  const n = near.slice().sort((p, q) => Math.hypot(p.x, p.y) - Math.hypot(q.x, q.y))[0];
+  return { gs: a.gs || 0, alt: a.alt != null && a.alt !== 'ground' ? Math.max(0, a.alt) : 0, vs: a.vr || 0, hdg: ((o.hdg || 0) * 180 / Math.PI + 360) % 360,
+    pitch: (o.att || 0) * 180 / Math.PI, bank: (o.bank || 0) * 180 / Math.PI, phase: a.phase, db: a.db, dbColor: lvl(a.db || 0).c, dist: a.dist,
+    sensors: near, near: n ? n.name + ' ' + (n.db != null ? n.db.toFixed(0) + 'dB' : '') : '' };
 }
 go('over', true); resize();
 R.setAnimationLoop(() => {
@@ -389,10 +389,18 @@ R.setAnimationLoop(() => {
     o.lastTgt = tgt.p.clone();
     o.pos.lerp(tgt.p, 1 - Math.exp(-dt * 5));
     o.root.position.copy(o.pos);
-    const pitch = v > 20 ? Math.atan2((a.vr || 0) * 0.3048 / 60, v) : 0;
-    o.model.rotation.set(pitch, -trk, 0, 'YXZ');
-    if (o.hdg == null) o.hdg = trk; else { let dh = ((trk - o.hdg + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; o.hdg += dh * (1 - Math.exp(-dt * 2)); }   // 시점이 흔들리지 않게 방향을 천천히 따른다
-    o.pitch = pitch;
+    // 자세 — 방향은 천천히 따라 돌고(선회율 → 뱅크각 atan(v·ω/g), ±30°) · 기수 각 = 비행 경로각 + 받음각(공중 약 4°)
+    const fpa = v > 20 ? Math.atan2((a.vr || 0) * 0.3048 / 60, v) : 0;
+    if (o.hdg == null) { o.hdg = trk; o.turn = 0; o.bank = 0; o.att = 0; }
+    else {
+      const dh = ((trk - o.hdg + 3 * Math.PI) % (2 * Math.PI)) - Math.PI, step = dh * (1 - Math.exp(-dt * 1.6));
+      o.hdg += step; o.turn += ((dt > 0 ? step / dt : 0) - o.turn) * (1 - Math.exp(-dt * 2));
+    }
+    const air = a.alt !== 'ground' && v > 40;
+    const bankW = air ? Math.max(-0.52, Math.min(0.52, Math.atan(v * o.turn / 9.81))) : 0, attW = air ? fpa + 0.07 : 0;
+    o.bank += (bankW - o.bank) * (1 - Math.exp(-dt * 2.5)); o.att += (attW - o.att) * (1 - Math.exp(-dt * 2));
+    o.model.rotation.set(o.att, -o.hdg, -o.bank, 'YXZ');
+    o.pitch = fpa;
     const gy = groundAt(o.pos.x, o.pos.z), pa = o.drop.geometry.attributes.position;
     pa.setXYZ(0, o.pos.x, o.pos.y, o.pos.z); pa.setXYZ(1, o.pos.x, gy, o.pos.z); pa.needsUpdate = true;
     const agl = o.pos.y - gy, mine = !follow || follow === o.hex;                 // 11-02 운영자 「고른 기체만 보이기」 — 따라가는 동안 다른 항공기는 숨긴다
@@ -417,12 +425,16 @@ R.setAnimationLoop(() => {
       const hb = fo.hdg + Math.PI + chYaw, cp = Math.cos(chPitch);
       const want = fo.pos.clone().add(new THREE.Vector3(Math.sin(hb) * cp * dist, Math.sin(chPitch) * dist + len * 0.15, -Math.cos(hb) * cp * dist));
       const gy = groundAt(want.x, want.z); if (want.y < gy + 15) want.y = gy + 15;
-      C.position.lerp(want, 1 - Math.exp(-dt * 4)); C.lookAt(fo.pos.clone().addScaledVector(fwd, len * 0.6));
+      if (!fo.chase || dt > 0.5) fo.chase = want.clone(); else fo.chase.lerp(want, 1 - Math.exp(-dt * 2.5));   // 용수철처럼 따라오되
+      if (fo.chase.distanceTo(want) > len * 1.2) fo.chase.sub(want).setLength(len * 1.2).add(want);            // 너무 처지지 않게
+      C.position.copy(fo.chase); C.up.set(0, 1, 0); C.lookAt(fo.pos.clone().addScaledVector(fwd, len * 0.8));
     } else {                                                                        // 조종석 — 기수 위에서 앞을 본다(내 기체는 숨김)
-      const ey = EYE[fo.model.userData.real || 'narrow'];
-      C.position.copy(fo.pos).addScaledVector(fwd, ey[0] * sc).add(new THREE.Vector3(0, ey[1] * sc, 0));
-      C.lookAt(C.position.clone().addScaledVector(fwd, 1000).add(new THREE.Vector3(0, -60, 0)));
-      if (now - ckAt > 0.12) { ckAt = now; cockpitPanel(fo); }
+      const ey = EYE[fo.model.userData.real || 'narrow'];                     // 기장석 눈 — 기체 자세(기수·뱅크)를 그대로 따른다 · 끌면 고개를 돌린다
+      fo.model.updateMatrixWorld(true);
+      C.position.set(-0.55, ey[1], -ey[0]).multiplyScalar(sc).applyMatrix4(fo.root.matrixWorld.clone().multiply(new THREE.Matrix4().makeRotationFromEuler(fo.model.rotation)));
+      const ld = THREE.MathUtils.degToRad(CK ? window.NoiseCockpit.LOOK_DOWN : 10);
+      C.quaternion.setFromEuler(fo.model.rotation).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(-ld + ckPitch, ckYaw, 0, 'YXZ')));
+      if (CK && now - ckAt > 0.06) { ckAt = now; CK.draw(cockpitState(fo)); }
     }
   }
   if (anim) {

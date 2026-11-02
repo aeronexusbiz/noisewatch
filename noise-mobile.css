@@ -236,4 +236,3 @@
 @media (max-width: 600px) { .n3-load.n3-chip { top: 8px; bottom: auto; right: 8px; } }
 @media (max-width: 600px) { .n3-panel.folded { left: auto; right: 8px; } }
 @media (max-width: 600px) { .n3-fbar { top: 8px; left: 8px; right: 8px; transform: none; max-width: none; padding: 5px; gap: 4px; } .n3-fbar b { width: 100%; text-align: center; } .n3-fbar button { padding: 6px 8px; font-size: 12.5px; } }
-@media (max-width: 600px) { .n3-ck-panel { height: 24%; gap: 8px; bottom: calc(var(--nm-tab, 0px) + 56px); } .n3-ck-tape b { font-size: 14px; } }
