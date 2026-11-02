@@ -11,7 +11,8 @@
     { k: 'map', ico: 'map', name: '실시간 지도·감시', short: '지도·감시', sub: '위성·항적', href: '/noise.html' },
     { k: 'watch', ico: 'dash', name: '지점별 상황판', short: '상황판', sub: '현황판', href: '/noise-watch.html' },
     { k: 'dash', ico: 'chart', name: '시간대 통계·조회', short: '통계·조회', sub: 'Lden·분석', href: '/noise-dash.html' },
-    { k: 'report', ico: 'report', name: '보고서', sub: '통계·민원', href: '/noise-period.html' }
+    { k: 'report', ico: 'report', name: '보고서', sub: '통계·민원', href: '/noise-period.html' },
+    { k: '3d', ico: 'surface', name: '3D', short: '3D', sub: '항공기·소음 퍼짐', href: '/noise-3d.html' }   // 11-02 운영자 「3D 모드와 항공기도 3D로」
   ];
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function apt() {
@@ -69,6 +70,11 @@
     if (R && !R.org) { rb.href = '/noise-watch.html'; rb.title = '관제·공항·지자체 담당자용 — 지점별 상황판·시간대 통계·누적 히트맵·리플레이'; rb.innerHTML = '<i class="nic" data-ic="monitor"></i> 기관용 화면'; rb.onclick = function () { R.set('org'); }; }
     else { rb.href = '/noise.html'; rb.title = '누구나 보는 실시간 지도 화면으로'; rb.innerHTML = '<i class="nic" data-ic="map"></i> 일반 화면'; rb.onclick = function () { if (R) R.set('pub'); }; }
     g.querySelector('.ns-right').insertBefore(rb, g.querySelector('.ns-right').firstChild);
+    if (R && !R.org && page !== '3d') {                                        // 11-02 일반 화면은 탭이 없다 — 3D 보기 입구를 머리에
+      var b3 = document.createElement('a'); b3.className = 'ns-role'; b3.dataset.k = '3d'; b3.href = '/noise-3d.html'; b3.title = '항공기와 이착륙 소음 퍼짐을 3D 로';
+      b3.innerHTML = '<i class="nic" data-ic="surface"></i> 3D'; g.querySelector('.ns-right').insertBefore(b3, rb);
+    }
+    if (R && !R.org && page === '3d') { rb.href = '/noise.html'; rb.innerHTML = '<i class="nic" data-ic="map"></i> 지도로'; rb.title = '실시간 지도로 돌아가기'; rb.onclick = null; }
     var fix = function () { var a = apt(); g.querySelectorAll('.ns-tab, .ns-role').forEach(function (t) { var u = new URL(t.getAttribute('href'), location.origin); u.searchParams.set('apt', a); t.href = u.pathname + u.search; }); };
     fix();
     var sel = g.querySelector('[data-slot="apt"] select'); if (sel) sel.addEventListener('change', fix);

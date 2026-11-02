@@ -177,3 +177,11 @@ html[data-theme="light"] #nwNotice .nw-tmp { color: #b45309 !important; }   /* 1
 html[data-theme="light"] .nsp { background: rgba(255,255,255,.98); color: #0f172a; border-color: #cbd5e1; box-shadow: 0 10px 28px rgba(15,23,42,.18); }   /* 10-31 지점 설명 풍선(noise-senpop.js) */
 html[data-theme="light"] .nsp-name { color: #0f172a; } html[data-theme="light"] .nsp p { color: #334155; } html[data-theme="light"] .nsp-why { color: #b45309 !important; }
 html[data-theme="light"] .nsp-go { color: #0369a1; border-color: #0284c7; background: #f0f9ff; }
+/* 3D 보기(noise-3d · 11-02) */
+html[data-theme="light"] .n3-panel { background: rgba(255, 255, 255, .94); border-color: #cbd5e1; color: #0f172a; }
+html[data-theme="light"] .n3-row button { background: #f1f5f9; color: #1e293b; border-color: #cbd5e1; }
+html[data-theme="light"] .n3-row button.on, html[data-theme="light"] .n3-row button[aria-pressed="true"] { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+html[data-theme="light"] .n3-chk, html[data-theme="light"] .n3-legend, html[data-theme="light"] .n3-list h3 { color: #1e293b; }
+html[data-theme="light"] .n3-legend p, html[data-theme="light"] .n3-ac small, html[data-theme="light"] .n3-empty { color: #475569; }
+html[data-theme="light"] .n3-ac { color: #0f172a; } html[data-theme="light"] .n3-ac:hover, html[data-theme="light"] .n3-ac.on { background: #f1f5f9; border-color: #cbd5e1; }
+html[data-theme="light"] body.n3-body { background: #eef2f7; }

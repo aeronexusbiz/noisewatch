@@ -227,3 +227,9 @@
 @media (max-width: 600px) and (prefers-reduced-motion: reduce) {
   .nz-ac, .nz-sen, .nz-card, .nz-stage .leaflet-zoom-animated { transition: none !important; animation: none !important; }
 }
+/* 3D 보기(noise-3d · 11-02) — 폰은 조절판을 아래 접이식으로 */
+@media (max-width: 600px) {
+  .n3-panel { left: 8px; right: 8px; top: auto; bottom: calc(8px + var(--nm-tab, 0px)); width: auto; max-height: 42%; padding: 10px; }
+  .n3-credit { display: none; }
+  .n3-legend p { display: none; }
+}
