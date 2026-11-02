@@ -52,7 +52,7 @@
   </div>
   <div class="n3-fbar" id="n3FBar" role="group" aria-label="고른 항공기 보기" hidden>
     <b id="n3FName" translate="no"></b>
-    <button type="button" data-f="chase" aria-pressed="true">뒤따라가기</button><button type="button" data-f="cockpit" aria-pressed="false">조종석</button><button type="button" data-f="orbit" aria-pressed="false">주변 돌아보기</button><button type="button" id="n3FStop">그만</button>
+    <button type="button" data-f="chase" aria-pressed="true">뒤따라가기</button><button type="button" id="n3FNear" title="가까이(휠·집기도 됩니다)">가까이</button><button type="button" id="n3FFar" title="멀리(휠·집기도 됩니다)">멀리</button><button type="button" data-f="cockpit" aria-pressed="false">조종석</button><button type="button" data-f="orbit" aria-pressed="false">주변 돌아보기</button><button type="button" id="n3FStop">그만</button>
   </div>
   <div id="n3Load" class="n3-load" role="status">3D 지도를 불러오는 중… <span id="n3Pct"></span></div>
   <section class="n3-panel" id="n3Panel" aria-label="3D 보기 조절">
@@ -70,7 +70,7 @@
     <label class="n3-chk"><input type="checkbox" id="n3Big" checked> 항공기 크게(×3)</label>
     <div class="n3-legend" aria-label="퍼지는 원 색">
       <span><i style="background:#facc15"></i>60 dB</span><span><i style="background:#fb923c"></i>65 dB</span><span><i style="background:#ef4444"></i>70 dB</span>
-      <p>이착륙 중인 항공기에서 그 소음이 닿는 거리까지 원이 천천히 퍼집니다. 항공기를 누르면 뒤따라가기·조종석 보기를 고를 수 있습니다. 항적에서 추정한 값입니다(±5~10dB).</p>
+      <p>이착륙 중인 항공기에서 그 소음이 닿는 거리까지 원이 천천히 퍼집니다. 항공기를 누르면 뒤따라가기·조종석 보기를 고를 수 있습니다. 뒤따라가기에서 끌면 둘레를 돌고, 휠·집기로 멀리/가까이 볼 수 있습니다. 항적에서 추정한 값입니다(±5~10dB).</p>
     </div>
     <div class="n3-list" id="n3List" aria-live="polite"></div>
     </div>
@@ -79,6 +79,6 @@
 </main>
 <script src="/noise-shell.js?v=8"></script>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
-<script type="module" src="/noise-3d.js?v=7"></script>
+<script type="module" src="/noise-3d.js?v=9"></script>
 </body>
 </html>

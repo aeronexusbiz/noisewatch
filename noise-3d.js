@@ -11,7 +11,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 
 // full = 위성 영상을 구운 장면(맥 로컬만 · 공개 제외) · pub = 영상 없는 장면(공개) + 화면이 VWorld 타일을 지형에 입힌다(2D 지도와 같은 중계)
 //   sat = 지형 UV 범위(airport-blender rkss-sat-z16.json · 경도 직선 · 위도 메르카토르)
-const SCENES = { RKSS: { full: '/scene3d/rkss.glb?v=2', pub: '/scene3d/rkss-pub.glb?v=2', ref: [37.5583, 126.7906], sat: { S: 37.488, W: 126.728, N: 37.604, E: 126.888 } } };
+const SCENES = { RKSS: { full: '/scene3d/rkss.glb?v=3', pub: '/scene3d/rkss-pub.glb?v=3', ref: [37.5583, 126.7906], sat: { S: 37.488, W: 126.728, N: 37.604, E: 126.888 } } };
 const APT = 'RKSS', SC = SCENES[APT];
 const KX = Math.cos(SC.ref[0] * Math.PI / 180) * 111320, KY = 110574;
 const enu = (lat, lon) => [(lon - SC.ref[1]) * KX, -(lat - SC.ref[0]) * KY];   // [x, z]
@@ -45,7 +45,7 @@ addEventListener('resize', resize);
 
 // ── 시점 ──
 const VIEWS = { over: [[5200, 3000, 6200], [-600, 0, -600]], rwy: [[2600, 650, 2300], [-200, 10, -300]], town: [[4300, 280, 3600], [3150, 15, 2350]], top: [[0, 15000, 200], [0, 0, 0]] };
-let anim = null, follow = null, fview = 'chase';   // fview: orbit(주변 돌아보기) · chase(뒤따라가기) · cockpit(조종석)
+let anim = null, follow = null, fview = 'chase', chDist = 1, chYaw = 0, chPitch = 0.22;   // 뒤따라가기: 거리 배수 · 뒤에서 도는 각 · 내려보는 각   // fview: orbit(주변 돌아보기) · chase(뒤따라가기) · cockpit(조종석)
 function go(v, now) {
   const [p, t] = VIEWS[v]; stopFollow();
   document.querySelectorAll('.n3-views button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
@@ -265,6 +265,9 @@ function pull() {
       const [x, z] = enu(a.lat, a.lon), gy = groundAt(x, z);
       const y = (a.alt == null || a.alt === 'ground') ? gy + 1.8 : Math.max(gy + 1.8, a.alt * 0.3048);   // 공항 바닥층(+1.6m) 위
       o.obs = new THREE.Vector3(x, y, z); if (!o.pos) o.pos = o.obs.clone();
+      // 11-02 운영자 「앞뒤로 버벅인다」 — 서버 위치는 수신이 몇 초씩 늦거나 같은 값이 되풀이된다. 바뀐 점만 쌓아 두고 조금 늦게(약 3초) 그 사이를 잇는다(앞뒤 튐 없음)
+      o.smp = o.smp || []; const last = o.smp[o.smp.length - 1];
+      if (!last || last.p.distanceToSquared(o.obs) > 0.25) { o.smp.push({ t: now, p: o.obs.clone() }); if (o.smp.length > 12) o.smp.shift(); }
       const big = $('n3Big').checked ? 3 : 1; o.model.scale.setScalar((SIZE[a.cls] || 1) * big);
       setLabel(o, [(a.flight || a.hex).trim() + (a.type ? ' · ' + a.type : ''), (PHASE[a.phase] || '') + (a.alt != null && a.alt !== 'ground' ? ' · ' + Math.round(a.alt * 0.3048).toLocaleString() + ' m' : ' · 지상') + (a.db != null ? ' · ' + a.db.toFixed(0) + ' dB' : '')], lvl(a.db || 0).c);
       o.lb.position.set(0, 40 * big * (SIZE[a.cls] || 1) / 3 + 30, 0);
@@ -298,6 +301,7 @@ function startFollow(hex) {
 function setFview(v) {
   fview = v; const o = follow && ACS.get(follow);
   document.querySelectorAll('#n3FBar [data-f]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === v)));
+  $('n3FFar').hidden = $('n3FNear').hidden = v !== 'chase';
   ctl.enabled = v === 'orbit'; C.fov = v === 'cockpit' ? 62 : 40; C.updateProjectionMatrix(); $('n3Ck').hidden = !(o && v === 'cockpit');
   if (o && v === 'cockpit' && !$('n3Panel').classList.contains('folded')) $('n3Fold').click();   // 창틀이 조절판을 가리지 않게 접는다
   if (o) { o.model.visible = v !== 'cockpit'; if (o.lb) o.lb.visible = v !== 'cockpit'; }
@@ -311,18 +315,46 @@ function stopFollow() {
   follow = null; markList(); ctl.enabled = true; C.fov = 40; C.updateProjectionMatrix(); $('n3FBar').hidden = true; $('n3Ck').hidden = true;
 }
 document.querySelectorAll('#n3FBar [data-f]').forEach(b => b.onclick = () => setFview(b.dataset.f));
+// 뒤따라가기 조절 — 끌기: 둘레 돌기·위아래 · 휠/집기·단추: 거리(0.3~12배) · 두 번 누르기: 처음 자리
+{ let drag = null, pinch = null;
+  const chaseOn = () => follow && fview === 'chase';
+  const zoom = f => { chDist = Math.max(0.3, Math.min(12, chDist * f)); };
+  cv.addEventListener('pointerdown', e => { if (chaseOn() && e.isPrimary) drag = { x: e.clientX, y: e.clientY, yaw: chYaw, pit: chPitch }; });
+  addEventListener('pointermove', e => { if (!drag || !chaseOn() || pinch) return; chYaw = drag.yaw - (e.clientX - drag.x) * 0.008; chPitch = Math.max(-0.05, Math.min(1.35, drag.pit + (e.clientY - drag.y) * 0.006)); });
+  addEventListener('pointerup', () => { drag = null; });
+  cv.addEventListener('wheel', e => { if (!chaseOn()) return; e.preventDefault(); zoom(Math.exp(e.deltaY * 0.0015)); }, { passive: false });
+  cv.addEventListener('touchmove', e => { if (!chaseOn() || e.touches.length !== 2) { pinch = null; return; } const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); if (pinch) zoom(pinch / d); pinch = d; }, { passive: true });
+  cv.addEventListener('touchend', () => { pinch = null; });
+  cv.addEventListener('dblclick', () => { if (chaseOn()) { chDist = 1; chYaw = 0; chPitch = 0.22; } });
+  $('n3FFar').onclick = () => zoom(1.6); $('n3FNear').onclick = () => zoom(1 / 1.6);
+}
 $('n3FStop').onclick = () => stopFollow();
 const ptr = new THREE.Vector2(); let downAt = null;
 cv.addEventListener('pointerdown', e => { downAt = [e.clientX, e.clientY]; });
 cv.addEventListener('pointerup', e => {
   if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
   const r = cv.getBoundingClientRect(); ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
-  ray.setFromCamera(ptr, C); const hit = ray.intersectObjects([...ACS.values()].map(o => o.model), true)[0];
+  ray.setFromCamera(ptr, C); const hit = ray.intersectObjects([...ACS.values()].filter(o => o.root.visible && o.model.visible).map(o => o.model), true)[0];   // 숨긴 기체는 고르지 않는다
   if (hit && hit.object.userData.hex) startFollow(hit.object.userData.hex);
 });
 ['n3Sen', 'n3Trail'].forEach(id => $(id).onchange = () => { SEN.forEach(o => o.root.visible = $('n3Sen').checked); ACS.forEach(o => o.trailLine.visible = $('n3Trail').checked); });
 
-window.N3 = { waves: () => WAVES.length, acs: () => ACS.size, busy: () => [...ACS.values()].filter(o => o.d && (o.d.phase === 'arr' || o.d.phase === 'dep')).map(o => [o.d.flight, (o.d.rings || []).length]) };   // 점검용(헤드리스)
+window.N3 = { pos: h => { const o = ACS.get(h); return o && o.pos ? [o.pos.x, o.pos.y, o.pos.z] : null; }, follow: () => follow, waves: () => WAVES.length, acs: () => ACS.size, busy: () => [...ACS.values()].filter(o => o.d && (o.d.phase === 'arr' || o.d.phase === 'dep')).map(o => [o.d.flight, (o.d.rings || []).length]) };   // 점검용(헤드리스)
+
+// 지연 보간 — 늦춤 = 표본 간격 중앙값 × 1.3 (1.5~6초) · 마지막 표본 뒤는 두 점 속도로 최대 6초만 이어 감
+function sampleAt(o, now) {
+  const sm = o.smp || [];
+  if (sm.length < 2) return { p: sm.length ? sm[0].p : o.obs, dir: null };
+  const gaps = sm.slice(1).map((q, i) => q.t - sm[i].t).sort((x, y) => x - y), med = gaps[gaps.length >> 1];
+  const rt = now - Math.max(1.5, Math.min(6, med * 1.3));
+  let i = sm.length - 2;
+  while (i > 0 && sm[i].t > rt) i--;
+  const A = sm[i], B = sm[i + 1], span = Math.max(0.2, B.t - A.t);
+  const k = Math.min((rt - A.t) / span, 1 + 6 / span);                     // 1 넘으면 같은 속도로 이어 감(상한 6초)
+  const p = A.p.clone().lerp(B.p, Math.max(0, k));
+  const dx = B.p.x - A.p.x, dz = B.p.z - A.p.z;
+  return { p, dir: dx * dx + dz * dz > 4 ? Math.atan2(dx, -dz) : null };
+}
 
 // ── 그리기 ──
 const UP = new THREE.Vector3(0, 1, 0);
@@ -343,9 +375,11 @@ R.setAnimationLoop(() => {
   const now = performance.now() / 1000, dt = Math.min(0.1, now - prev); prev = now;
   ACS.forEach(o => {
     if (!o.d || !o.obs) return;
-    const a = o.d, age = Math.min(8, now - o.t), trk = (a.track || 0) * Math.PI / 180, v = (a.gs || 0) * 0.5144;
-    const pred = o.obs.clone().add(new THREE.Vector3(Math.sin(trk) * v * age, (a.vr || 0) * 0.3048 / 60 * age, -Math.cos(trk) * v * age));
-    o.pos.lerp(pred, 1 - Math.exp(-dt * 4));
+    const a = o.d, v = (a.gs || 0) * 0.5144;
+    let trk = (a.track || 0) * Math.PI / 180;
+    const tgt = sampleAt(o, now);
+    if (tgt.dir) trk = tgt.dir;
+    o.pos.lerp(tgt.p, 1 - Math.exp(-dt * 5));
     o.root.position.copy(o.pos);
     const pitch = v > 20 ? Math.atan2((a.vr || 0) * 0.3048 / 60, v) : 0;
     o.model.rotation.set(pitch, -trk, 0, 'YXZ');
@@ -370,10 +404,12 @@ R.setAnimationLoop(() => {
   if (fo && fview === 'orbit') { const d = fo.pos.clone().sub(ctl.target); ctl.target.add(d); C.position.add(d); }
   else if (fo && fo.hdg != null) {
     const sc = fo.model.scale.x, fwd = new THREE.Vector3(Math.sin(fo.hdg), Math.sin(fo.pitch || 0), -Math.cos(fo.hdg)).normalize();
-    if (fview === 'chase') {                                                        // 뒤따라가기 — 꼬리 뒤 위쪽에서 진행 방향을 본다
-      const len = (fo.model.userData.real === 'wide' ? 63 : 38) * sc;
-      const want = fo.pos.clone().addScaledVector(fwd, -len * 1.9 - 25).add(new THREE.Vector3(0, len * 0.45 + 8, 0));
-      C.position.lerp(want, 1 - Math.exp(-dt * 3)); C.lookAt(fo.pos.clone().addScaledVector(fwd, 60 * sc));
+    if (fview === 'chase') {                                                        // 뒤따라가기 — 꼬리 뒤에서 · 끌면 둘레를 돌고 휠·집기로 멀리/가까이
+      const len = (fo.model.userData.real === 'wide' ? 63 : 38) * sc, dist = (len * 2.6 + 40) * chDist;
+      const hb = fo.hdg + Math.PI + chYaw, cp = Math.cos(chPitch);
+      const want = fo.pos.clone().add(new THREE.Vector3(Math.sin(hb) * cp * dist, Math.sin(chPitch) * dist + len * 0.15, -Math.cos(hb) * cp * dist));
+      const gy = groundAt(want.x, want.z); if (want.y < gy + 15) want.y = gy + 15;
+      C.position.lerp(want, 1 - Math.exp(-dt * 4)); C.lookAt(fo.pos.clone().addScaledVector(fwd, len * 0.6));
     } else {                                                                        // 조종석 — 기수 위에서 앞을 본다(내 기체는 숨김)
       const ey = EYE[fo.model.userData.real || 'narrow'];
       C.position.copy(fo.pos).addScaledVector(fwd, ey[0] * sc).add(new THREE.Vector3(0, ey[1] * sc, 0));
