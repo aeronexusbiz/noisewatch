@@ -332,7 +332,10 @@ function setFview(v) {
   ctl.enabled = v === 'orbit'; C.fov = v === 'cockpit' ? 62 : 40; C.updateProjectionMatrix(); if (CK) CK.show(!!(o && v === 'cockpit')); ckYaw = ckPitch = 0; if (o) o.chase = null;
   if (o && v === 'cockpit' && !$('n3Panel').classList.contains('folded')) $('n3Fold').click();   // 창틀이 조절판을 가리지 않게 접는다
   if (o) { o.model.visible = v !== 'cockpit'; if (o.lb) o.lb.visible = v !== 'cockpit'; }
-  if (v === 'orbit' && o) { const off = C.position.clone().sub(o.pos); if (off.length() > 2500 || off.length() < 80) off.setLength(900); ctl.target.copy(o.pos); C.position.copy(o.pos).add(off); }
+  // 11-02 운영자 「화면을 틀어도 다시 누르면 처음 상태로」 — 시점 단추는 누를 때마다 그 시점의 기본 거리·각도로 되돌린다
+  chDist = 1; chYaw = 0; chPitch = 0.22; ckYaw = ckPitch = 0;
+  if (v === 'orbit' && o) { const h = o.hdg || 0, sc = o.model.scale.x, d = (o.model.userData.real === 'wide' ? 63 : 38) * sc * 6 + 200;   // 기체 오른쪽 뒤 45° · 위 30°
+    ctl.target.copy(o.pos); C.position.copy(o.pos).add(new THREE.Vector3(Math.sin(h + Math.PI * 0.75) * d * 0.87, d * 0.5, -Math.cos(h + Math.PI * 0.75) * d * 0.87)); ctl.update(); }
   const bar = $('n3FBar'); bar.hidden = !o;
   if (o) $('n3FName').textContent = ((o.d && o.d.flight) || o.hex).trim() + (o.d && o.d.type ? ' · ' + o.d.type : '');
 }
@@ -368,7 +371,7 @@ cv.addEventListener('pointerup', e => {
 });
 ['n3Sen', 'n3Trail'].forEach(id => $(id).onchange = () => { SEN.forEach(o => o.root.visible = $('n3Sen').checked); ACS.forEach(o => o.trailLine.visible = $('n3Trail').checked); });
 
-window.N3 = { pos: h => { const o = ACS.get(h); return o && o.pos ? [o.pos.x, o.pos.y, o.pos.z] : null; }, follow: () => follow, waves: () => WAVES.length, acs: () => ACS.size, busy: () => [...ACS.values()].filter(o => o.d && (o.d.phase === 'arr' || o.d.phase === 'dep')).map(o => [o.d.flight, (o.d.rings || []).length]) };   // 점검용(헤드리스)
+window.N3 = { cam: () => [C.position.x, C.position.y, C.position.z].map(v => Math.round(v)), pos: h => { const o = ACS.get(h); return o && o.pos ? [o.pos.x, o.pos.y, o.pos.z] : null; }, follow: () => follow, waves: () => WAVES.length, acs: () => ACS.size, busy: () => [...ACS.values()].filter(o => o.d && (o.d.phase === 'arr' || o.d.phase === 'dep')).map(o => [o.d.flight, (o.d.rings || []).length]) };   // 점검용(헤드리스)
 
 // 지연 보간 — 늦춤 = 표본 간격 중앙값 × 1.3 (1.5~6초) · 마지막 표본 뒤는 두 점 속도로 최대 6초만 이어 감
 function sampleAt(o, now) {
